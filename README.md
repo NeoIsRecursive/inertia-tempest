@@ -10,7 +10,7 @@ Not setup yet, you'll have to clone it and stuff.
 
 First you need to create a `InertiaConfig` in your apps Config directory.
 
-````php
+```php
 <?php
 
 use NeoIsRecursive\Inertia\InertiaConfig;
@@ -38,7 +38,6 @@ The view will then be rendered as an `NeoIsRecursive\Inertia\Views\InertiaBaseVi
 ```
 
 in your view, that will render a div with the page data (the id here should match the id you specified in your client setup).
-
 
 See how to install inertia to your frontend on inertia's official site [here]("https://inertiajs.com/client-side-setup").
 
@@ -70,6 +69,3 @@ final class ReviewController
 - [ ] Fix empty responses
 - [ ] Implement 409 conflict responses when hash mismatch
 - [ ] Improve rendering api?
-
-
-````
