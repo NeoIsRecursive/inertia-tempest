@@ -1,0 +1,28 @@
+{
+  "name": "neoisrecursive/inertia-tempest",
+  "description": "A inertia adapter for the tempestphp framework",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "NeoIsRecursive\\Inertia\\": "src/"
+    },
+    "files": [
+      "src/functions.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "NeoIsRecursive",
+      "email": "neo.leijondahl@gmail.com"
+    }
+  ],
+  "require": {
+    "tempest/framework": "1.0-alpha1"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
+  }
+}
