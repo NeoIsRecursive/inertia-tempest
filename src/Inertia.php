@@ -28,10 +28,7 @@ final class Inertia
         private InertiaConfig $config
     ) {}
 
-    // /**
-    //  * @param string|array $key
-    //  */
-    public function share($key, $value = null): void
+    public function share(string|array $key, ?string $value = null): void
     {
         if (is_array($key)) {
             $this->sharedProps = array_merge($this->sharedProps, $key);
@@ -48,7 +45,7 @@ final class Inertia
     public function getVersion(): string
     {
         $version = $this->config->version instanceof Closure
-            ? $this->container->invoke($this->config->version)
+            ? call_user_func($this->config->version)
             : $this->config->version;
 
         return (string) $version;
@@ -64,9 +61,6 @@ final class Inertia
         return new AlwaysProp($value);
     }
 
-    /**
-     * @param array|Arrayable $props
-     */
     public function render(string $component, array $props = []): InertiaResponse
     {
         $props = array_merge(call_user_func($this->config->getSharedProps), $this->sharedProps, $props);
@@ -80,10 +74,7 @@ final class Inertia
         );
     }
 
-    /**
-     * @param string|SymfonyRedirect $url
-     */
-    public function location($url): Response
+    public function location(string $url): Response
     {
         if (isset(get(Request::class)->getHeaders()[Header::INERTIA])) {
             return new GenericResponse(

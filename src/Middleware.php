@@ -27,7 +27,6 @@ final class Middleware implements HttpMiddleware
 
         $versionHeaderValue = $request->getHeaders()[Header::VERSION] ?? '';
 
-
         if ($request->getMethod() === Method::GET && $versionHeaderValue !== $this->inertia->getVersion()) {
             // TODO: reflash session data
             // if ($request->session()) {

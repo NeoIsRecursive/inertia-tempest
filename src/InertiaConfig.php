@@ -7,7 +7,7 @@ use Closure;
 final readonly class InertiaConfig
 {
     public function __construct(
-        public string $version,
+        public string|Closure $version,
         public string $rootView,
         public Closure $getSharedProps,
     ) {}
