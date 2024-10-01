@@ -13,7 +13,9 @@ use Tempest\Http\GenericResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
+use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
+use Tempest\Validation\Rule;
 
 use function Tempest\get;
 
@@ -27,6 +29,23 @@ final class Inertia
         private Container $container,
         private InertiaConfig $config
     ) {}
+
+    public function getDefaultSharedProps(): array
+    {
+        $errorBags = array_map(
+            function (array $rules) {
+                return array_map(
+                    fn(Rule $rule) => $rule->message(),
+                    $rules
+                );
+            },
+            get(Session::class)->consume(Session::VALIDATION_ERRORS) ?? []
+        );
+
+        return [
+            'errors' => $errorBags,
+        ];
+    }
 
     public function share(string|array $key, ?string $value = null): void
     {
@@ -63,7 +82,11 @@ final class Inertia
 
     public function render(string $component, array $props = []): InertiaResponse
     {
-        $props = array_merge(call_user_func($this->config->getSharedProps), $this->sharedProps, $props);
+        $props = array_merge(
+            call_user_func($this->config->getSharedProps, $this->getDefaultSharedProps(...)),
+            $this->sharedProps,
+            $props
+        );
 
         return new InertiaResponse(
             request: $this->container->get(Request::class),

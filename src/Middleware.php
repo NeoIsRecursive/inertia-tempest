@@ -3,12 +3,10 @@
 namespace NeoIsRecursive\Inertia;
 
 use NeoIsRecursive\Inertia\Support\Header;
-use Tempest\Http\GenericResponse;
 use Tempest\Http\HttpMiddleware;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
-use Tempest\Http\Responses\Redirect;
 use Tempest\Http\Status;
 
 final class Middleware implements HttpMiddleware
@@ -30,9 +28,6 @@ final class Middleware implements HttpMiddleware
 
         if ($request->getMethod() === Method::GET && $versionHeaderValue !== $this->inertia->getVersion()) {
             // TODO: reflash session data
-            // if ($request->session()) {
-            //     $request->session()->reflash();
-            // }
 
             return $this->inertia->location($request->getUri());
         }
