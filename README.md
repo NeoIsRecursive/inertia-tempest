@@ -69,3 +69,4 @@ final class ReviewController
 - [ ] Fix empty responses
 - [ ] Implement 409 conflict responses when hash mismatch
 - [ ] Improve rendering api?
+- [ ] Create vite package?
