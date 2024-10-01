@@ -32,18 +32,16 @@ final class Inertia
 
     public function getDefaultSharedProps(): array
     {
-        $errorBags = array_map(
-            function (array $rules) {
-                return array_map(
-                    fn(Rule $rule) => $rule->message(),
-                    $rules
-                );
-            },
-            get(Session::class)->consume(Session::VALIDATION_ERRORS) ?? []
-        );
-
         return [
-            'errors' => $errorBags,
+            'errors' => new AlwaysProp(fn() => array_map(
+                function (array $rules) {
+                    return array_map(
+                        fn(Rule $rule) => $rule->message(),
+                        $rules
+                    );
+                },
+                get(Session::class)->consume(Session::VALIDATION_ERRORS) ?? []
+            )),
         ];
     }
 
@@ -68,16 +66,6 @@ final class Inertia
             : $this->config->version;
 
         return (string) $version;
-    }
-
-    public function lazy(callable $callback): LazyProp
-    {
-        return new LazyProp($callback);
-    }
-
-    public function always($value): AlwaysProp
-    {
-        return new AlwaysProp($value);
     }
 
     public function render(string $component, array $props = []): InertiaResponse

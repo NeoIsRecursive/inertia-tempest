@@ -27,7 +27,7 @@ final class InertiaResponse implements Response
         string $version
     ) {
         $props = $this->resolvePartialProps($request, $page, $props);
-        $props = $this->evaluateProps($props, $request);
+        $props = $this->evaluateProps($props, $request, true);
 
         $page = [
             'component' => $page,
