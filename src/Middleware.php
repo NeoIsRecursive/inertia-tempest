@@ -3,6 +3,7 @@
 namespace NeoIsRecursive\Inertia;
 
 use NeoIsRecursive\Inertia\Support\Header;
+use Tempest\Http\GenericResponse;
 use Tempest\Http\HttpMiddleware;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
@@ -38,7 +39,12 @@ final class Middleware implements HttpMiddleware
 
         if ($response->getStatus() === Status::FOUND && in_array($request->getMethod(), [Method::POST, Method::PUT, Method::PATCH])) {
             // TODO: set status to 303
-            // return new Redirect($response->getHeader('Location'));
+            // return new GenericResponse(
+            //     status: Status::SEE_OTHER,
+            //     headers: [
+            //         'Location' => $response->getHeader('Location'),
+            //     ]
+            // );
         }
 
         return $response;
