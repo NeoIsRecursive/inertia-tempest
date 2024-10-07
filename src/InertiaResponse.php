@@ -11,9 +11,9 @@ use Tempest\Http\IsResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Status;
-use Tempest\Support\ArrayHelper;
 
-use function Tempest\get;
+use function Tempest\invoke;
+use function Tempest\Support\arr;
 
 final class InertiaResponse implements Response
 {
@@ -84,15 +84,15 @@ final class InertiaResponse implements Response
     {
         foreach ($props as $key => $value) {
             if ($value instanceof Closure) {
-                $value = call_user_func($value);
+                $value = invoke($value);
             }
 
             if ($value instanceof LazyProp) {
-                $value = call_user_func($value);
+                $value = $value();
             }
 
             if ($value instanceof AlwaysProp) {
-                $value = call_user_func($value);
+                $value = $value();
             }
 
             if (is_array($value)) {
@@ -100,7 +100,7 @@ final class InertiaResponse implements Response
             }
 
             if ($unpackDotProps && str_contains($key, '.')) {
-                ArrayHelper::set($props, $key, $value);
+                $props = arr($props)->set($key, $value);
                 unset($props[$key]);
             } else {
                 $props[$key] = $value;

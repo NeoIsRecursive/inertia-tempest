@@ -2,17 +2,16 @@
 
 namespace NeoIsRecursive\Inertia\Props;
 
-class AlwaysProp
-{
-    protected $value;
+use Closure;
 
-    public function __construct($value)
-    {
-        $this->value = $value;
-    }
+use function Tempest\invoke;
+
+final readonly class AlwaysProp
+{
+    public function __construct(public Closure $value) {}
 
     public function __invoke()
     {
-        return is_callable($this->value) ? call_user_func($this->value) : $this->value;
+        return is_callable($this->value) ? invoke($this->value) : $this->value;
     }
 }

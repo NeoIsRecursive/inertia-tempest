@@ -18,11 +18,12 @@
     }
   ],
   "require": {
-    "tempest/framework": "1.0-alpha1"
+    "tempest/framework": "dev-main"
   },
   "config": {
     "allow-plugins": {
       "php-http/discovery": true
     }
-  }
+  },
+  "minimum-stability": "dev"
 }

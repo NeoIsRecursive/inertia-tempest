@@ -2,10 +2,7 @@
 
 namespace NeoIsRecursive\Inertia;
 
-use Closure;
 use NeoIsRecursive\Inertia\InertiaConfig;
-use NeoIsRecursive\Inertia\Props\AlwaysProp;
-use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;
@@ -13,11 +10,10 @@ use Tempest\Http\GenericResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
-use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
-use Tempest\Validation\Rule;
 
 use function Tempest\get;
+use function Tempest\invoke;
 
 #[Singleton]
 final class Inertia
@@ -29,21 +25,6 @@ final class Inertia
         private Container $container,
         private InertiaConfig $config
     ) {}
-
-    public function getDefaultSharedProps(): array
-    {
-        return [
-            'errors' => new AlwaysProp(fn() => array_map(
-                function (array $rules) {
-                    return array_map(
-                        fn(Rule $rule) => $rule->message(),
-                        $rules
-                    );
-                },
-                get(Session::class)->consume(Session::VALIDATION_ERRORS) ?? []
-            )),
-        ];
-    }
 
     public function share(string|array $key, ?string $value = null): void
     {
@@ -61,8 +42,8 @@ final class Inertia
 
     public function getVersion(): string
     {
-        $version = $this->config->version instanceof Closure
-            ? call_user_func($this->config->version)
+        $version = is_callable($this->config->version)
+            ? invoke($this->config->version)
             : $this->config->version;
 
         return (string) $version;
@@ -70,16 +51,14 @@ final class Inertia
 
     public function render(string $component, array $props = []): InertiaResponse
     {
-        $props = array_merge(
-            call_user_func($this->config->getSharedProps, $this->getDefaultSharedProps(...)),
-            $this->sharedProps,
-            $props
-        );
-
         return new InertiaResponse(
             request: $this->container->get(Request::class),
             page: $component,
-            props: $props,
+            props: array_merge(
+                $this->container->invoke($this->config->getSharedProps),
+                $this->sharedProps,
+                $props
+            ),
             rootView: $this->config->rootView,
             version: $this->getVersion()
         );

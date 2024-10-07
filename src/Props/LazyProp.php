@@ -2,12 +2,16 @@
 
 namespace NeoIsRecursive\Inertia\Props;
 
-class LazyProp
+use Closure;
+
+use function Tempest\invoke;
+
+final readonly class LazyProp
 {
-    public function __construct(public $callback) {}
+    public function __construct(public Closure $callback) {}
 
     public function __invoke()
     {
-        return call_user_func($this->callback);
+        return invoke($this->callback);
     }
 }
