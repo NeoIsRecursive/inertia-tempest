@@ -14,19 +14,20 @@ First you need to create a `InertiaConfig` in your apps Config directory.
 <?php
 
 use NeoIsRecursive\Inertia\InertiaConfig;
+use NeoIsRecursive\Inertia\Support\ResolveErrorProps;
 use Tempest\Http\Session\Session;
 
-use function Tempest\get;
+use function Tempest\{get,invoke};
 
 return new InertiaConfig(
     version: '1.0.0',
     rootView: __DIR__ . '/../../views/app.view.php',
-    getSharedProps: function () {
-        return [
+    getSharedProps: function (Config $config) {
+        return array_merge([
             'auth' => [
                 'user' => get(Session::class)->get('user'),
             ],
-        ];
+        ], invoke(ResolveErrorProps::class));
     },
 );
 ```
@@ -64,10 +65,10 @@ final class ReviewController
 ## TODO
 
 - [x] Resolve props correctly (Always, Lazy)
-- [ ] Run callables through container (is it possible?)
+- [x] Run callables through container (is it possible?)
 - [x] Fix error responses
 - [ ] Fix empty responses
-- [ ] Implement 409 conflict responses when hash mismatch
+- [x] Implement 409 conflict responses when hash mismatch
 - [ ] Improve rendering api?
 - [ ] Create vite package?
 - [ ] Json bodies on post.
