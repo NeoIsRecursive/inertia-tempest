@@ -39,7 +39,7 @@ The view will then be rendered as an `NeoIsRecursive\Inertia\Views\InertiaBaseVi
 
 in your view, that will render a div with the page data (the id here should match the id you specified in your client setup).
 
-See how to install inertia to your frontend on inertia's official site [here]("https://inertiajs.com/client-side-setup").
+See how to install inertia to your frontend on inertia's official site [here](https://inertiajs.com/client-side-setup).
 
 When that is done you can start returning inertia responses from your tempest app!
 
@@ -63,10 +63,11 @@ final class ReviewController
 
 ## TODO
 
-- [ ] Resolve props correctly (Always, Lazy)
+- [x] Resolve props correctly (Always, Lazy)
 - [ ] Run callables through container (is it possible?)
-- [ ] Fix error responses
+- [x] Fix error responses
 - [ ] Fix empty responses
 - [ ] Implement 409 conflict responses when hash mismatch
 - [ ] Improve rendering api?
 - [ ] Create vite package?
+- [ ] Json bodies.
