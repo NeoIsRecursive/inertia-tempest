@@ -3,6 +3,7 @@
 namespace NeoIsRecursive\Inertia;
 
 use NeoIsRecursive\Inertia\InertiaConfig;
+use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;

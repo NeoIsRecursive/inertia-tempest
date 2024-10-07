@@ -1,6 +1,6 @@
 <?php
 
-namespace NeoIsRecursive\Inertia;
+namespace NeoIsRecursive\Inertia\Http;
 
 use Closure;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
@@ -100,7 +100,7 @@ final class InertiaResponse implements Response
             }
 
             if ($unpackDotProps && str_contains($key, '.')) {
-                $props = arr($props)->set($key, $value);
+                $props = arr($props)->set($key, $value)->toArray();
                 unset($props[$key]);
             } else {
                 $props[$key] = $value;

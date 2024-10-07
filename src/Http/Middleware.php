@@ -1,7 +1,8 @@
 <?php
 
-namespace NeoIsRecursive\Inertia;
+namespace NeoIsRecursive\Inertia\Http;
 
+use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Http\HttpMiddleware;
 use Tempest\Http\Method;
