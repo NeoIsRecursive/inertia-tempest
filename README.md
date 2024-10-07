@@ -70,4 +70,5 @@ final class ReviewController
 - [ ] Implement 409 conflict responses when hash mismatch
 - [ ] Improve rendering api?
 - [ ] Create vite package?
-- [ ] Json bodies.
+- [ ] Json bodies on post.
+- [ ] handle middleware better, self invoking 👀?
