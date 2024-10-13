@@ -67,7 +67,7 @@ final class ReviewController
 - [x] Resolve props correctly (Always, Lazy)
 - [x] Run callables through container (is it possible?)
 - [x] Fix error responses
-- [ ] Fix empty responses
+- [x] Fix empty responses (will never be becuase a tempest route must return a response)
 - [x] Implement 409 conflict responses when hash mismatch
 - [ ] Improve rendering api?
 - [ ] Create vite package?
