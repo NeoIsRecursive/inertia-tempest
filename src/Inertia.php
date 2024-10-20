@@ -33,10 +33,10 @@ final class Inertia
         }
     }
 
-    // public function flushShared(): void
-    // {
-    //     $this->sharedProps = [];
-    // }
+    public function flushShared(): void
+    {
+        $this->sharedProps = [];
+    }
 
     public function getVersion(): string
     {
