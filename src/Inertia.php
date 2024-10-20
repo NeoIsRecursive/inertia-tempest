@@ -13,9 +13,6 @@ use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
 use Tempest\Http\Status;
 
-use function Tempest\get;
-use function Tempest\invoke;
-
 #[Singleton]
 final class Inertia
 {
@@ -44,7 +41,7 @@ final class Inertia
     public function getVersion(): string
     {
         $version = is_callable($this->config->version)
-            ? invoke($this->config->version)
+            ? $this->container->invoke($this->config->version)
             : $this->config->version;
 
         return (string) $version;
@@ -67,7 +64,7 @@ final class Inertia
 
     public function location(string $url): Response
     {
-        if (isset(get(Request::class)->getHeaders()[Header::INERTIA])) {
+        if (isset($this->container->get(Request::class)->getHeaders()[Header::INERTIA])) {
             return new GenericResponse(
                 status: Status::CONFLICT,
                 body: '',

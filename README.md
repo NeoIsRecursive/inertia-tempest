@@ -15,19 +15,18 @@ First you need to create a `InertiaConfig` in your apps Config directory.
 
 use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Support\ResolveErrorProps;
-use Tempest\Http\Session\Session;
-
-use function Tempest\{get,invoke};
+use Tempest\Container\Container;
+use Tempest\Auth\Authenticator;
 
 return new InertiaConfig(
     version: '1.0.0',
     rootView: __DIR__ . '/../../views/app.view.php',
-    getSharedProps: function (Config $config) {
+    getSharedProps: function (Container $container, Authenticator $authenticator) {
         return array_merge([
             'auth' => [
-                'user' => get(Session::class)->get('user'),
+                'user' => $authenticator->currentUser(),
             ],
-        ], invoke(ResolveErrorProps::class));
+        ], $container->invoke(ResolveErrorProps::class));
     },
 );
 ```
