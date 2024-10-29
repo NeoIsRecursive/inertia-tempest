@@ -51,11 +51,7 @@ final class Inertia
 
     public function getVersion(): string
     {
-        $version = is_callable($this->config->version)
-            ? $this->container->invoke($this->config->version)
-            : $this->config->version;
-
-        return (string) $version;
+        return $this->config->resolveVersion();
     }
 
     public function render(string $component, array $props = []): InertiaResponse
@@ -64,7 +60,7 @@ final class Inertia
             request: $this->container->get(Request::class),
             page: $component,
             props: array_merge(
-                $this->container->invoke($this->config->getSharedProps),
+                $this->config->resolveSharedProps(),
                 $this->sharedProps,
                 $props
             ),

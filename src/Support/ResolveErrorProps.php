@@ -10,7 +10,9 @@ use Tempest\Validation\Rule;
 
 final readonly class ResolveErrorProps
 {
-    public function __invoke(Session $session): array
+    public function __construct(private Session $session) {}
+
+    public function resolve(): array
     {
         return [
             'errors' => new AlwaysProp(fn() => array_map(
@@ -18,7 +20,7 @@ final readonly class ResolveErrorProps
                     fn(Rule $rule) => $rule->message(),
                     $rules
                 ),
-                $session->consume(Session::VALIDATION_ERRORS) ?? []
+                $this->session->consume(Session::VALIDATION_ERRORS) ?? []
             )),
         ];
     }
