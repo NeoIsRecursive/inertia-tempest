@@ -9,25 +9,21 @@ Not setup yet, you'll have to clone it and stuff.
 ## Setup
 
 First you need to create a `InertiaConfig` in your apps Config directory.
+Otherwise the default one will be used, which looks like this:
 
 ```php
 <?php
 
+use NeoIsRecursive\Inertia\DefaultSharedPropResolver;
 use NeoIsRecursive\Inertia\InertiaConfig;
-use NeoIsRecursive\Inertia\Support\ResolveErrorProps;
-use Tempest\Container\Container;
-use Tempest\Auth\Authenticator;
+use NeoIsRecursive\Inertia\ManifestVersionResolver;
+
+use function Tempest\root_path;
 
 return new InertiaConfig(
-    version: '1.0.0',
-    rootView: __DIR__ . '/../../views/app.view.php',
-    getSharedProps: function (Container $container, Authenticator $authenticator) {
-        return array_merge([
-            'auth' => [
-                'user' => $authenticator->currentUser(),
-            ],
-        ], $container->invoke(ResolveErrorProps::class));
-    },
+    versionResolver: ManifestVersionResolver::class,
+    rootView: root_path('/views/app.view.php'),
+    sharedPropsResolver: DefaultSharedPropResolver::class,
 );
 ```
 
