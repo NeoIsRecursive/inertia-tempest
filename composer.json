@@ -16,6 +16,9 @@
       "NeoIsRecursive\\Inertia\\Tests\\": "tests/"
     }
   },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
   "authors": [
     {
       "name": "NeoIsRecursive",
