@@ -9,8 +9,15 @@ namespace NeoIsRecursive\Inertia {
 
     use function Tempest\get;
 
-    function inertia(string $page, array $props = []): InertiaResponse
+    /**
+     * @return ($page is null ? Inertia : InertiaResponse)
+     */
+    function inertia(?string $page = null, array $props = []): InertiaResponse|Inertia
     {
+        if ($page === null) {
+            return get(Inertia::class);
+        }
+
         return get(Inertia::class)->render($page, $props);
     }
 }

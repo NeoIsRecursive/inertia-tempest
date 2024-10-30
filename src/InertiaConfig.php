@@ -2,8 +2,8 @@
 
 namespace NeoIsRecursive\Inertia;
 
-use NeoIsRecursive\Inertia\Conracts\InertiaVersionResolver;
-use NeoIsRecursive\Inertia\Conracts\SharedPropsResolver;
+use NeoIsRecursive\Inertia\Contracts\InertiaVersionResolver;
+use NeoIsRecursive\Inertia\Contracts\SharedPropsResolver;
 
 use function Tempest\get;
 
@@ -12,19 +12,28 @@ final readonly class InertiaConfig
 
     public function __construct(
         public string $rootView,
-        /** @var class-string<InertiaVersionResolver> */
+        /**
+         * @property class-string<InertiaVersionResolver>  $versionResolver
+         */
         public string $versionResolver,
-        /** @var class-string<SharedPropsResolver> */
+        /** @property class-string<SharedPropsResolver> $sharedPropsResolver */
         public string $sharedPropsResolver,
     ) {}
 
-    public function resolveVersion(): ?string
+    public function resolveVersion(): string
     {
-        return get($this->versionResolver)->resolve();
+        $string = $this->versionResolver;
+
+        /** @var InertiaVersionResolver */
+        $resolver = get($this->versionResolver);
+        return $resolver->resolve();
     }
 
-    public function resolveSharedProps(): array
+    public function resolveDefaultSharedProps(): array
     {
-        return get($this->sharedPropsResolver)->resolve();
+        /** @var SharedPropsResolver */
+        $resolver = get($this->sharedPropsResolver);
+
+        return $resolver->resolve();
     }
 }

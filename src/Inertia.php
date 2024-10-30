@@ -60,7 +60,7 @@ final class Inertia
             request: $this->container->get(Request::class),
             page: $component,
             props: array_merge(
-                $this->config->resolveSharedProps(),
+                $this->config->resolveDefaultSharedProps(),
                 $this->sharedProps,
                 $props
             ),
