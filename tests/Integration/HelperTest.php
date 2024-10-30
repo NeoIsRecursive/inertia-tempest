@@ -1,6 +1,6 @@
 <?php
 
-namespace Inertia\Tests;
+namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Tests\TestCase;

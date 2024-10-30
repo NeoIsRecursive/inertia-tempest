@@ -36,7 +36,8 @@ final class InertiaResponse implements Response
             'version' => $version,
         ];
 
-        if (array_key_exists(Header::INERTIA, $request->getHeaders()) && $request->getHeaders()[Header::INERTIA] === 'true') {
+
+        if (array_key_exists(Header::INERTIA, $request->getHeaders()) && $request->getHeaders()[Header::INERTIA] == 'true') {
             $this->status = Status::OK;
 
             $this->body = $page;

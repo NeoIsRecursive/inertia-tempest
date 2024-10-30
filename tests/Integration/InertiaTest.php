@@ -7,12 +7,10 @@ use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\Fixtures\TestController;
 use NeoIsRecursive\Inertia\Tests\TestCase;
-use Tempest\Core\Kernel;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
-use Tempest\Http\RouteConfig;
 use Tempest\Http\Status;
 
 use function Tempest\get;
