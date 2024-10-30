@@ -6,5 +6,5 @@ namespace NeoIsRecursive\Inertia\Contracts;
 
 interface InertiaVersionResolver
 {
-    public function resolve(): ?string;
+    public function resolve(): string;
 }

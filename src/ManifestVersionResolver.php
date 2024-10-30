@@ -10,7 +10,7 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
 {
     public function __construct(public ?string $manifestPath = null) {}
 
-    public function resolve(): ?string
+    public function resolve(): string
     {
         $manifestPath = $this->manifestPath ?? root_path('/public/build/manifest.json');
 
@@ -18,6 +18,6 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
             return hash_file('xxh128', $manifestPath);
         }
 
-        return null;
+        return "";
     }
 }

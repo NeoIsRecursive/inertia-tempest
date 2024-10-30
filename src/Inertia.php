@@ -21,7 +21,7 @@ use Tempest\Http\Status;
 final class Inertia
 {
 
-    private array $sharedProps = [];
+    public array $sharedProps = [];
 
     public function __construct(
         private Container $container,

@@ -12,9 +12,9 @@ final readonly class InertiaConfig
 
     public function __construct(
         public string $rootView,
-        /** @var class-string<InertiaVersionResolver> $version */
+        /** @var class-string<InertiaVersionResolver> */
         public string $versionResolver,
-        /** @var class-string<SharedPropsResolver> $sharedProps */
+        /** @var class-string<SharedPropsResolver> */
         public string $sharedPropsResolver,
     ) {}
 

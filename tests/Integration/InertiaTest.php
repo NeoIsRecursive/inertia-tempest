@@ -5,15 +5,18 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Support\Header;
+use NeoIsRecursive\Inertia\Tests\Fixtures\TestController;
 use NeoIsRecursive\Inertia\Tests\TestCase;
+use Tempest\Core\Kernel;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
-use Tempest\Http\Session\Session;
+use Tempest\Http\RouteConfig;
 use Tempest\Http\Status;
 
 use function Tempest\get;
+use function Tempest\uri;
 
 class InertiaTest extends TestCase
 {
@@ -92,73 +95,35 @@ class InertiaTest extends TestCase
         $this->assertSame($response, $redirect);
     }
 
-    // public function test_the_version_can_be_a_closure(): void
-    // {
-    //     Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
-    //         $this->assertSame('', Inertia::getVersion());
+    public function test_shared_data_can_be_shared_from_anywhere(): void
+    {
+        $version = get(InertiaConfig::class)->resolveVersion();
 
-    //         Inertia::version(function () {
-    //             return md5('Inertia');
-    //         });
+        $response = $this->http->get(uri([TestController::class, 'testCanSharePropsFromAnyWhere']), headers: [Header::INERTIA => 'true', Header::VERSION => $version]);
 
-    //         return Inertia::render('User/Edit');
-    //     });
+        $response->assertOk();
+        $this->assertEquals([
+            'component' => 'User/Edit',
+            'props' => [
+                'user' => null,
+                'foo' => 'bar',
+                'errors' => [],
+            ],
+            'url' => uri([TestController::class, 'testCanSharePropsFromAnyWhere']),
+            'version' => $version,
+        ], $response->getBody());
+    }
 
-    //     $response = $this->withoutExceptionHandling()->get('/', [
-    //         'X-Inertia' => 'true',
-    //         'X-Inertia-Version' => 'b19a24ee5c287f42ee1d465dab77ab37',
-    //     ]);
+    public function test_can_flush_shared_data(): void
+    {
+        get(Inertia::class)->share('foo', 'bar');
 
-    //     $response->assertSuccessful();
-    //     $response->assertJson(['component' => 'User/Edit']);
-    // }
+        $this->assertSame(['foo' => 'bar'], get(Inertia::class)->sharedProps);
+        get(Inertia::class)->flushShared();
 
-    // public function test_shared_data_can_be_shared_from_anywhere(): void
-    // {
-    //     Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
-    //         Inertia::share('foo', 'bar');
+        $this->assertSame([], get(Inertia::class)->sharedProps);
+    }
 
-    //         return Inertia::render('User/Edit');
-    //     });
-
-    //     $response = $this->withoutExceptionHandling()->get('/', ['X-Inertia' => 'true']);
-
-    //     $response->assertSuccessful();
-    //     $response->assertJson([
-    //         'component' => 'User/Edit',
-    //         'props' => [
-    //             'foo' => 'bar',
-    //         ],
-    //     ]);
-    // }
-
-    // public function test_can_flush_shared_data(): void
-    // {
-    //     Inertia::share('foo', 'bar');
-    //     $this->assertSame(['foo' => 'bar'], Inertia::getShared());
-    //     Inertia::flushShared();
-    //     $this->assertSame([], Inertia::getShared());
-    // }
-
-    // public function test_can_create_lazy_prop(): void
-    // {
-    //     $factory = new ResponseFactory();
-    //     $lazyProp = $factory->lazy(function () {
-    //         return 'A lazy value';
-    //     });
-
-    //     $this->assertInstanceOf(LazyProp::class, $lazyProp);
-    // }
-
-    // public function test_can_create_always_prop(): void
-    // {
-    //     $factory = new ResponseFactory();
-    //     $alwaysProp = $factory->always(function () {
-    //         return 'An always value';
-    //     });
-
-    //     $this->assertInstanceOf(AlwaysProp::class, $alwaysProp);
-    // }
 
     // public function test_will_accept_arrayabe_props()
     // {
