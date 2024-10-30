@@ -4,17 +4,13 @@ namespace NeoIsRecursive\Inertia;
 
 use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
-use NeoIsRecursive\Inertia\Http\Middleware;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;
-use Tempest\Core\KernelEvent;
-use Tempest\EventBus\EventHandler;
 use Tempest\Http\GenericResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
-use Tempest\Http\Router;
 use Tempest\Http\Status;
 
 #[Singleton]
@@ -27,13 +23,6 @@ final class Inertia
         private Container $container,
         private InertiaConfig $config
     ) {}
-
-    #[EventHandler(event: KernelEvent::BOOTED)]
-    public function registerMiddleware(): void
-    {
-        $router = $this->container->get(Router::class);
-        $router->addMiddleware(Middleware::class);
-    }
 
     public function share(string|array $key, ?string $value = null): void
     {

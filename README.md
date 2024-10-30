@@ -64,7 +64,7 @@ final class ReviewController
 - [x] Fix error responses
 - [x] Fix empty responses (will never be becuase a tempest route must return a response)
 - [x] Implement 409 conflict responses when hash mismatch
-- [ ] Improve rendering api?
+- [x] Improve rendering api?
 - [ ] Create vite package?
 - [ ] Json bodies on post.
-- [ ] handle middleware better, self invoking 👀?
+- [x] handle middleware better, self invoking 👀?

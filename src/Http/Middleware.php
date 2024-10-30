@@ -4,15 +4,26 @@ namespace NeoIsRecursive\Inertia\Http;
 
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Support\Header;
+use Tempest\Container\Container;
+use Tempest\Core\KernelEvent;
+use Tempest\EventBus\EventHandler;
 use Tempest\Http\HttpMiddleware;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
+use Tempest\Http\Router;
 use Tempest\Http\Status;
 
 final class Middleware implements HttpMiddleware
 {
-    public function __construct(private Inertia $inertia) {}
+    public function __construct(private Inertia $inertia, private Container $container) {}
+
+    #[EventHandler(event: KernelEvent::BOOTED)]
+    public function register(): void
+    {
+        $router = $this->container->get(Router::class);
+        $router->addMiddleware(self::class);
+    }
 
     public function __invoke(Request $request, callable $next): Response
     {
