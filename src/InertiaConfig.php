@@ -12,18 +12,14 @@ final readonly class InertiaConfig
 
     public function __construct(
         public string $rootView,
-        /**
-         * @property class-string<InertiaVersionResolver>  $versionResolver
-         */
-        public string $versionResolver,
-        /** @property class-string<SharedPropsResolver> $sharedPropsResolver */
-        public string $sharedPropsResolver,
+        /** @property class-string<InertiaVersionResolver>  */
+        public string $versionResolver = ManifestVersionResolver::class,
+        /** @property class-string<SharedPropsResolver> */
+        public string $sharedPropsResolver = DefaultSharedPropResolver::class,
     ) {}
 
     public function resolveVersion(): string
     {
-        $string = $this->versionResolver;
-
         /** @var InertiaVersionResolver */
         $resolver = get($this->versionResolver);
         return $resolver->resolve();
