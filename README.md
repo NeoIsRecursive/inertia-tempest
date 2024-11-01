@@ -1,6 +1,6 @@
 # Inertia tempest
 
-> Extremely WIP, lots to implement and some stuff tempest lacks (like getting data from json bodies)
+> Note, most things work but redirects and session reflashing is still missing and all forms must use the `forceFormData: true` option.
 
 ## installation
 
@@ -59,12 +59,7 @@ final class ReviewController
 
 ## TODO
 
-- [x] Resolve props correctly (Always, Lazy)
-- [x] Run callables through container (is it possible?)
-- [x] Fix error responses
-- [x] Fix empty responses (will never be becuase a tempest route must return a response)
-- [x] Implement 409 conflict responses when hash mismatch
-- [x] Improve rendering api?
+- [ ] Installer with js boilerplate?
+- [ ] Migrate tests from the laravel adapter.
 - [ ] Create vite package?
 - [ ] Json bodies on post.
-- [x] handle middleware better, self invoking 👀?
