@@ -22,22 +22,22 @@ final class InertiaResponse implements Response
     public function __construct(
         Request $request,
         string $page,
-        array $props,
+        array $component,
         string $rootView,
         string $version,
     ) {
-        $alwaysProps = $this->resolveAlwaysProps(props: $props);
-        $props = $this->resolvePartialProps(request: $request, component: $page, props: $props);
+        $alwaysProps = $this->resolveAlwaysProps(props: $component);
+        $component = $this->resolvePartialProps(request: $request, component: $page, props: $component);
 
-        $props = $this->evaluateProps(
-            props: array_merge($props, $alwaysProps),
+        $component = $this->evaluateProps(
+            props: array_merge($component, $alwaysProps),
             request: $request,
             unpackDotProps: true
         );
 
         $page = [
             'component' => $page,
-            'props' => $props,
+            'props' => $component,
             'url' => $request->getUri(),
             'version' => $version,
         ];

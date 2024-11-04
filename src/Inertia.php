@@ -48,7 +48,7 @@ final class Inertia
         return new InertiaResponse(
             request: $this->container->get(Request::class),
             page: $component,
-            props: array_merge(
+            component: array_merge(
                 $this->config->resolveDefaultSharedProps(),
                 $this->sharedProps,
                 $props
