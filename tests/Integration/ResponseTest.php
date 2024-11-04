@@ -7,12 +7,14 @@ use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\TestCase;
+use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
 use Tempest\Http\Response;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
 
+use function NeoIsRecursive\Inertia\inertia;
 use function Tempest\get;
 use function Tempest\Support\arr;
 
@@ -323,59 +325,62 @@ class ResponseTest extends TestCase
         $this->assertFalse(isset($page['props']['user']));
     }
 
-    // public function test_top_level_dot_props_get_unpacked(): void
-    // {
-    //     $props = [
-    //         'auth' => [
-    //             'user' => [
-    //                 'name' => 'Jonathan Reinink',
-    //             ],
-    //         ],
-    //         'auth.user.can' => [
-    //             'do.stuff' => true,
-    //         ],
-    //         'product' => ['name' => 'My example product'],
-    //     ];
+    public function test_top_level_dot_props_get_unpacked(): void
+    {
+        $props = [
+            'auth' => [
+                'user' => [
+                    'name' => 'Jonathan Reinink',
+                ],
+            ],
+            'auth.user.can' => [
+                'do.stuff' => true,
+            ],
+            'product' => ['name' => 'My example product'],
+        ];
 
-    //     $request = Request::create('/products/123', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
+        $request = $this->createInertiaRequest(
+            method: Method::GET,
+            uri: '/products/123',
+        );
 
-    //     $response = new Response('User/Edit', $props, 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData(true);
+        $response = new InertiaResponse($request, 'User/Edit', $props, 'app', '123');
 
-    //     $user = $page['props']['auth']['user'];
-    //     $this->assertSame('Jonathan Reinink', $user['name']);
-    //     $this->assertTrue($user['can']['do.stuff']);
-    //     $this->assertFalse(array_key_exists('auth.user.can', $page['props']));
-    // }
+        $page = $response->getBody();
 
-    // public function test_nested_dot_props_do_not_get_unpacked(): void
-    // {
-    //     $props = [
-    //         'auth' => [
-    //             'user.can' => [
-    //                 'do.stuff' => true,
-    //             ],
-    //             'user' => [
-    //                 'name' => 'Jonathan Reinink',
-    //             ],
-    //         ],
-    //         'product' => ['name' => 'My example product'],
-    //     ];
+        $user = $page['props']['auth']['user'];
+        $this->assertSame('Jonathan Reinink', $user['name']);
+        $this->assertTrue($user['can']['do.stuff']);
+        $this->assertFalse(array_key_exists('auth.user.can', $page['props']));
+    }
 
-    //     $request = Request::create('/products/123', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
+    public function test_nested_dot_props_do_not_get_unpacked(): void
+    {
+        $props = [
+            'auth' => [
+                'user.can' => [
+                    'do.stuff' => true,
+                ],
+                'user' => [
+                    'name' => 'Jonathan Reinink',
+                ],
+            ],
+            'product' => ['name' => 'My example product'],
+        ];
 
-    //     $response = new Response('User/Edit', $props, 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData(true);
+        $request = $this->createInertiaRequest(
+            method: Method::GET,
+            uri: '/products/123',
+        );
 
-    //     $auth = $page['props']['auth'];
-    //     $this->assertSame('Jonathan Reinink', $auth['user']['name']);
-    //     $this->assertTrue($auth['user.can']['do.stuff']);
-    //     $this->assertFalse(array_key_exists('can', $auth));
-    // }
+        $response = new InertiaResponse($request, 'User/Edit', $props, 'app', '123');
+        $page = $response->getBody();
+
+        $auth = $page['props']['auth'];
+        $this->assertSame('Jonathan Reinink', $auth['user']['name']);
+        $this->assertTrue($auth['user.can']['do.stuff']);
+        $this->assertFalse(array_key_exists('can', $auth));
+    }
 
     // public function test_responsable_with_invalid_key(): void
     // {
@@ -433,84 +438,86 @@ class ResponseTest extends TestCase
     //     $this->assertSame('/subpath/product/123', $page->url);
     // }
 
-    // public function test_prop_as_basic_array(): void
-    // {
-    //     $request = Request::create('/years', 'GET');
+    public function test_prop_as_basic_array(): void
+    {
+        $request = new GenericRequest(Method::GET, '/years');
 
-    //     $response = new Response('Years', ['years' => [2022, 2023, 2024]], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $view = $response->getOriginalContent();
-    //     $page = $view->getData()['page'];
+        $response = new InertiaResponse($request, 'Years', ['years' => [2022, 2023, 2024]], 'app', '123');
 
-    //     $this->assertSame([2022, 2023, 2024], $page['props']['years']);
-    // }
+        $view = $response->getBody();
+        $page = $view->get('pageData');
 
-    // public function test_dot_notation_props_are_merged_with_shared_props(): void
-    // {
-    //     $request = Request::create('/test', 'GET');
+        $this->assertSame([2022, 2023, 2024], $page['props']['years']);
+    }
 
-    //     $response = new Response('Test', [
-    //         'auth' => ['user' => ['name' => 'Jonathan']],
-    //         'auth.user.is_super' => true,
-    //     ], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $view = $response->getOriginalContent();
-    //     $page = $view->getData()['page'];
+    public function test_dot_notation_props_are_merged_with_shared_props(): void
+    {
+        $request = new GenericRequest(Method::GET, '/years');
 
-    //     $this->assertSame([
-    //         'auth' => [
-    //             'user' => [
-    //                 'name' => 'Jonathan',
-    //                 'is_super' => true,
-    //             ],
-    //         ],
-    //     ], $page['props']);
-    // }
+        $response = new InertiaResponse($request, 'Test', [
+            'auth' => ['user' => ['name' => 'Jonathan']], // shared prop
+            'auth.user.is_super' => true,
+        ], 'app', '123');
 
-    // public function test_dot_notation_props_are_merged_with_lazy_shared_props(): void
-    // {
-    //     $request = Request::create('/test', 'GET');
 
-    //     $response = new Response('Test', [
-    //         'auth' => function () {
-    //             return ['user' => ['name' => 'Jonathan']];
-    //         },
-    //         'auth.user.is_super' => true,
-    //     ], 'app', '123');
+        $view = $response->getBody();
+        $page = $view->get('pageData');
 
-    //     $response = $response->toResponse($request);
-    //     $view = $response->getOriginalContent();
-    //     $page = $view->getData()['page'];
+        $this->assertSame([
+            'auth' => [
+                'user' => [
+                    'name' => 'Jonathan',
+                    'is_super' => true,
+                ],
+            ],
+        ], $page['props']);
+    }
 
-    //     $this->assertSame([
-    //         'auth' => [
-    //             'user' => [
-    //                 'name' => 'Jonathan',
-    //                 'is_super' => true,
-    //             ],
-    //         ],
-    //     ], $page['props']);
-    // }
+    public function test_dot_notation_props_are_merged_with_lazy_shared_props(): void
+    {
 
-    // public function test_dot_notation_props_are_merged_with_other_dot_notation_props(): void
-    // {
-    //     $request = Request::create('/test', 'GET');
+        $request = new GenericRequest(Method::GET, '/years');
 
-    //     $response = new Response('Test', [
-    //         'auth.user' => ['name' => 'Jonathan'],
-    //         'auth.user.is_super' => true,
-    //     ], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $view = $response->getOriginalContent();
-    //     $page = $view->getData()['page'];
+        $response = new InertiaResponse($request, 'Test', [
+            'auth' => function () {
+                return ['user' => ['name' => 'Jonathan']];
+            },
+            'auth.user.is_super' => true,
+        ], 'app', '123');
 
-    //     $this->assertSame([
-    //         'auth' => [
-    //             'user' => [
-    //                 'name' => 'Jonathan',
-    //                 'is_super' => true,
-    //             ],
-    //         ],
-    //     ], $page['props']);
-    // }
+        /** @var InertiaBaseView */
+        $view = $response->getBody();
+        $page = $view->get('pageData');
+
+        $this->assertSame([
+            'auth' => [
+                'user' => [
+                    'name' => 'Jonathan',
+                    'is_super' => true,
+                ],
+            ],
+        ], $page['props']);
+    }
+
+    public function test_dot_notation_props_are_merged_with_other_dot_notation_props(): void
+    {
+        $request = new GenericRequest(Method::GET, '/years');
+
+        $response = new InertiaResponse($request, 'Test', [
+            'auth.user' => ['name' => 'Jonathan'],
+            'auth.user.is_super' => true,
+        ], 'app', '123');
+
+        $view = $response->getBody();
+        $page = $view->get('pageData');
+
+        $this->assertSame([
+            'auth' => [
+                'user' => [
+                    'name' => 'Jonathan',
+                    'is_super' => true,
+                ],
+            ],
+        ], $page['props']);
+    }
 }
