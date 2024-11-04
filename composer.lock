@@ -461,12 +461,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "0965dd46e34934ca24922be75f940defb213f73c"
+                "reference": "3f5414aeccd152e5a6d02e2064e40713cad65a07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/0965dd46e34934ca24922be75f940defb213f73c",
-                "reference": "0965dd46e34934ca24922be75f940defb213f73c",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/3f5414aeccd152e5a6d02e2064e40713cad65a07",
+                "reference": "3f5414aeccd152e5a6d02e2064e40713cad65a07",
                 "shasum": ""
             },
             "require": {
@@ -531,27 +531,28 @@
                 "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
                 "source": "https://github.com/giggsey/libphonenumber-for-php"
             },
-            "time": "2024-10-22T09:06:42+00:00"
+            "time": "2024-11-04T10:44:34+00:00"
         },
         {
             "name": "giggsey/locale",
-            "version": "2.6",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/Locale.git",
-                "reference": "37874fa473131247c348059fb7b8985efc18b5ea"
+                "reference": "a5c65ea3c2630f27ccb78977990eefbee6dd8f97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/Locale/zipball/37874fa473131247c348059fb7b8985efc18b5ea",
-                "reference": "37874fa473131247c348059fb7b8985efc18b5ea",
+                "url": "https://api.github.com/repos/giggsey/Locale/zipball/a5c65ea3c2630f27ccb78977990eefbee6dd8f97",
+                "reference": "a5c65ea3c2630f27ccb78977990eefbee6dd8f97",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2"
+                "php": "^7.4|^8.0"
             },
             "require-dev": {
                 "ext-json": "*",
+                "friendsofphp/php-cs-fixer": "^3.64",
                 "pear/pear-core-minimal": "^1.9",
                 "pear/pear_exception": "^1.0",
                 "pear/versioncontrol_git": "^0.5",
@@ -561,7 +562,8 @@
                 "symfony/console": "^5.0|^6.0",
                 "symfony/filesystem": "^5.0|^6.0",
                 "symfony/finder": "^5.0|^6.0",
-                "symfony/process": "^5.0|^6.0"
+                "symfony/process": "^5.0|^6.0",
+                "symfony/var-exporter": "^5.2|^6.0"
             },
             "type": "library",
             "autoload": {
@@ -583,9 +585,9 @@
             "description": "Locale functions required by libphonenumber-for-php",
             "support": {
                 "issues": "https://github.com/giggsey/Locale/issues",
-                "source": "https://github.com/giggsey/Locale/tree/2.6"
+                "source": "https://github.com/giggsey/Locale/tree/2.7.0"
             },
-            "time": "2024-04-18T19:31:19+00:00"
+            "time": "2024-11-04T11:18:07+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -984,12 +986,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-diactoros.git",
-                "reference": "df90c35d1b303349b5fb608999e05f15fbe95173"
+                "reference": "cd24b45f512e3c81e230695d85aa8f22f94874ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-diactoros/zipball/df90c35d1b303349b5fb608999e05f15fbe95173",
-                "reference": "df90c35d1b303349b5fb608999e05f15fbe95173",
+                "url": "https://api.github.com/repos/laminas/laminas-diactoros/zipball/cd24b45f512e3c81e230695d85aa8f22f94874ab",
+                "reference": "cd24b45f512e3c81e230695d85aa8f22f94874ab",
                 "shasum": ""
             },
             "require": {
@@ -1065,7 +1067,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2024-11-03T13:26:06+00:00"
+            "time": "2024-11-04T00:17:34+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -3692,12 +3694,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tempestphp/tempest-framework.git",
-                "reference": "f055fc143bd21c1dc1b23a78cd6415c4b7c73eb0"
+                "reference": "d2e8a4ee569053e8440a7aa671103fe8d58d5061"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/f055fc143bd21c1dc1b23a78cd6415c4b7c73eb0",
-                "reference": "f055fc143bd21c1dc1b23a78cd6415c4b7c73eb0",
+                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/d2e8a4ee569053e8440a7aa671103fe8d58d5061",
+                "reference": "d2e8a4ee569053e8440a7aa671103fe8d58d5061",
                 "shasum": ""
             },
             "require": {
@@ -3828,7 +3830,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-02T19:57:45+00:00"
+            "time": "2024-11-04T07:56:14+00:00"
         },
         {
             "name": "tempest/highlight",

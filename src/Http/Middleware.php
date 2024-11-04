@@ -8,6 +8,7 @@ use Tempest\Container\Container;
 use Tempest\Core\KernelEvent;
 use Tempest\EventBus\EventHandler;
 use Tempest\Http\HttpMiddleware;
+use Tempest\Http\HttpMiddlewareCallable;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
@@ -25,7 +26,7 @@ final class Middleware implements HttpMiddleware
         $router->addMiddleware(self::class);
     }
 
-    public function __invoke(Request $request, callable $next): Response
+    public function __invoke(Request $request, HttpMiddlewareCallable $next): Response
     {
         /** @var Response $response */
         $response = $next($request);
