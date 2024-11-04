@@ -14,9 +14,7 @@ use Tempest\Http\Response;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
 
-use function NeoIsRecursive\Inertia\inertia;
 use function Tempest\get;
-use function Tempest\Support\arr;
 
 class ResponseTest extends TestCase
 {
