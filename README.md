@@ -21,16 +21,26 @@ use NeoIsRecursive\Inertia\ManifestVersionResolver;
 use function Tempest\root_path;
 
 return new InertiaConfig(
-    versionResolver: ManifestVersionResolver::class,
+    /**
+     * The view that inertia should render on the first request
+     */
     rootView: root_path('/views/app.view.php'),
-    sharedPropsResolver: DefaultSharedPropResolver::class,
+    /**
+     * Version resolver, if you use vite for example you probably want to use the default here,
+     * or you can add a custom one to maybe get from enviroment variables etc.
+     */
+    versionResolverClass: ManifestVersionResolver::class,
+    /**
+     * Props that should be included in "all" requests, the default is errors and the authenticated user
+     */
+    defaultPropsResolverClass: DefaultSharedPropResolver::class,
 );
 ```
 
 The view will then be rendered as an `NeoIsRecursive\Inertia\Views\InertiaBaseView` and to render the inertia element you just do:
 
 ```php
-    <?= $this->renderInertiaElement(id: 'app') ?>
+<?= $this->renderInertiaElement(id: 'app') ?>
 ```
 
 in your view, that will render a div with the page data (the id here should match the id you specified in your client setup).
