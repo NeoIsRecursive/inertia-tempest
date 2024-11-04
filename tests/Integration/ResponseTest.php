@@ -3,6 +3,9 @@
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\LazyProp;
+use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
@@ -11,6 +14,7 @@ use Tempest\View\View;
 use Tempest\View\ViewRenderer;
 
 use function Tempest\get;
+use function Tempest\Support\arr;
 
 class ResponseTest extends TestCase
 {
@@ -68,56 +72,45 @@ class ResponseTest extends TestCase
     //     $this->assertSame('123', $page->version);
     // }
 
-    // public function test_lazy_resource_response(): void
-    // {
-    //     $request = Request::create('/users', 'GET', ['page' => 1]);
-    //     $request->headers->add(['X-Inertia' => 'true']);
+    public function test_lazy_resource_response(): void
+    {
+        $request = $this->createInertiaRequest(
+            method: Method::GET,
+            uri: '/users?page=1',
+        );
 
-    //     $users = Collection::make([
-    //         new Fluent(['name' => 'Jonathan']),
-    //         new Fluent(['name' => 'Taylor']),
-    //         new Fluent(['name' => 'Jeffrey']),
-    //     ]);
+        $users = [
+            ['name' => 'Jonathan'],
+            ['name' => 'Taylor'],
+            ['name' => 'Jeffrey'],
+        ];
 
-    //     $callable = static function () use ($users) {
-    //         $page = new LengthAwarePaginator($users->take(2), $users->count(), 2);
+        $callable = static function () use ($users) {
+            return [
+                'data' => array_slice($users, 0, 2),
+            ];
+        };
 
-    //         return new class($page, JsonResource::class) extends ResourceCollection {};
-    //     };
+        $response = new InertiaResponse($request, 'User/Index', ['users' => $callable], 'app', '123');
 
-    //     $response = new Response('User/Index', ['users' => $callable], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
+        $page = $response->getBody();
 
-    //     $expected = [
-    //         'data' => $users->take(2),
-    //         'links' => [
-    //             'first' => '/?page=1',
-    //             'last' => '/?page=2',
-    //             'prev' => null,
-    //             'next' => '/?page=2',
-    //         ],
-    //         'meta' => [
-    //             'current_page' => 1,
-    //             'from' => 1,
-    //             'last_page' => 2,
-    //             'path' => '/',
-    //             'per_page' => 2,
-    //             'to' => 2,
-    //             'total' => 3,
-    //         ],
-    //     ];
+        $expected = [
+            'users' => [
+                'data' => [
+                    ['name' => 'Jonathan'],
+                    ['name' => 'Taylor'],
+                ],
+            ],
+        ];
 
-    //     $this->assertInstanceOf(JsonResponse::class, $response);
-    //     $this->assertSame('User/Index', $page->component);
-    //     $this->assertSame('/users?page=1', $page->url);
-    //     $this->assertSame('123', $page->version);
-    //     tap($page->props->users, function ($users) use ($expected) {
-    //         $this->assertSame(json_encode($expected['data']), json_encode($users->data));
-    //         $this->assertSame(json_encode($expected['links']), json_encode($users->links));
-    //         $this->assertSame('/', $users->meta->path);
-    //     });
-    // }
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame('User/Index', $page['component']);
+        $this->assertSame('/users?page=1', $page['url']);
+        $this->assertSame('123', $page['version']);
+
+        $this->assertSame(json_encode($expected), json_encode($page['props']));
+    }
 
     // public function test_nested_lazy_resource_response(): void
     // {
@@ -216,120 +209,119 @@ class ResponseTest extends TestCase
     //     $this->assertSame('123', $page->version);
     // }
 
-    // public function test_xhr_partial_response(): void
-    // {
-    //     $request = Request::create('/user/123', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
-    //     $request->headers->add(['X-Inertia-Partial-Component' => 'User/Edit']);
-    //     $request->headers->add(['X-Inertia-Partial-Data' => 'partial']);
+    public function test_xhr_partial_response(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, '/user/123', [
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_ONLY => 'partial',
+        ]);
 
-    //     $user = (object) ['name' => 'Jonathan'];
-    //     $response = new Response('User/Edit', ['user' => $user, 'partial' => 'partial-data'], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
+        $user = (object) ['name' => 'Jonathan'];
+        $response = new InertiaResponse($request, 'User/Edit', ['user' => $user, 'partial' => 'partial-data'], 'app', '123');
 
-    //     $props = get_object_vars($page->props);
+        $page = $response->getBody();
 
-    //     $this->assertInstanceOf(JsonResponse::class, $response);
-    //     $this->assertSame('User/Edit', $page->component);
-    //     $this->assertFalse(isset($props['user']));
-    //     $this->assertCount(1, $props);
-    //     $this->assertSame('partial-data', $page->props->partial);
-    //     $this->assertSame('/user/123', $page->url);
-    //     $this->assertSame('123', $page->version);
-    // }
+        $props = $page['props'];
 
-    // public function test_exclude_props_from_partial_response(): void
-    // {
-    //     $request = Request::create('/user/123', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
-    //     $request->headers->add(['X-Inertia-Partial-Component' => 'User/Edit']);
-    //     $request->headers->add(['X-Inertia-Partial-Except' => 'user']);
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame('User/Edit', $page['component']);
+        $this->assertFalse(isset($props['user']));
+        $this->assertCount(1, $props);
+        $this->assertSame('partial-data', $page['props']['partial']);
+        $this->assertSame('/user/123', $page['url']);
+        $this->assertSame('123', $page['version']);
+    }
 
-    //     $user = (object) ['name' => 'Jonathan'];
-    //     $response = new Response('User/Edit', ['user' => $user, 'partial' => 'partial-data'], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
+    public function test_exclude_props_from_partial_response(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, '/user/123', [
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_EXCEPT => 'user',
+        ]);
 
-    //     $props = get_object_vars($page->props);
+        $user = (object) ['name' => 'Jonathan'];
+        $response = new InertiaResponse($request, 'User/Edit', [
+            'user' => $user,
+            'partial' => 'partial-data',
+        ], 'app', '123');
 
-    //     $this->assertInstanceOf(JsonResponse::class, $response);
-    //     $this->assertSame('User/Edit', $page->component);
-    //     $this->assertFalse(isset($props['user']));
-    //     $this->assertCount(1, $props);
-    //     $this->assertSame('partial-data', $page->props->partial);
-    //     $this->assertSame('/user/123', $page->url);
-    //     $this->assertSame('123', $page->version);
-    // }
+        $page = $response->getBody();
 
-    // public function test_lazy_props_are_not_included_by_default(): void
-    // {
-    //     $request = Request::create('/users', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
+        $props = $page['props'];
 
-    //     $lazyProp = new LazyProp(function () {
-    //         return 'A lazy value';
-    //     });
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame('User/Edit', $page['component']);
+        $this->assertFalse(isset($props['user']));
+        $this->assertCount(1, $props);
+        $this->assertSame('partial-data', $page['props']['partial']);
+        $this->assertSame('/user/123', $page['url']);
+        $this->assertSame('123', $page['version']);
+    }
 
-    //     $response = new Response('Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
+    public function test_lazy_props_are_not_included_by_default(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, '/users');
 
-    //     $this->assertSame([], $page->props->users);
-    //     $this->assertFalse(property_exists($page->props, 'lazy'));
-    // }
+        $lazyProp = new LazyProp(function () {
+            return 'A lazy value';
+        });
 
-    // public function test_lazy_props_are_included_in_partial_reload(): void
-    // {
-    //     $request = Request::create('/users', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
-    //     $request->headers->add(['X-Inertia-Partial-Component' => 'Users']);
-    //     $request->headers->add(['X-Inertia-Partial-Data' => 'lazy']);
+        $response = new InertiaResponse($request, 'Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
+        $page = $response->getBody();
 
-    //     $lazyProp = new LazyProp(function () {
-    //         return 'A lazy value';
-    //     });
+        $this->assertSame([], $page['props']['users']);
+        $this->assertFalse(array_key_exists('lazy', $page['props']));
+    }
 
-    //     $response = new Response('Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
+    public function test_lazy_props_are_included_in_partial_reload(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, '/users', [
+            Header::PARTIAL_COMPONENT => 'Users',
+            Header::PARTIAL_ONLY => 'lazy',
+        ]);
 
-    //     $this->assertFalse(property_exists($page->props, 'users'));
-    //     $this->assertSame('A lazy value', $page->props->lazy);
-    // }
+        $lazyProp = new LazyProp(function () {
+            return 'A lazy value';
+        });
 
-    // public function test_always_props_are_included_on_partial_reload(): void
-    // {
-    //     $request = Request::create('/user/123', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
-    //     $request->headers->add(['X-Inertia-Partial-Component' => 'User/Edit']);
-    //     $request->headers->add(['X-Inertia-Partial-Data' => 'data']);
+        $response = new InertiaResponse($request, 'Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
+        $page = $response->getBody();
 
-    //     $props = [
-    //         'user' => new LazyProp(function () {
-    //             return [
-    //                 'name' => 'Jonathan Reinink',
-    //                 'email' => 'jonathan@example.com',
-    //             ];
-    //         }),
-    //         'data' => [
-    //             'name' => 'Taylor Otwell',
-    //         ],
-    //         'errors' => new AlwaysProp(function () {
-    //             return [
-    //                 'name' => 'The email field is required.',
-    //             ];
-    //         }),
-    //     ];
+        $this->assertFalse(array_key_exists('users', $page['props']));
+        $this->assertSame('A lazy value', $page['props']['lazy']);
+    }
 
-    //     $response = new Response('User/Edit', $props, 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
+    public function test_always_props_are_included_on_partial_reload(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, '/user/123', [
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_ONLY => 'data',
+        ]);
 
-    //     $this->assertSame('The email field is required.', $page->props->errors->name);
-    //     $this->assertSame('Taylor Otwell', $page->props->data->name);
-    //     $this->assertFalse(isset($page->props->user));
-    // }
+        $props = [
+            'user' => new LazyProp(function () {
+                return [
+                    'name' => 'Jonathan Reinink',
+                    'email' => 'jonathan@example.com',
+                ];
+            }),
+            'data' => [
+                'name' => 'Taylor Otwell',
+            ],
+            'errors' => new AlwaysProp(function () {
+                return [
+                    'name' => 'The email field is required.',
+                ];
+            }),
+        ];
+
+        $response = new InertiaResponse($request, 'User/Edit', $props, 'app', '123');
+        $page = $response->getBody();
+
+        $this->assertSame('The email field is required.', $page['props']['errors']['name']);
+        $this->assertSame('Taylor Otwell', $page['props']['data']['name']);
+        $this->assertFalse(isset($page['props']['user']));
+    }
 
     // public function test_top_level_dot_props_get_unpacked(): void
     // {

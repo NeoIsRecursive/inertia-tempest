@@ -26,13 +26,19 @@ final class InertiaResponse implements Response
         string $rootView,
         string $version,
     ) {
-        $props = $this->resolvePartialProps($request, $page, $props);
-        $props = $this->evaluateProps($props, $request, true);
+        $alwaysProps = $this->resolveAlwaysProps(props: $props);
+        $props = $this->resolvePartialProps(request: $request, component: $page, props: $props);
+
+        $props = $this->evaluateProps(
+            props: array_merge($props, $alwaysProps),
+            request: $request,
+            unpackDotProps: true
+        );
 
         $page = [
             'component' => $page,
             'props' => $props,
-            'url' => $request->getPath(),
+            'url' => $request->getUri(),
             'version' => $version,
         ];
 
@@ -52,6 +58,15 @@ final class InertiaResponse implements Response
         );
     }
 
+    private function resolveAlwaysProps(array $props): array
+    {
+        $always = array_filter($props, static function ($prop) {
+            return $prop instanceof AlwaysProp;
+        });
+
+        return $always;
+    }
+
     private function resolvePartialProps(Request $request, string $component, array $props): array
     {
         $headers = $request->getHeaders();
@@ -68,7 +83,6 @@ final class InertiaResponse implements Response
 
         $only = array_filter(explode(',', $headers[Header::PARTIAL_ONLY] ?? ''));
         $except = array_filter(explode(',', $headers[Header::PARTIAL_EXCEPT] ?? ''));
-
 
         $props = $only ? array_intersect_key($props, array_flip((array) $only)) : $props;
 

@@ -41,13 +41,14 @@ abstract class TestCase extends IntegrationTest
         return $application;
     }
 
-    public function createInertiaRequest(Method $method, string $uri): Request
+    public function createInertiaRequest(Method $method, string $uri, array $headers = []): Request
     {
         $request = new GenericRequest(
             method: $method,
             uri: $uri,
             headers: [
                 Header::INERTIA => true,
+                ...$headers,
             ],
         );
         $this->container->singleton(Request::class, fn() => $request);
