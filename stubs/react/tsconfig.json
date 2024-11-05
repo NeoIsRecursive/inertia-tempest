@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "esnext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    // "noEmit": true,
+    "isolatedModules": true,
+    "typeRoots": ["node_modules/@types", "resources/types"],
+    "lib": ["ESNext", "DOM"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./resources/*"]
+    }
+  },
+  "include": ["resources/**/*.ts", "resources/**/*.d.ts", "resources/**/*.tsx"]
+}
