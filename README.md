@@ -1,5 +1,7 @@
 # Inertia tempest
 
+[![Coverage Status](https://coveralls.io/repos/github/NeoIsRecursive/inertia-tempest/badge.svg?branch=main)](https://coveralls.io/github/NeoIsRecursive/inertia-tempest?branch=main)
+
 > Note, most things work but redirects and session reflashing is still missing and all forms must use the `forceFormData: true` option.
 
 ## installation
