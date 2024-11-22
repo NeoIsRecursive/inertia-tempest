@@ -17,8 +17,6 @@ use Tempest\Http\Status;
 final class Inertia
 {
 
-    public array $sharedProps = [];
-
     public function __construct(
         private Container $container,
         private InertiaConfig $config
@@ -26,21 +24,17 @@ final class Inertia
 
     public function share(string|array $key, ?string $value = null): void
     {
-        if (is_array($key)) {
-            $this->sharedProps = array_merge($this->sharedProps, $key);
-        } else {
-            $this->sharedProps[$key] = $value;
-        }
+        $this->config->share($key, $value);
     }
 
     public function flushShared(): void
     {
-        $this->sharedProps = [];
+        $this->config->sharedProps = [];
     }
 
     public function getVersion(): string
     {
-        return $this->config->resolveVersion();
+        return $this->container->get($this->config->versionResolverClass)->resolve();
     }
 
     public function render(string $component, array $props = []): InertiaResponse
@@ -49,8 +43,7 @@ final class Inertia
             request: $this->container->get(Request::class),
             page: $component,
             component: array_merge(
-                $this->config->resolveDefaultSharedProps(),
-                $this->sharedProps,
+                $this->config->sharedProps,
                 $props
             ),
             rootView: $this->config->rootView,

@@ -2,29 +2,29 @@
 
 namespace NeoIsRecursive\Inertia;
 
-use NeoIsRecursive\Inertia\Contracts\InertiaVersionResolver;
-use NeoIsRecursive\Inertia\Contracts\SharedPropsResolver;
+use Closure;
+use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\LazyProp;
 
-use function Tempest\get;
-
-final readonly class InertiaConfig
+final class InertiaConfig
 {
 
     public function __construct(
-        public string $rootView,
-        /** @property class-string<InertiaVersionResolver>  */
-        public string $versionResolverClass = ManifestVersionResolver::class,
-        /** @property class-string<SharedPropsResolver> */
-        public string $defaultPropsResolverClass = DefaultSharedPropResolver::class,
+        readonly public string $rootView,
+        /** @var class-string<InertiaVersionResolver>  */
+        readonly public string $versionResolverClass = ManifestVersionResolver::class,
+        /** @var array<AlwaysProp|LazyProp|string|array|Closue> */
+        public array $sharedProps = [],
     ) {}
 
-    public function resolveVersion(): string
+    public function share(string|array $key, LazyProp|AlwaysProp|Closure|string|array $value = null): self
     {
-        return get($this->versionResolverClass)->resolve();
-    }
+        if (is_array($key)) {
+            $this->sharedProps = array_merge($this->sharedProps, $key);
+        } else {
+            $this->sharedProps[$key] = $value;
+        }
 
-    public function resolveDefaultSharedProps(): array
-    {
-        return get($this->defaultPropsResolverClass)->resolve();
+        return $this;
     }
 }

@@ -35,7 +35,10 @@ return new InertiaConfig(
     /**
      * Props that should be included in "all" requests, the default is errors and the authenticated user
      */
-    defaultPropsResolverClass: DefaultSharedPropResolver::class,
+    sharedProps: [
+        'user' => new AlwaysProp(fn(Authenticator $auth) => $auth->currentUser()),
+        'errors' => new AlwaysProp(fn(ResolveErrorProps $errors) => $errors->resolve()),
+    ]
 );
 ```
 
