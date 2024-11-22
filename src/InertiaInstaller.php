@@ -42,7 +42,7 @@ final class InertiaInstaller implements Installer
     {
         $jsLocation = $this->ask(
             question: 'Where do you want to put your assets?',
-            default: "resources",
+            default: "client",
         );
 
         $this->publish(
