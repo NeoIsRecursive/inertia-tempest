@@ -39,7 +39,7 @@ final class Middleware implements HttpMiddleware
 
         $versionHeaderValue = $request->getHeaders()[Header::VERSION] ?? '';
 
-        if ($request->getMethod() === Method::GET && $versionHeaderValue !== $this->inertia->getVersion()) {
+        if ($request->getMethod() === Method::GET && $versionHeaderValue !== $this->inertia->version) {
             // TODO: reflash session data
 
             return $this->inertia->location($request->getUri());

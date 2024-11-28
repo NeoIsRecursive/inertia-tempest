@@ -29,13 +29,13 @@ final class Inertia
 
     public function flushShared(): void
     {
-        $this->config->sharedProps = [];
+        $this->config->flushSharedProps();
     }
 
-    public function getVersion(): string
-    {
-        return $this->container->get($this->config->versionResolverClass)->resolve();
+    public string $version {
+        get => $this->container->get($this->config->versionResolverClass)->resolve();
     }
+
 
     public function render(string $component, array $props = []): InertiaResponse
     {
@@ -47,7 +47,7 @@ final class Inertia
                 $props
             ),
             rootView: $this->config->rootView,
-            version: $this->getVersion()
+            version: $this->version
         );
     }
 

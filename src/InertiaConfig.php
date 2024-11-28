@@ -14,10 +14,17 @@ final class InertiaConfig
         /** @var class-string<InertiaVersionResolver>  */
         readonly public string $versionResolverClass = ManifestVersionResolver::class,
         /** @var array<AlwaysProp|LazyProp|string|array|Closue> */
-        public array $sharedProps = [],
+        public private(set) array $sharedProps = [],
     ) {}
 
-    public function share(string|array $key, LazyProp|AlwaysProp|Closure|string|array $value = null): self
+    public function flushSharedProps(): self
+    {
+        $this->sharedProps = [];
+
+        return $this;
+    }
+
+    public function share(string|array $key, LazyProp|AlwaysProp|Closure|string|array|null $value): self
     {
         if (is_array($key)) {
             $this->sharedProps = array_merge($this->sharedProps, $key);

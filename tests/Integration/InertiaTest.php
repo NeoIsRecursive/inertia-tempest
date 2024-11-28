@@ -95,7 +95,7 @@ class InertiaTest extends TestCase
 
     public function test_shared_data_can_be_shared_from_anywhere(): void
     {
-        $version = get(Inertia::class)->getVersion();
+        $version = get(Inertia::class)->version;
 
         $response = $this->http->get(uri([TestController::class, 'testCanSharePropsFromAnyWhere']), headers: [Header::INERTIA => 'true', Header::VERSION => $version]);
 
