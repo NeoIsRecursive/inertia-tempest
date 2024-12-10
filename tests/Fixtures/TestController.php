@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Tests\Fixtures;
 
 use NeoIsRecursive\Inertia\Inertia;
-use Tempest\Http\Get;
+use Tempest\Router\Get;
 
 use function NeoIsRecursive\Inertia\inertia;
 

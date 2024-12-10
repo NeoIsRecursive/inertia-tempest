@@ -7,13 +7,13 @@ use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Core\KernelEvent;
 use Tempest\EventBus\EventHandler;
-use Tempest\Http\HttpMiddleware;
-use Tempest\Http\HttpMiddlewareCallable;
 use Tempest\Http\Method;
-use Tempest\Http\Request;
-use Tempest\Http\Response;
-use Tempest\Http\Router;
 use Tempest\Http\Status;
+use Tempest\Router\HttpMiddleware;
+use Tempest\Router\HttpMiddlewareCallable;
+use Tempest\Router\Request;
+use Tempest\Router\Response;
+use Tempest\Router\Router;
 
 final class Middleware implements HttpMiddleware
 {

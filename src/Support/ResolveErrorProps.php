@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Support;
 
-use Tempest\Http\Session\Session;
+use Tempest\Router\Session\Session;
 use Tempest\Validation\Rule;
 
 final readonly class ResolveErrorProps

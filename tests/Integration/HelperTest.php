@@ -4,7 +4,7 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Tests\TestCase;
-use Tempest\Http\Response;
+use Tempest\Router\Response;
 
 use function NeoIsRecursive\Inertia\inertia;
 

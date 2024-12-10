@@ -7,10 +7,10 @@ use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
-use Tempest\Http\IsResponse;
-use Tempest\Http\Request;
-use Tempest\Http\Response;
 use Tempest\Http\Status;
+use Tempest\Router\IsResponse;
+use Tempest\Router\Request;
+use Tempest\Router\Response;
 
 use function Tempest\invoke;
 use function Tempest\Support\arr;

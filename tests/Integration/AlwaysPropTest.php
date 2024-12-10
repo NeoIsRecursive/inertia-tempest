@@ -4,7 +4,7 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Tests\TestCase;
-use Tempest\Http\Request;
+use Tempest\Router\Request;
 
 class AlwaysPropTest extends TestCase
 {

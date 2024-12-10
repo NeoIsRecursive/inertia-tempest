@@ -8,10 +8,10 @@ use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Core\Application;
 use Tempest\Core\DiscoveryLocation;
 use Tempest\Framework\Testing\IntegrationTest;
-use Tempest\Http\GenericRequest;
-use Tempest\Http\HttpApplication;
 use Tempest\Http\Method;
-use Tempest\Http\Request;
+use Tempest\Router\GenericRequest;
+use Tempest\Router\HttpApplication;
+use Tempest\Router\Request;
 
 abstract class TestCase extends IntegrationTest
 {

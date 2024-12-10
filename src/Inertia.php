@@ -7,11 +7,11 @@ use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;
-use Tempest\Http\GenericResponse;
-use Tempest\Http\Request;
-use Tempest\Http\Response;
-use Tempest\Http\Responses\Redirect;
 use Tempest\Http\Status;
+use Tempest\Router\GenericResponse;
+use Tempest\Router\Request;
+use Tempest\Router\Response;
+use Tempest\Router\Responses\Redirect;
 
 #[Singleton]
 final class Inertia
@@ -54,7 +54,6 @@ final class Inertia
     public function location(string|Redirect $url): Response
     {
         $isInertiaRequest = isset($this->container->get(Request::class)->getHeaders()[Header::INERTIA]);
-
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
