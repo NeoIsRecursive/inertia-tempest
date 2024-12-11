@@ -1015,12 +1015,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4"
+                "reference": "d97d5e9468aa7d10f95b2e0468f39afdbd08a4d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
-                "reference": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/d97d5e9468aa7d10f95b2e0468f39afdbd08a4d1",
+                "reference": "d97d5e9468aa7d10f95b2e0468f39afdbd08a4d1",
                 "shasum": ""
             },
             "require": {
@@ -1099,7 +1099,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/3.8.1"
+                "source": "https://github.com/Seldaek/monolog/tree/main"
             },
             "funding": [
                 {
@@ -1111,7 +1111,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-05T17:15:07+00:00"
+            "time": "2024-12-10T13:30:50+00:00"
         },
         {
             "name": "nette/php-generator",
@@ -1189,12 +1189,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "736c567e257dbe0fcf6ce81b4d6dbe05c6899f96"
+                "reference": "2d4c11ff471904323354e3ea3ae62ff7397d4267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/736c567e257dbe0fcf6ce81b4d6dbe05c6899f96",
-                "reference": "736c567e257dbe0fcf6ce81b4d6dbe05c6899f96",
+                "url": "https://api.github.com/repos/nette/utils/zipball/2d4c11ff471904323354e3ea3ae62ff7397d4267",
+                "reference": "2d4c11ff471904323354e3ea3ae62ff7397d4267",
                 "shasum": ""
             },
             "require": {
@@ -1266,9 +1266,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v4.0.5"
+                "source": "https://github.com/nette/utils/tree/master"
             },
-            "time": "2024-08-07T15:39:19+00:00"
+            "time": "2024-12-11T14:09:36+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -2390,8 +2390,8 @@
             "type": "library",
             "extra": {
                 "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
                 }
             },
             "autoload": {
@@ -2558,8 +2558,8 @@
             "type": "library",
             "extra": {
                 "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
                 }
             },
             "autoload": {
@@ -3157,12 +3157,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tempestphp/tempest-framework.git",
-                "reference": "7daf3fcc80a0c36c3fd87cc3c897e25038656f74"
+                "reference": "751f0d119cc7649b7310e9f3e7c39be5d77dc726"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/7daf3fcc80a0c36c3fd87cc3c897e25038656f74",
-                "reference": "7daf3fcc80a0c36c3fd87cc3c897e25038656f74",
+                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/751f0d119cc7649b7310e9f3e7c39be5d77dc726",
+                "reference": "751f0d119cc7649b7310e9f3e7c39be5d77dc726",
                 "shasum": ""
             },
             "require": {
@@ -3236,7 +3236,8 @@
                 "rector/rector": "^2.0-rc2",
                 "spatie/phpunit-snapshot-assertions": "^5.1.6",
                 "spaze/phpstan-disallowed-calls": "^4.0",
-                "symplify/monorepo-builder": "^11.2"
+                "symplify/monorepo-builder": "^11.2",
+                "twig/twig": "^3.16"
             },
             "default-branch": true,
             "bin": [
@@ -3296,7 +3297,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-09T23:35:18+00:00"
+            "time": "2024-12-11T12:05:20+00:00"
         },
         {
             "name": "tempest/highlight",
@@ -3624,12 +3625,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "0d00c0bcbd7814d8168c180ccb7ee1df6d9b6d22"
+                "reference": "418c59fd080954f8c4aa5631d9502ecda2387118"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/0d00c0bcbd7814d8168c180ccb7ee1df6d9b6d22",
-                "reference": "0d00c0bcbd7814d8168c180ccb7ee1df6d9b6d22",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/418c59fd080954f8c4aa5631d9502ecda2387118",
+                "reference": "418c59fd080954f8c4aa5631d9502ecda2387118",
                 "shasum": ""
             },
             "require": {
@@ -3686,7 +3687,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/11.0"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/11.0.8"
             },
             "funding": [
                 {
@@ -3694,7 +3695,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-07T09:22:56+00:00"
+            "time": "2024-12-11T12:34:27+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3951,12 +3952,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a6586b3d03d1b18f8533441608763deed9fbd0cd"
+                "reference": "4eee5dec23f65fbdda84052005c8f06de3baef5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a6586b3d03d1b18f8533441608763deed9fbd0cd",
-                "reference": "a6586b3d03d1b18f8533441608763deed9fbd0cd",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4eee5dec23f65fbdda84052005c8f06de3baef5a",
+                "reference": "4eee5dec23f65fbdda84052005c8f06de3baef5a",
                 "shasum": ""
             },
             "require": {
@@ -3970,7 +3971,7 @@
                 "phar-io/manifest": "^2.0.4",
                 "phar-io/version": "^3.2.1",
                 "php": ">=8.2",
-                "phpunit/php-code-coverage": "^11.0.7",
+                "phpunit/php-code-coverage": "^11.0.8",
                 "phpunit/php-file-iterator": "^5.1.0",
                 "phpunit/php-invoker": "^5.0.1",
                 "phpunit/php-text-template": "^4.0.1",
@@ -4044,7 +4045,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-07T14:00:02+00:00"
+            "time": "2024-12-11T12:35:10+00:00"
         },
         {
             "name": "sebastian/cli-parser",

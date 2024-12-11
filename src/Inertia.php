@@ -37,12 +37,12 @@ final class Inertia
     }
 
 
-    public function render(string $component, array $props = []): InertiaResponse
+    public function render(string $page, array $props = []): InertiaResponse
     {
         return new InertiaResponse(
             request: $this->container->get(Request::class),
-            page: $component,
-            component: array_merge(
+            page: $page,
+            props: array_merge(
                 $this->config->sharedProps,
                 $props
             ),

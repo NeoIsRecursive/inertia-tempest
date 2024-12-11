@@ -12,12 +12,12 @@ namespace NeoIsRecursive\Inertia {
     /**
      * @return ($component is null ? Inertia : InertiaResponse)
      */
-    function inertia(?string $component = null, array $props = []): InertiaResponse|Inertia
+    function inertia(string|null $page = null, array $props = []): InertiaResponse|Inertia
     {
-        if ($component === null) {
+        if ($page === null) {
             return get(Inertia::class);
         }
 
-        return get(Inertia::class)->render($component, $props);
+        return get(Inertia::class)->render($page, $props);
     }
 }
