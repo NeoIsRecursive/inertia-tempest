@@ -3,14 +3,21 @@
 namespace NeoIsRecursive\Inertia\Props;
 
 use Closure;
+use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
+use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
 use function Tempest\invoke;
 
-final readonly class AlwaysProp
+final class AlwaysProp implements MergeableProp
 {
-    public function __construct(public MethodReflector|FunctionReflector|string|Closure $value) {}
+    use IsMergeableProp;
+
+    public function __construct(
+        public readonly MethodReflector|FunctionReflector|string|Closure|array $value,
+        public private(set) bool $shouldMerge = false
+    ) {}
 
     public function __invoke()
     {

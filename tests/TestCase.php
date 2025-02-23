@@ -6,7 +6,7 @@ namespace NeoIsRecursive\Inertia\Tests;
 
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Core\Application;
-use Tempest\Core\DiscoveryLocation;
+use Tempest\Discovery\DiscoveryLocation;
 use Tempest\Framework\Testing\IntegrationTest;
 use Tempest\Http\Method;
 use Tempest\Router\GenericRequest;

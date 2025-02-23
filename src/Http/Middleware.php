@@ -33,19 +33,19 @@ final class Middleware implements HttpMiddleware
 
         $response->addHeader('Vary', Header::INERTIA);
 
-        if (!array_key_exists(Header::INERTIA, $request->getHeaders())) {
+        if (!array_key_exists(Header::INERTIA, $request->headers)) {
             return $response;
         }
 
-        $versionHeaderValue = $request->getHeaders()[Header::VERSION] ?? '';
+        $versionHeaderValue = $request->headers[Header::VERSION] ?? '';
 
-        if ($request->getMethod() === Method::GET && $versionHeaderValue !== $this->inertia->version) {
+        if ($request->method === Method::GET && $versionHeaderValue !== $this->inertia->version) {
             // TODO: reflash session data
 
-            return $this->inertia->location($request->getUri());
+            return $this->inertia->location($request->uri);
         }
 
-        if ($response->getStatus() === Status::FOUND && in_array($request->getMethod(), [Method::POST, Method::PUT, Method::PATCH])) {
+        if ($response->status === Status::FOUND && in_array($request->method, [Method::POST, Method::PUT, Method::PATCH])) {
             // TODO: set status to 303
             // return new GenericResponse(
             //     status: Status::SEE_OTHER,

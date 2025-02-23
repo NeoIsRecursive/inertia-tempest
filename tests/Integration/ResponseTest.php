@@ -24,7 +24,7 @@ class ResponseTest extends TestCase
 
         $user = ['name' => 'Jonathan'];
         $response = new InertiaResponse($request, 'User/Edit', ['user' => $user], __DIR__ . '/../Fixtures/root.view.php', '123');
-        $view = $response->getBody();
+        $view = $response->body;
         $page = $view->get('pageData');
 
         $this->assertInstanceOf(Response::class, $response);
@@ -34,7 +34,7 @@ class ResponseTest extends TestCase
         $this->assertSame('Jonathan', $page['props']['user']['name']);
         $this->assertSame('/user/123', $page['url']);
         $this->assertSame('123', $page['version']);
-        $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;}"></div>',  get(ViewRenderer::class)->render($view));
+        $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;mergeProps&quot;:[]}"></div>',  get(ViewRenderer::class)->render($view));
     }
 
     public function test_xhr_response(): void
@@ -44,7 +44,7 @@ class ResponseTest extends TestCase
         $user = ['name' => 'Jonathan'];
         $response = new InertiaResponse($request, 'User/Edit', ['user' => $user], 'app', '123');
 
-        $page = $response->getBody();
+        $page = $response->body;
 
         $this->assertInstanceOf(Response::class, $response);
 
@@ -93,7 +93,7 @@ class ResponseTest extends TestCase
 
         $response = new InertiaResponse($request, 'User/Index', ['users' => $callable], 'app', '123');
 
-        $page = $response->getBody();
+        $page = $response->body;
 
         $expected = [
             'users' => [
@@ -219,7 +219,7 @@ class ResponseTest extends TestCase
         $user = (object) ['name' => 'Jonathan'];
         $response = new InertiaResponse($request, 'User/Edit', ['user' => $user, 'partial' => 'partial-data'], 'app', '123');
 
-        $page = $response->getBody();
+        $page = $response->body;
 
         $props = $page['props'];
 
@@ -245,7 +245,7 @@ class ResponseTest extends TestCase
             'partial' => 'partial-data',
         ], 'app', '123');
 
-        $page = $response->getBody();
+        $page = $response->body;
 
         $props = $page['props'];
 
@@ -267,7 +267,7 @@ class ResponseTest extends TestCase
         });
 
         $response = new InertiaResponse($request, 'Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
-        $page = $response->getBody();
+        $page = $response->body;
 
         $this->assertSame([], $page['props']['users']);
         $this->assertFalse(array_key_exists('lazy', $page['props']));
@@ -285,7 +285,7 @@ class ResponseTest extends TestCase
         });
 
         $response = new InertiaResponse($request, 'Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
-        $page = $response->getBody();
+        $page = $response->body;
 
         $this->assertFalse(array_key_exists('users', $page['props']));
         $this->assertSame('A lazy value', $page['props']['lazy']);
@@ -316,7 +316,7 @@ class ResponseTest extends TestCase
         ];
 
         $response = new InertiaResponse($request, 'User/Edit', $props, 'app', '123');
-        $page = $response->getBody();
+        $page = $response->body;
 
         $this->assertSame('The email field is required.', $page['props']['errors']['name']);
         $this->assertSame('Taylor Otwell', $page['props']['data']['name']);
@@ -344,7 +344,7 @@ class ResponseTest extends TestCase
 
         $response = new InertiaResponse($request, 'User/Edit', $props, 'app', '123');
 
-        $page = $response->getBody();
+        $page = $response->body;
 
         $user = $page['props']['auth']['user'];
         $this->assertSame('Jonathan Reinink', $user['name']);
@@ -372,7 +372,7 @@ class ResponseTest extends TestCase
         );
 
         $response = new InertiaResponse($request, 'User/Edit', $props, 'app', '123');
-        $page = $response->getBody();
+        $page = $response->body;
 
         $auth = $page['props']['auth'];
         $this->assertSame('Jonathan Reinink', $auth['user']['name']);
@@ -442,7 +442,7 @@ class ResponseTest extends TestCase
 
         $response = new InertiaResponse($request, 'Years', ['years' => [2022, 2023, 2024]], 'app', '123');
 
-        $view = $response->getBody();
+        $view = $response->body;
         $page = $view->get('pageData');
 
         $this->assertSame([2022, 2023, 2024], $page['props']['years']);
@@ -458,7 +458,7 @@ class ResponseTest extends TestCase
         ], 'app', '123');
 
 
-        $view = $response->getBody();
+        $view = $response->body;
         $page = $view->get('pageData');
 
         $this->assertSame([
@@ -484,7 +484,7 @@ class ResponseTest extends TestCase
         ], 'app', '123');
 
         /** @var InertiaBaseView */
-        $view = $response->getBody();
+        $view = $response->body;
         $page = $view->get('pageData');
 
         $this->assertSame([
@@ -506,7 +506,7 @@ class ResponseTest extends TestCase
             'auth.user.is_super' => true,
         ], 'app', '123');
 
-        $view = $response->getBody();
+        $view = $response->body;
         $page = $view->get('pageData');
 
         $this->assertSame([

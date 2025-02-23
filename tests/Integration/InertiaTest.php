@@ -32,7 +32,7 @@ class InertiaTest extends TestCase
         $response = $factory->location('https://inertiajs.com');
 
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals(Status::CONFLICT, $response->getStatus());
+        $this->assertEquals(Status::CONFLICT, $response->status);
         $this->assertEquals('https://inertiajs.com', $response->getHeader(Header::LOCATION)->values[0]);
     }
 
@@ -43,7 +43,7 @@ class InertiaTest extends TestCase
         $response = $factory->location('https://inertiajs.com');
 
         $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->getStatus());
+        $this->assertEquals(Status::FOUND, $response->status);
         $this->assertEquals('https://inertiajs.com', $response->getHeader('Location')->values[0]);
     }
 
@@ -56,7 +56,7 @@ class InertiaTest extends TestCase
         $response = $factory->location($redirect);
 
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals(Status::CONFLICT, $response->getStatus());
+        $this->assertEquals(Status::CONFLICT, $response->status);
         $this->assertEquals('https://inertiajs.com', $response->getHeader(Header::LOCATION)->values[0]);
     }
 
@@ -66,7 +66,7 @@ class InertiaTest extends TestCase
         $response = $this->createFactory()->location($redirect);
 
         $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->getStatus());
+        $this->assertEquals(Status::FOUND, $response->status);
         $this->assertEquals('https://inertiajs.com', $response->getHeader('Location')->values[0]);
     }
 
@@ -75,7 +75,7 @@ class InertiaTest extends TestCase
         $response = $this->createFactory()->location('/foo');
 
         $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->getStatus());
+        $this->assertEquals(Status::FOUND, $response->status);
         $this->assertEquals('/foo', $response->getHeader('Location')->values[0]);
     }
 
@@ -86,7 +86,7 @@ class InertiaTest extends TestCase
         $response = $this->createFactory()->location($redirect);
 
         $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->getStatus());
+        $this->assertEquals(Status::FOUND, $response->status);
         $this->assertEquals('https://inertiajs.com', $response->getHeader('Location')->values[0]);
         // $this->assertSame(get(Session::class), $response->());
         // $this->assertSame($request, $response->getRequest());
@@ -109,7 +109,8 @@ class InertiaTest extends TestCase
             ],
             'url' => uri([TestController::class, 'testCanSharePropsFromAnyWhere']),
             'version' => $version,
-        ], $response->getBody());
+            'mergeProps' => [],
+        ], $response->body);
     }
 
     public function test_can_flush_shared_data(): void

@@ -26,6 +26,7 @@
     }
   ],
   "require": {
+    "php": "^8.4",
     "tempest/framework": "dev-main"
   },
   "config": {

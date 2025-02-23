@@ -53,7 +53,7 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        $isInertiaRequest = isset($this->container->get(Request::class)->getHeaders()[Header::INERTIA]);
+        $isInertiaRequest = isset($this->container->get(Request::class)->headers[Header::INERTIA]);
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
