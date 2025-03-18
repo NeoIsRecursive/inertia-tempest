@@ -33,7 +33,7 @@ final class Middleware implements HttpMiddleware
 
         $response->addHeader('Vary', Header::INERTIA);
 
-        if (!array_key_exists(Header::INERTIA, $request->headers)) {
+        if (!$request->headers->offsetExists(Header::INERTIA)) {
             return $response;
         }
 

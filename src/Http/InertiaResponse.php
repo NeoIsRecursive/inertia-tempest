@@ -12,7 +12,7 @@ use Tempest\Http\Status;
 use Tempest\Router\IsResponse;
 use Tempest\Router\Request;
 use Tempest\Router\Response;
-use Tempest\Support\ArrayHelper;
+use Tempest\Support\Arr\ImmutableArray;
 
 use function Tempest\invoke;
 use function Tempest\Support\arr;
@@ -52,7 +52,7 @@ final class InertiaResponse implements Response
         ];
 
 
-        if (array_key_exists(Header::INERTIA, $request->headers) && $request->headers[Header::INERTIA] == 'true') {
+        if ($request->headers->offsetExists(Header::INERTIA) && $request->headers[Header::INERTIA] == 'true') {
             $this->status = Status::OK;
 
             $this->body = $page;
@@ -132,7 +132,7 @@ final class InertiaResponse implements Response
                 $value = $value();
             }
 
-            if ($value instanceof ArrayHelper) {
+            if ($value instanceof ImmutableArray) {
                 $value = $value->toArray();
             }
 

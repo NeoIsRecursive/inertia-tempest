@@ -47,7 +47,7 @@ abstract class TestCase extends IntegrationTest
             method: $method,
             uri: $uri,
             headers: [
-                Header::INERTIA => true,
+                Header::INERTIA => 'true',
                 ...$headers,
             ],
         );
