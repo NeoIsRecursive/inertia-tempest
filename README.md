@@ -2,8 +2,6 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/NeoIsRecursive/inertia-tempest/badge.svg?branch=main)](https://coveralls.io/github/NeoIsRecursive/inertia-tempest?branch=main)
 
-> Note, most things work but redirects and session reflashing is still missing and all forms must use the `forceFormData: true` option.
-
 ## installation
 
 Not setup yet, you'll have to clone it and stuff.
@@ -76,5 +74,4 @@ final class ReviewController
 
 - [ ] Installer with js boilerplate?
 - [ ] Migrate tests from the laravel adapter.
-- [ ] Create vite package?
-- [ ] Json bodies on post.
+- [ ] Add history encryption setting.
