@@ -4,7 +4,9 @@
 
 ## installation
 
-Not setup yet, you'll have to clone it and stuff.
+```bash
+composer require neoisrecursive/inertia-tempest
+```
 
 ## Setup
 
