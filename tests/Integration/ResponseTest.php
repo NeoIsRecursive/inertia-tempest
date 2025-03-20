@@ -4,6 +4,7 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\DeferredProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\TestCase;
@@ -34,7 +35,7 @@ class ResponseTest extends TestCase
         $this->assertSame('Jonathan', $page['props']['user']['name']);
         $this->assertSame('/user/123', $page['url']);
         $this->assertSame('123', $page['version']);
-        $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;mergeProps&quot;:[]}"></div>',  get(ViewRenderer::class)->render($view));
+        $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;}"></div>',  get(ViewRenderer::class)->render($view));
     }
 
     public function test_xhr_response(): void
@@ -517,5 +518,38 @@ class ResponseTest extends TestCase
                 ],
             ],
         ], $page['props']);
+    }
+
+    public function test_server_response_with_deferred_prop(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, '/user/123');
+
+        $user = ['name' => 'Jonathan'];
+        $response = new InertiaResponse(
+            request: $request,
+            page: 'User/Edit',
+            props: [
+                'user' => $user,
+                'foo' => new DeferredProp(function () {
+                    return 'bar';
+                }, group: 'default'),
+            ],
+            rootView: 'app',
+            version: '123',
+        );
+
+        $pageData = $response->body;
+
+        $this->assertIsArray($pageData);
+
+        $this->assertSame('User/Edit', $pageData['component']);
+        $this->assertSame('Jonathan', $pageData['props']['user']['name']);
+        $this->assertSame('/user/123', $pageData['url']);
+        $this->assertSame('123', $pageData['version']);
+        $this->assertSame([
+            'default' => ['foo'],
+        ], $pageData['deferredProps']);
+        // $this->assertFalse($pageData['clearHistory']);
+        // $this->assertFalse($pageData['encryptHistory']);
     }
 }

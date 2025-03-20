@@ -5,10 +5,10 @@ namespace NeoIsRecursive\Inertia\Http;
 use Closure;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\DeferredProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
-use Tempest\Http\Status;
 use Tempest\Router\IsResponse;
 use Tempest\Router\Request;
 use Tempest\Router\Response;
@@ -22,132 +22,171 @@ final class InertiaResponse implements Response
     use IsResponse;
 
     public function __construct(
-        Request $request,
-        string $page,
-        array $props,
-        string $rootView,
-        string $version,
+        readonly Request $request,
+        readonly string $page,
+        readonly array $props,
+        readonly string $rootView,
+        readonly string $version,
     ) {
 
-        $alwaysProps = $this->resolveAlwaysProps(props: $props);
-        $partialProps = $this->resolvePartialProps(request: $request, component: $page, props: $props);
-        $mergeProps = $this->resolveMergeProps($props, $request);
-
-        $props = $this->evaluateProps(
-            props: array_merge(
-                $alwaysProps,
-                $partialProps,
-                $mergeProps
-            ),
+        $deferredProps = self::resolvePropKeysThatShouldDefer(
+            props: $props,
             request: $request,
-            unpackDotProps: true
+            component: $page
         );
 
-        $page = [
-            'component' => $page,
-            'props' => $props,
-            'url' => $request->uri,
-            'version' => $version,
-            'mergeProps' => array_keys($mergeProps),
-        ];
-
-
-        if ($request->headers->offsetExists(Header::INERTIA) && $request->headers[Header::INERTIA] == 'true') {
-            $this->status = Status::OK;
-
-            $this->body = $page;
-
-            $this->addHeader(Header::INERTIA, 'true');
-            return;
-        }
-
-        $this->body = new InertiaBaseView(
-            view: $rootView,
-            pageData: $page,
+        $mergeProps = self::resolvePropKeysThatShouldMerge(
+            props: $props,
+            request: $request
         );
+
+        // Build page data immutably
+        $pageData = array_merge(
+            [
+                'component'  => $page,
+                'props'      => self::composeProps(
+                    props: $this->props,
+                    request: $this->request,
+                    component: $page
+                ),
+                'url'        => $request->uri,
+                'version'    => $version,
+            ],
+            count($deferredProps) ? ['deferredProps' => $deferredProps] : [],
+            count($mergeProps) ? ['mergeProps' => $mergeProps] : []
+        );
+
+        $isInertia = ($request->headers->offsetExists(Header::INERTIA)
+            && $request->headers[Header::INERTIA] === 'true');
+
+        $this->body = $isInertia
+            ? (function () use ($pageData) {
+                // side effect to set Inertia header
+                $this->headers[Header::INERTIA] = 'true';
+
+                return $pageData;
+            })()
+            : new InertiaBaseView(
+                view: $rootView,
+                pageData: $pageData
+            );
     }
 
-    private function resolveAlwaysProps(array $props): array
+    public static function isPartial(Request $request, string $component): bool
     {
-        $always = array_filter($props, static function ($prop) {
-            return $prop instanceof AlwaysProp;
-        });
-
-        return $always;
+        return ($request->headers[Header::PARTIAL_COMPONENT] ?? null) === $component;
     }
 
-    private function resolvePartialProps(Request $request, string $component, array $props): array
+    /**
+     * @pure
+     * Composes the various prop transformations into one functional pipeline.
+     */
+    private static function composeProps(array $props, Request $request, string $component): array
+    {
+        $always = static::resolveAlwaysProps($props);
+        $partial = static::resolvePartialProps($request, $component, $props);
+
+        return static::evaluateProps(
+            array_merge($always, $partial),
+            $request,
+            true
+        );
+    }
+
+    /**
+     * @pure
+     * function to extract AlwaysProp instances.
+     */
+    private static function resolveAlwaysProps(array $props): array
+    {
+        return array_filter($props, static fn($prop) => $prop instanceof AlwaysProp);
+    }
+
+    /**
+     * @pure
+     * function to extract Partial props based on request headers.
+     */
+    private static function resolvePartialProps(Request $request, string $component, array $props): array
     {
         $headers = $request->headers;
 
-        $partialHeader = $headers[Header::PARTIAL_COMPONENT] ?? null;
-
-        $isPartial = $partialHeader === $component;
-
-        if (! $isPartial) {
-            return array_filter($props, static function ($prop) {
-                return ! ($prop instanceof LazyProp);
-            });
+        if (!static::isPartial($request, $component)) {
+            return array_filter($props, static fn($prop) => !($prop instanceof LazyProp || $prop instanceof DeferredProp));
         }
 
         $only = array_filter(explode(',', $headers[Header::PARTIAL_ONLY] ?? ''));
         $except = array_filter(explode(',', $headers[Header::PARTIAL_EXCEPT] ?? ''));
 
-        $props = $only ? array_intersect_key($props, array_flip($only)) : $props;
+        $filtered = $only
+            ? array_intersect_key($props, array_flip($only))
+            : $props;
 
-        if (count($except) > 0) {
-            foreach ($except as $key) {
-                unset($props[$key]);
-            }
-        }
-
-        return $props;
+        return array_filter(
+            $filtered,
+            static fn($key) => !in_array($key, $except, true),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
-    public static function resolveMergeProps(array $props, Request $request): array
+    private static function resolvePropKeysThatShouldDefer(array $props, Request $request, string $component): array
+    {
+
+        if (static::isPartial($request, $component)) {
+            return [];
+        }
+
+        return arr($props)
+            ->filter(function ($prop) {
+                return $prop instanceof DeferredProp;
+            })
+            ->groupBy(fn(DeferredProp $prop) => $prop->group)
+            ->map(function (array $group) {
+                return arr($group)->keys()->toArray();
+            })
+            ->toArray();
+    }
+
+    private static function resolvePropKeysThatShouldMerge(array $props, Request $request): array
     {
         $resetProps = arr(explode(',', $request->headers[Header::RESET] ?? ''));
-        $mergeProps = arr($props)
+        return arr($props)
             ->filter(fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
-            ->filter(
-                fn($_, $key) => ! $resetProps->contains($key)
-            )
-            ->keys();
-
-        return $mergeProps->toArray();
+            ->filter(fn($_, $key) => !$resetProps->contains($key))
+            ->keys()
+            ->toArray();
     }
 
-    public static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array
+    /**
+     * @pure
+     * Evaluates props recursively.
+     */
+    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array
     {
-        foreach ($props as $key => $value) {
-            if ($value instanceof Closure) {
-                $value = invoke($value);
-            }
+        return arr($props)
+            ->map(function ($value, string|int $key) use ($request) {
+                $evaluated = $value instanceof Closure ? invoke($value) : $value;
+                $evaluated = ($evaluated instanceof LazyProp || $evaluated instanceof AlwaysProp)
+                    ? $evaluated()
+                    : $evaluated;
+                $evaluated = $evaluated instanceof ImmutableArray
+                    ? $evaluated->toArray()
+                    : $evaluated;
+                $evaluated = is_array($evaluated)
+                    ? self::evaluateProps($evaluated, $request, false)
+                    : $evaluated;
 
-            if ($value instanceof LazyProp) {
-                $value = $value();
-            }
-
-            if ($value instanceof AlwaysProp) {
-                $value = $value();
-            }
-
-            if ($value instanceof ImmutableArray) {
-                $value = $value->toArray();
-            }
-
-            if (is_array($value)) {
-                $value = self::evaluateProps($value, $request, false);
-            }
-
-            if ($unpackDotProps && str_contains($key, '.')) {
-                $props = arr($props)->set($key, $value)->toArray();
-                unset($props[$key]);
-            } else {
-                $props[$key] = $value;
-            }
-        }
-
-        return $props;
+                return [$key, $evaluated];
+            })
+            ->reduce(
+                function (array $acc, array $item) use ($unpackDotProps) {
+                    [$key, $value] = $item;
+                    if ($unpackDotProps && str_contains($key, '.')) {
+                        return arr($acc)->set($key, $value)->toArray();
+                    }
+                    $acc[$key] = $value;
+                    return $acc;
+                },
+                []
+            );
     }
 }

@@ -109,7 +109,6 @@ class InertiaTest extends TestCase
             ],
             'url' => uri([TestController::class, 'testCanSharePropsFromAnyWhere']),
             'version' => $version,
-            'mergeProps' => [],
         ], $response->body);
     }
 

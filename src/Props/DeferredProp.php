@@ -16,6 +16,7 @@ final class DeferredProp implements MergeableProp
 
     public function __construct(
         public MethodReflector|FunctionReflector|string|array|Closure $callback,
+        public string $group = 'default',
         public private(set) bool $shouldMerge = false
     ) {}
 
