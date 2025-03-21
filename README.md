@@ -30,8 +30,10 @@ return new InertiaConfig(
     /**
      * Version resolver, if you use vite for example you probably want to use the default here,
      * or you can add a custom one to maybe get from enviroment variables etc.
+     *
+     * default path: public/build/manifest.json
      */
-    versionResolverClass: ManifestVersionResolver::class,
+    versionResolver: new ManifestVersionResolver(),
     /**
      * Props that should be included in "all" requests, the default is errors and the authenticated user
      */
