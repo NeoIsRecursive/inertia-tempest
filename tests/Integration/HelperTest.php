@@ -8,7 +8,7 @@ use Tempest\Router\Response;
 
 use function NeoIsRecursive\Inertia\inertia;
 
-class HelperTest extends TestCase
+final class HelperTest extends TestCase
 {
     public function test_the_helper_function_returns_an_instance_of_the_response_factory(): void
     {

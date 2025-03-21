@@ -17,7 +17,7 @@ use Tempest\View\ViewRenderer;
 
 use function Tempest\get;
 
-class ResponseTest extends TestCase
+final class ResponseTest extends TestCase
 {
     public function test_server_response(): void
     {

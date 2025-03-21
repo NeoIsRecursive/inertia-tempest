@@ -3,6 +3,7 @@
 namespace NeoIsRecursive\Inertia;
 
 use Closure;
+use NeoIsRecursive\Inertia\Contracts\InertiaVersionResolver;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 
@@ -12,7 +13,7 @@ final class InertiaConfig
     public function __construct(
         readonly public string $rootView,
         /** @var class-string<InertiaVersionResolver>  */
-        readonly public string $versionResolverClass = ManifestVersionResolver::class,
+        readonly public InertiaVersionResolver $versionResolver = new ManifestVersionResolver(),
         /** @var array<AlwaysProp|LazyProp|string|array|Closue> */
         public private(set) array $sharedProps = [],
     ) {}

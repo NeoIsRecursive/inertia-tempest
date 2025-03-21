@@ -6,7 +6,7 @@ use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use Tempest\Router\Request;
 
-class AlwaysPropTest extends TestCase
+final class AlwaysPropTest extends TestCase
 {
     public function test_can_invoke(): void
     {

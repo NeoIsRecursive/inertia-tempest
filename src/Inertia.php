@@ -33,7 +33,7 @@ final class Inertia
     }
 
     public string $version {
-        get => $this->container->get($this->config->versionResolverClass)->resolve();
+        get => $this->container->invoke($this->config->versionResolver->resolve(...));
     }
 
 

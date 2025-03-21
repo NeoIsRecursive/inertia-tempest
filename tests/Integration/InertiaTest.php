@@ -16,7 +16,7 @@ use Tempest\Router\Responses\Redirect;
 use function Tempest\get;
 use function Tempest\uri;
 
-class InertiaTest extends TestCase
+final class InertiaTest extends TestCase
 {
     private function createFactory(): Inertia
     {
