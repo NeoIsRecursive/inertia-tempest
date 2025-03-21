@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Views;
 
 use Tempest\View\IsView;
@@ -18,7 +20,7 @@ final class InertiaBaseView implements View
 
     public function renderInertiaElement(string $id): string
     {
-        $pageData = htmlentities((json_encode($this->pageData)));
+        $pageData = htmlentities(json_encode($this->pageData));
 
         $template = <<<HTML
              <div id="{$id}" data-page="{$pageData}"></div>

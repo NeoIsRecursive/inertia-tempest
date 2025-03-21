@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Props\LazyProp;
@@ -14,14 +16,14 @@ final class LazyPropTest extends TestCase
             return 'A lazy value';
         });
 
-        $this->assertSame('A lazy value', $lazyProp());
+        static::assertSame('A lazy value', $lazyProp());
     }
 
     public function test_can_accept_scalar_values(): void
     {
         $lazyProp = new LazyProp(fn() => 'A lazy value');
 
-        $this->assertSame('A lazy value', $lazyProp());
+        static::assertSame('A lazy value', $lazyProp());
     }
 
     public function test_can_resolve_bindings_when_invoked(): void
@@ -30,6 +32,6 @@ final class LazyPropTest extends TestCase
             return $request;
         });
 
-        $this->assertInstanceOf(Request::class, $lazyProp());
+        static::assertInstanceOf(Request::class, $lazyProp());
     }
 }

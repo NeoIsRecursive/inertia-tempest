@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Inertia;
@@ -31,9 +33,9 @@ final class InertiaTest extends TestCase
 
         $response = $factory->location('https://inertiajs.com');
 
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals(Status::CONFLICT, $response->status);
-        $this->assertEquals('https://inertiajs.com', $response->getHeader(Header::LOCATION)->values[0]);
+        static::assertInstanceOf(Response::class, $response);
+        static::assertSame(Status::CONFLICT, $response->status);
+        static::assertSame('https://inertiajs.com', $response->getHeader(Header::LOCATION)->values[0]);
     }
 
     public function test_location_response_for_non_inertia_requests(): void
@@ -42,9 +44,9 @@ final class InertiaTest extends TestCase
 
         $response = $factory->location('https://inertiajs.com');
 
-        $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->status);
-        $this->assertEquals('https://inertiajs.com', $response->getHeader('Location')->values[0]);
+        static::assertInstanceOf(Redirect::class, $response);
+        static::assertSame(Status::FOUND, $response->status);
+        static::assertSame('https://inertiajs.com', $response->getHeader('Location')->values[0]);
     }
 
     public function test_location_response_for_inertia_requests_using_redirect_response(): void
@@ -55,9 +57,9 @@ final class InertiaTest extends TestCase
         $redirect = new Redirect('https://inertiajs.com');
         $response = $factory->location($redirect);
 
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals(Status::CONFLICT, $response->status);
-        $this->assertEquals('https://inertiajs.com', $response->getHeader(Header::LOCATION)->values[0]);
+        static::assertInstanceOf(Response::class, $response);
+        static::assertSame(Status::CONFLICT, $response->status);
+        static::assertSame('https://inertiajs.com', $response->getHeader(Header::LOCATION)->values[0]);
     }
 
     public function test_location_response_for_non_inertia_requests_using_redirect_response(): void
@@ -65,18 +67,18 @@ final class InertiaTest extends TestCase
         $redirect = new Redirect(to: 'https://inertiajs.com');
         $response = $this->createFactory()->location($redirect);
 
-        $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->status);
-        $this->assertEquals('https://inertiajs.com', $response->getHeader('Location')->values[0]);
+        static::assertInstanceOf(Redirect::class, $response);
+        static::assertSame(Status::FOUND, $response->status);
+        static::assertSame('https://inertiajs.com', $response->getHeader('Location')->values[0]);
     }
 
     public function test_location_redirects_are_not_modified(): void
     {
         $response = $this->createFactory()->location('/foo');
 
-        $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->status);
-        $this->assertEquals('/foo', $response->getHeader('Location')->values[0]);
+        static::assertInstanceOf(Redirect::class, $response);
+        static::assertSame(Status::FOUND, $response->status);
+        static::assertSame('/foo', $response->getHeader('Location')->values[0]);
     }
 
     public function test_location_response_for_non_inertia_requests_using_redirect_response_with_existing_session_and_request_properties(): void
@@ -85,12 +87,12 @@ final class InertiaTest extends TestCase
         $redirect->addSession('foo', 'bar');
         $response = $this->createFactory()->location($redirect);
 
-        $this->assertInstanceOf(Redirect::class, $response);
-        $this->assertEquals(Status::FOUND, $response->status);
-        $this->assertEquals('https://inertiajs.com', $response->getHeader('Location')->values[0]);
+        static::assertInstanceOf(Redirect::class, $response);
+        static::assertSame(Status::FOUND, $response->status);
+        static::assertSame('https://inertiajs.com', $response->getHeader('Location')->values[0]);
         // $this->assertSame(get(Session::class), $response->());
         // $this->assertSame($request, $response->getRequest());
-        $this->assertSame($response, $redirect);
+        static::assertSame($response, $redirect);
     }
 
     public function test_shared_data_can_be_shared_from_anywhere(): void
@@ -100,13 +102,13 @@ final class InertiaTest extends TestCase
         $response = $this->http->get(uri([TestController::class, 'testCanSharePropsFromAnyWhere']), headers: [Header::INERTIA => 'true', Header::VERSION => $version]);
 
         $response->assertOk();
-        $this->assertEquals([
+        static::assertSame([
             'component' => 'User/Edit',
             'props' => [
                 'user' => null,
+                'errors' => [],
                 'foo' => 'bar',
                 'baz' => 'qux',
-                'errors' => [],
             ],
             'url' => uri([TestController::class, 'testCanSharePropsFromAnyWhere']),
             'version' => $version,
@@ -118,10 +120,10 @@ final class InertiaTest extends TestCase
         get(Inertia::class)->share('foo', 'bar');
 
 
-        $this->assertArrayHasKey('foo', get(InertiaConfig::class)->sharedProps, 'bar');
+        static::assertArrayHasKey('foo', get(InertiaConfig::class)->sharedProps, 'bar');
         get(Inertia::class)->flushShared();
 
-        $this->assertSame([], get(InertiaConfig::class)->sharedProps);
+        static::assertSame([], get(InertiaConfig::class)->sharedProps);
     }
 
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Support\ResolveErrorProps;

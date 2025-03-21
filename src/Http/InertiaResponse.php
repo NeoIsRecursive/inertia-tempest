@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Http;
 
 use Closure;
@@ -162,10 +164,10 @@ final class InertiaResponse implements Response
      * @pure
      * Evaluates props recursively.
      */
-    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array
+    private static function evaluateProps(array $props, Request $request): array
     {
         return arr($props)
-            ->map(function ($value, string|int $key) use ($request) {
+            ->map(function ($value, string|int $key) use ($request): array {
                 $evaluated = $value instanceof Closure ? invoke($value) : $value;
                 $evaluated = ($evaluated instanceof LazyProp || $evaluated instanceof AlwaysProp)
                     ? $evaluated()
@@ -180,9 +182,9 @@ final class InertiaResponse implements Response
                 return [$key, $evaluated];
             })
             ->reduce(
-                function (array $acc, array $item) use ($unpackDotProps) {
+                function (array $acc, array $item): array {
                     [$key, $value] = $item;
-                    if ($unpackDotProps && str_contains($key, '.')) {
+                    if (str_contains($key, '.')) {
                         return arr($acc)->set($key, $value)->toArray();
                     }
                     $acc[$key] = $value;

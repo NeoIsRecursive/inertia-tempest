@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia;
 
 use Closure;
@@ -29,9 +31,10 @@ final class InertiaConfig
     {
         if (is_array($key)) {
             $this->sharedProps = array_merge($this->sharedProps, $key);
-        } else {
-            $this->sharedProps[$key] = $value;
+            return $this;
         }
+
+        $this->sharedProps[$key] = $value;
 
         return $this;
     }

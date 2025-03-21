@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia;
 
 use NeoIsRecursive\Inertia\Contracts\InertiaVersionResolver;

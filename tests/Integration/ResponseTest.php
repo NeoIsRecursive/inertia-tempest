@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
@@ -28,14 +30,14 @@ final class ResponseTest extends TestCase
         $view = $response->body;
         $page = $view->get('pageData');
 
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertInstanceOf(View::class, $view);
+        static::assertInstanceOf(Response::class, $response);
+        static::assertInstanceOf(View::class, $view);
 
-        $this->assertSame('User/Edit', $page['component']);
-        $this->assertSame('Jonathan', $page['props']['user']['name']);
-        $this->assertSame('/user/123', $page['url']);
-        $this->assertSame('123', $page['version']);
-        $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;}"></div>',  get(ViewRenderer::class)->render($view));
+        static::assertSame('User/Edit', $page['component']);
+        static::assertSame('Jonathan', $page['props']['user']['name']);
+        static::assertSame('/user/123', $page['url']);
+        static::assertSame('123', $page['version']);
+        static::assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;}"></div>',  get(ViewRenderer::class)->render($view));
     }
 
     public function test_xhr_response(): void
@@ -47,12 +49,12 @@ final class ResponseTest extends TestCase
 
         $page = $response->body;
 
-        $this->assertInstanceOf(Response::class, $response);
+        static::assertInstanceOf(Response::class, $response);
 
-        $this->assertSame('User/Edit', $page['component']);
-        $this->assertSame('Jonathan', $page['props']['user']['name']);
-        $this->assertSame('/user/123', $page['url']);
-        $this->assertSame('123', $page['version']);
+        static::assertSame('User/Edit', $page['component']);
+        static::assertSame('Jonathan', $page['props']['user']['name']);
+        static::assertSame('/user/123', $page['url']);
+        static::assertSame('123', $page['version']);
     }
 
     // public function test_resource_response(): void
@@ -86,7 +88,7 @@ final class ResponseTest extends TestCase
             ['name' => 'Jeffrey'],
         ];
 
-        $callable = static function () use ($users) {
+        $callable = static function () use ($users): array {
             return [
                 'data' => array_slice($users, 0, 2),
             ];
@@ -105,12 +107,12 @@ final class ResponseTest extends TestCase
             ],
         ];
 
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame('User/Index', $page['component']);
-        $this->assertSame('/users?page=1', $page['url']);
-        $this->assertSame('123', $page['version']);
+        static::assertInstanceOf(Response::class, $response);
+        static::assertSame('User/Index', $page['component']);
+        static::assertSame('/users?page=1', $page['url']);
+        static::assertSame('123', $page['version']);
 
-        $this->assertSame(json_encode($expected), json_encode($page['props']));
+        static::assertSame(json_encode($expected), json_encode($page['props']));
     }
 
     // public function test_nested_lazy_resource_response(): void
@@ -224,13 +226,13 @@ final class ResponseTest extends TestCase
 
         $props = $page['props'];
 
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame('User/Edit', $page['component']);
-        $this->assertFalse(isset($props['user']));
-        $this->assertCount(1, $props);
-        $this->assertSame('partial-data', $page['props']['partial']);
-        $this->assertSame('/user/123', $page['url']);
-        $this->assertSame('123', $page['version']);
+        static::assertInstanceOf(Response::class, $response);
+        static::assertSame('User/Edit', $page['component']);
+        static::assertFalse(isset($props['user']));
+        static::assertCount(1, $props);
+        static::assertSame('partial-data', $page['props']['partial']);
+        static::assertSame('/user/123', $page['url']);
+        static::assertSame('123', $page['version']);
     }
 
     public function test_exclude_props_from_partial_response(): void
@@ -250,28 +252,26 @@ final class ResponseTest extends TestCase
 
         $props = $page['props'];
 
-        $this->assertInstanceOf(Response::class, $response);
-        $this->assertSame('User/Edit', $page['component']);
-        $this->assertFalse(isset($props['user']));
-        $this->assertCount(1, $props);
-        $this->assertSame('partial-data', $page['props']['partial']);
-        $this->assertSame('/user/123', $page['url']);
-        $this->assertSame('123', $page['version']);
+        static::assertInstanceOf(Response::class, $response);
+        static::assertSame('User/Edit', $page['component']);
+        static::assertFalse(isset($props['user']));
+        static::assertCount(1, $props);
+        static::assertSame('partial-data', $page['props']['partial']);
+        static::assertSame('/user/123', $page['url']);
+        static::assertSame('123', $page['version']);
     }
 
     public function test_lazy_props_are_not_included_by_default(): void
     {
         $request = $this->createInertiaRequest(Method::GET, '/users');
 
-        $lazyProp = new LazyProp(function () {
-            return 'A lazy value';
-        });
+        $lazyProp = new LazyProp(fn() => 'A lazy value');
 
         $response = new InertiaResponse($request, 'Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
         $page = $response->body;
 
-        $this->assertSame([], $page['props']['users']);
-        $this->assertFalse(array_key_exists('lazy', $page['props']));
+        static::assertSame([], $page['props']['users']);
+        static::assertFalse(array_key_exists('lazy', $page['props']));
     }
 
     public function test_lazy_props_are_included_in_partial_reload(): void
@@ -281,15 +281,15 @@ final class ResponseTest extends TestCase
             Header::PARTIAL_ONLY => 'lazy',
         ]);
 
-        $lazyProp = new LazyProp(function () {
+        $lazyProp = new LazyProp(function (): string {
             return 'A lazy value';
         });
 
         $response = new InertiaResponse($request, 'Users', ['users' => [], 'lazy' => $lazyProp], 'app', '123');
         $page = $response->body;
 
-        $this->assertFalse(array_key_exists('users', $page['props']));
-        $this->assertSame('A lazy value', $page['props']['lazy']);
+        static::assertFalse(array_key_exists('users', $page['props']));
+        static::assertSame('A lazy value', $page['props']['lazy']);
     }
 
     public function test_always_props_are_included_on_partial_reload(): void
@@ -300,7 +300,7 @@ final class ResponseTest extends TestCase
         ]);
 
         $props = [
-            'user' => new LazyProp(function () {
+            'user' => new LazyProp(function (): array {
                 return [
                     'name' => 'Jonathan Reinink',
                     'email' => 'jonathan@example.com',
@@ -309,7 +309,7 @@ final class ResponseTest extends TestCase
             'data' => [
                 'name' => 'Taylor Otwell',
             ],
-            'errors' => new AlwaysProp(function () {
+            'errors' => new AlwaysProp(function (): array {
                 return [
                     'name' => 'The email field is required.',
                 ];
@@ -319,9 +319,9 @@ final class ResponseTest extends TestCase
         $response = new InertiaResponse($request, 'User/Edit', $props, 'app', '123');
         $page = $response->body;
 
-        $this->assertSame('The email field is required.', $page['props']['errors']['name']);
-        $this->assertSame('Taylor Otwell', $page['props']['data']['name']);
-        $this->assertFalse(isset($page['props']['user']));
+        static::assertSame('The email field is required.', $page['props']['errors']['name']);
+        static::assertSame('Taylor Otwell', $page['props']['data']['name']);
+        static::assertFalse(isset($page['props']['user']));
     }
 
     public function test_top_level_dot_props_get_unpacked(): void
@@ -348,9 +348,9 @@ final class ResponseTest extends TestCase
         $page = $response->body;
 
         $user = $page['props']['auth']['user'];
-        $this->assertSame('Jonathan Reinink', $user['name']);
-        $this->assertTrue($user['can']['do.stuff']);
-        $this->assertFalse(array_key_exists('auth.user.can', $page['props']));
+        static::assertSame('Jonathan Reinink', $user['name']);
+        static::assertTrue($user['can']['do.stuff']);
+        static::assertFalse(array_key_exists('auth.user.can', $page['props']));
     }
 
     public function test_nested_dot_props_do_not_get_unpacked(): void
@@ -376,9 +376,9 @@ final class ResponseTest extends TestCase
         $page = $response->body;
 
         $auth = $page['props']['auth'];
-        $this->assertSame('Jonathan Reinink', $auth['user']['name']);
-        $this->assertTrue($auth['user.can']['do.stuff']);
-        $this->assertFalse(array_key_exists('can', $auth));
+        static::assertSame('Jonathan Reinink', $auth['user']['name']);
+        static::assertTrue($auth['user.can']['do.stuff']);
+        static::assertFalse(array_key_exists('can', $auth));
     }
 
     // public function test_responsable_with_invalid_key(): void
@@ -446,7 +446,7 @@ final class ResponseTest extends TestCase
         $view = $response->body;
         $page = $view->get('pageData');
 
-        $this->assertSame([2022, 2023, 2024], $page['props']['years']);
+        static::assertSame([2022, 2023, 2024], $page['props']['years']);
     }
 
     public function test_dot_notation_props_are_merged_with_shared_props(): void
@@ -462,7 +462,7 @@ final class ResponseTest extends TestCase
         $view = $response->body;
         $page = $view->get('pageData');
 
-        $this->assertSame([
+        static::assertSame([
             'auth' => [
                 'user' => [
                     'name' => 'Jonathan',
@@ -478,7 +478,7 @@ final class ResponseTest extends TestCase
         $request = new GenericRequest(Method::GET, '/years');
 
         $response = new InertiaResponse($request, 'Test', [
-            'auth' => function () {
+            'auth' => function (): array {
                 return ['user' => ['name' => 'Jonathan']];
             },
             'auth.user.is_super' => true,
@@ -488,7 +488,7 @@ final class ResponseTest extends TestCase
         $view = $response->body;
         $page = $view->get('pageData');
 
-        $this->assertSame([
+        static::assertSame([
             'auth' => [
                 'user' => [
                     'name' => 'Jonathan',
@@ -510,7 +510,7 @@ final class ResponseTest extends TestCase
         $view = $response->body;
         $page = $view->get('pageData');
 
-        $this->assertSame([
+        static::assertSame([
             'auth' => [
                 'user' => [
                     'name' => 'Jonathan',
@@ -540,13 +540,13 @@ final class ResponseTest extends TestCase
 
         $pageData = $response->body;
 
-        $this->assertIsArray($pageData);
+        static::assertIsArray($pageData);
 
-        $this->assertSame('User/Edit', $pageData['component']);
-        $this->assertSame('Jonathan', $pageData['props']['user']['name']);
-        $this->assertSame('/user/123', $pageData['url']);
-        $this->assertSame('123', $pageData['version']);
-        $this->assertSame([
+        static::assertSame('User/Edit', $pageData['component']);
+        static::assertSame('Jonathan', $pageData['props']['user']['name']);
+        static::assertSame('/user/123', $pageData['url']);
+        static::assertSame('123', $pageData['version']);
+        static::assertSame([
             'default' => ['foo'],
         ], $pageData['deferredProps']);
         // $this->assertFalse($pageData['clearHistory']);
@@ -563,13 +563,13 @@ final class ResponseTest extends TestCase
             page: 'User/Edit',
             props: [
                 'user' => $user,
-                'foo' => new DeferProp(function () {
+                'foo' => new DeferProp(function (): string {
                     return 'foo value';
                 }, 'default'),
-                'bar' => new DeferProp(function () {
+                'bar' => new DeferProp(function (): string {
                     return 'bar value';
                 }, 'default'),
-                'baz' => new DeferProp(function () {
+                'baz' => new DeferProp(function (): string {
                     return 'baz value';
                 }, 'custom'),
             ],
@@ -579,11 +579,11 @@ final class ResponseTest extends TestCase
 
         $page = $response->body;
 
-        $this->assertSame('User/Edit', $page['component']);
-        $this->assertSame('Jonathan', $page['props']['user']['name']);
-        $this->assertSame('/user/123', $page['url']);
-        $this->assertSame('123', $page['version']);
-        $this->assertSame([
+        static::assertSame('User/Edit', $page['component']);
+        static::assertSame('Jonathan', $page['props']['user']['name']);
+        static::assertSame('/user/123', $page['url']);
+        static::assertSame('123', $page['version']);
+        static::assertSame([
             'default' => ['foo', 'bar'],
             'custom' => ['baz'],
         ], $page['deferredProps']);

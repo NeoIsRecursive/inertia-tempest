@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Inertia;
@@ -12,11 +14,11 @@ final class HelperTest extends TestCase
 {
     public function test_the_helper_function_returns_an_instance_of_the_response_factory(): void
     {
-        $this->assertInstanceOf(Inertia::class, inertia());
+        static::assertInstanceOf(Inertia::class, inertia());
     }
 
     public function test_the_helper_function_returns_a_response_instance(): void
     {
-        $this->assertInstanceOf(Response::class, inertia('User/Edit', ['user' => ['name' => 'Jonathan']]));
+        static::assertInstanceOf(Response::class, inertia('User/Edit', ['user' => ['name' => 'Jonathan']]));
     }
 }

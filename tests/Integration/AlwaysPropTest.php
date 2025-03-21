@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
@@ -14,22 +16,22 @@ final class AlwaysPropTest extends TestCase
             return 'An always value';
         });
 
-        $this->assertSame('An always value', $alwaysProp());
+        static::assertSame('An always value', $alwaysProp());
     }
 
     public function test_can_accept_scalar_values(): void
     {
         $alwaysProp = new AlwaysProp('An always value');
 
-        $this->assertSame('An always value', $alwaysProp());
+        static::assertSame('An always value', $alwaysProp());
     }
 
     public function test_can_accept_invokable_class(): void
     {
-        $this->markTestSkipped('Dont really know if this is necessary or possible');
+        static::markTestSkipped('Dont really know if this is necessary or possible');
 
         $callable = new class() {
-            public function __invoke()
+            public function __invoke(): string
             {
                 return 'An always value';
             }
@@ -37,7 +39,7 @@ final class AlwaysPropTest extends TestCase
 
         $alwaysProp = new AlwaysProp(fn() => $callable);
 
-        $this->assertSame('An always value', $alwaysProp());
+        static::assertSame('An always value', $alwaysProp());
     }
 
     public function test_can_resolve_bindings_when_invoked(): void
@@ -46,6 +48,6 @@ final class AlwaysPropTest extends TestCase
             return $request;
         });
 
-        $this->assertInstanceOf(Request::class, $alwaysProp());
+        static::assertInstanceOf(Request::class, $alwaysProp());
     }
 }

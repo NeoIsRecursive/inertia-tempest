@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Props\DeferProp;
@@ -14,14 +16,14 @@ final class DeferPropsTest extends TestCase
             return 'A lazy value';
         });
 
-        $this->assertSame('A lazy value', $deferProp());
+        static::assertSame('A lazy value', $deferProp());
     }
 
     public function test_can_accept_scalar_values(): void
     {
         $deferProp = new DeferProp(fn() => 'A lazy value');
 
-        $this->assertSame('A lazy value', $deferProp());
+        static::assertSame('A lazy value', $deferProp());
     }
 
     public function test_can_resolve_bindings_when_invoked(): void
@@ -30,6 +32,6 @@ final class DeferPropsTest extends TestCase
             return $request;
         });
 
-        $this->assertInstanceOf(Request::class, $deferProp());
+        static::assertInstanceOf(Request::class, $deferProp());
     }
 }

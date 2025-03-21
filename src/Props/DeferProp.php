@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Props;
 
 use Closure;
@@ -20,7 +22,7 @@ final class DeferProp implements MergeableProp
         public private(set) bool $shouldMerge = false
     ) {}
 
-    public function __invoke()
+    public function __invoke(): mixed
     {
         return invoke($this->callback);
     }

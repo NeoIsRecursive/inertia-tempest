@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Props;
 
 use Closure;
@@ -19,7 +21,7 @@ final class AlwaysProp implements MergeableProp
         public private(set) bool $shouldMerge = false
     ) {}
 
-    public function __invoke()
+    public function __invoke(): mixed
     {
         return is_callable($this->value) ? invoke($this->value) : $this->value;
     }

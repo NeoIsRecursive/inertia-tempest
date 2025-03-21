@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NeoIsRecursive\Inertia\Http;
 
 use NeoIsRecursive\Inertia\Inertia;
@@ -45,7 +47,7 @@ final class Middleware implements HttpMiddleware
             return $this->inertia->location($request->uri);
         }
 
-        if ($response->status === Status::FOUND && in_array($request->method, [Method::POST, Method::PUT, Method::PATCH])) {
+        if ($response->status === Status::FOUND && in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)) {
             // TODO: set status to 303
             // return new GenericResponse(
             //     status: Status::SEE_OTHER,

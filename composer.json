@@ -17,7 +17,9 @@
     }
   },
   "scripts": {
-    "test": "vendor/bin/phpunit"
+    "test": "vendor/bin/phpunit",
+    "mago:lint": "vendor/bin/mago lint",
+    "mago:fix": "vendor/bin/mago fix"
   },
   "authors": [
     {
@@ -29,13 +31,15 @@
     "php": "^8.4",
     "tempest/framework": "dev-main"
   },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0",
+    "carthage-software/mago": "^0.20"
+  },
   "config": {
     "allow-plugins": {
-      "php-http/discovery": true
+      "php-http/discovery": true,
+      "carthage-software/mago": true
     }
   },
-  "minimum-stability": "dev",
-  "require-dev": {
-    "phpunit/phpunit": "^11.0"
-  }
+  "minimum-stability": "dev"
 }
