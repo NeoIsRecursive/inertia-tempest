@@ -4,7 +4,7 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
-use NeoIsRecursive\Inertia\Props\DeferredProp;
+use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\TestCase;
@@ -530,7 +530,7 @@ final class ResponseTest extends TestCase
             page: 'User/Edit',
             props: [
                 'user' => $user,
-                'foo' => new DeferredProp(function () {
+                'foo' => new DeferProp(function () {
                     return 'bar';
                 }, group: 'default'),
             ],
@@ -563,13 +563,13 @@ final class ResponseTest extends TestCase
             page: 'User/Edit',
             props: [
                 'user' => $user,
-                'foo' => new DeferredProp(function () {
+                'foo' => new DeferProp(function () {
                     return 'foo value';
                 }, 'default'),
-                'bar' => new DeferredProp(function () {
+                'bar' => new DeferProp(function () {
                     return 'bar value';
                 }, 'default'),
-                'baz' => new DeferredProp(function () {
+                'baz' => new DeferProp(function () {
                     return 'baz value';
                 }, 'custom'),
             ],

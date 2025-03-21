@@ -5,7 +5,7 @@ namespace NeoIsRecursive\Inertia\Http;
 use Closure;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
-use NeoIsRecursive\Inertia\Props\DeferredProp;
+use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
@@ -111,7 +111,7 @@ final class InertiaResponse implements Response
         $headers = $request->headers;
 
         if (!static::isPartial($request, $component)) {
-            return array_filter($props, static fn($prop) => !($prop instanceof LazyProp || $prop instanceof DeferredProp));
+            return array_filter($props, static fn($prop) => !($prop instanceof LazyProp || $prop instanceof DeferProp));
         }
 
         $only = array_filter(explode(',', $headers[Header::PARTIAL_ONLY] ?? ''));
@@ -137,9 +137,9 @@ final class InertiaResponse implements Response
 
         return arr($props)
             ->filter(function ($prop) {
-                return $prop instanceof DeferredProp;
+                return $prop instanceof DeferProp;
             })
-            ->map(fn(DeferredProp $prop, string $key) => [
+            ->map(fn(DeferProp $prop, string $key) => [
                 'group' => $prop->group,
                 'key'   => $key,
             ])
