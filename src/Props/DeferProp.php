@@ -10,12 +10,13 @@ use Tempest\Reflection\MethodReflector;
 
 use function Tempest\invoke;
 
-final class DeferredProp implements MergeableProp
+final class DeferProp implements MergeableProp
 {
     use IsMergeableProp;
 
     public function __construct(
         public MethodReflector|FunctionReflector|string|array|Closure $callback,
+        public string $group = 'default',
         public private(set) bool $shouldMerge = false
     ) {}
 

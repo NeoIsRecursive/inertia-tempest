@@ -6,7 +6,7 @@ use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use Tempest\Router\Request;
 
-class MergePropTest extends TestCase
+final class MergePropTest extends TestCase
 {
     public function test_can_invoke_with_a_callback(): void
     {

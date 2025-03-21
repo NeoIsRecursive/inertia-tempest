@@ -1,0 +1,8 @@
+{
+  "src/main.tsx": {
+    "file": "assets/main-CMDOL_K2.tsx",
+    "name": "main",
+    "src": "src/main.tsx",
+    "isEntry": true
+  }
+}

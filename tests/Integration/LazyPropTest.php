@@ -6,7 +6,7 @@ use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use Tempest\Router\Request;
 
-class LazyPropTest extends TestCase
+final class LazyPropTest extends TestCase
 {
     public function test_can_invoke(): void
     {
