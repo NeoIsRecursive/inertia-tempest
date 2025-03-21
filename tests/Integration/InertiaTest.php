@@ -105,6 +105,7 @@ final class InertiaTest extends TestCase
             'props' => [
                 'user' => null,
                 'foo' => 'bar',
+                'baz' => 'qux',
                 'errors' => [],
             ],
             'url' => uri([TestController::class, 'testCanSharePropsFromAnyWhere']),

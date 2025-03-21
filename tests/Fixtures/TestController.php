@@ -23,6 +23,10 @@ final readonly class TestController
     {
         $inertia->share('foo', 'bar');
 
+        $inertia->share([
+            'baz' => 'qux',
+        ]);
+
         return inertia('User/Edit');
     }
 
