@@ -139,10 +139,12 @@ final class InertiaResponse implements Response
             ->filter(function ($prop) {
                 return $prop instanceof DeferredProp;
             })
-            ->groupBy(fn(DeferredProp $prop) => $prop->group)
-            ->map(function (array $group) {
-                return arr($group)->keys()->toArray();
-            })
+            ->map(fn(DeferredProp $prop, string $key) => [
+                'group' => $prop->group,
+                'key'   => $key,
+            ])
+            ->groupBy(fn(array $prop) => $prop['group'])
+            ->map(fn(array $group) => arr($group)->pluck('key')->toArray())
             ->toArray();
     }
 
