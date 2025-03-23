@@ -27,7 +27,7 @@ final class InertiaTest extends TestCase
 
     public function test_location_response_for_inertia_requests(): void
     {
-        $this->container->singleton(Request::class, fn() =>  $this->createInertiaRequest(Method::GET, '/'));
+        $this->container->singleton(Request::class, fn() => $this->createInertiaRequest(Method::GET, '/'));
 
         $factory = $this->createFactory();
 
@@ -51,7 +51,7 @@ final class InertiaTest extends TestCase
 
     public function test_location_response_for_inertia_requests_using_redirect_response(): void
     {
-        $this->container->singleton(Request::class, fn() =>  $this->createInertiaRequest(Method::GET, '/'));
+        $this->container->singleton(Request::class, fn() => $this->createInertiaRequest(Method::GET, '/'));
         $factory = $this->createFactory();
 
         $redirect = new Redirect('https://inertiajs.com');
@@ -99,7 +99,10 @@ final class InertiaTest extends TestCase
     {
         $version = get(Inertia::class)->version;
 
-        $response = $this->http->get(uri([TestController::class, 'testCanSharePropsFromAnyWhere']), headers: [Header::INERTIA => 'true', Header::VERSION => $version]);
+        $response = $this->http->get(uri([TestController::class, 'testCanSharePropsFromAnyWhere']), headers: [
+            Header::INERTIA => 'true',
+            Header::VERSION => $version,
+        ]);
 
         $response->assertOk();
         static::assertSame([
@@ -119,19 +122,16 @@ final class InertiaTest extends TestCase
     {
         get(Inertia::class)->share('foo', 'bar');
 
-
         static::assertArrayHasKey('foo', get(InertiaConfig::class)->sharedProps, 'bar');
         get(Inertia::class)->flushShared();
 
         static::assertSame([], get(InertiaConfig::class)->sharedProps);
     }
 
-
     // public function test_will_accept_arrayabe_props()
     // {
     //     Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
     //         Inertia::share('foo', 'bar');
-
     //         return Inertia::render('User/Edit', new class() implements Arrayable {
     //             public function toArray()
     //             {
@@ -141,7 +141,6 @@ final class InertiaTest extends TestCase
     //             }
     //         });
     //     });
-
     //     $response = $this->http->get('/', ['X-Inertia' => 'true']);
     //     $response->assertSuccessful();
     //     $response->assertJson([

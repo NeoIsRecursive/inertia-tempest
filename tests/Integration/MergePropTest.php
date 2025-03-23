@@ -12,7 +12,7 @@ final class MergePropTest extends TestCase
 {
     public function test_can_invoke_with_a_callback(): void
     {
-        $mergeProp = new AlwaysProp(fn() =>  'A merge prop value')->merge();
+        $mergeProp = new AlwaysProp(fn() => 'A merge prop value')->merge();
 
         static::assertSame('A merge prop value', $mergeProp());
     }
@@ -26,9 +26,7 @@ final class MergePropTest extends TestCase
 
     public function test_can_resolve_bindings_when_invoked(): void
     {
-        $mergeProp = new AlwaysProp(
-            fn(Request $request) => $request
-        )->merge();
+        $mergeProp = new AlwaysProp(fn(Request $request) => $request)->merge();
 
         static::assertInstanceOf(Request::class, $mergeProp());
     }

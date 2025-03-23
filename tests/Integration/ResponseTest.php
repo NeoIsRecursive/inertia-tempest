@@ -11,8 +11,8 @@ use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
-use Tempest\Router\GenericRequest;
 use Tempest\Http\Method;
+use Tempest\Router\GenericRequest;
 use Tempest\Router\Response;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
@@ -26,7 +26,13 @@ final class ResponseTest extends TestCase
         $request = new GenericRequest(Method::GET, '/user/123');
 
         $user = ['name' => 'Jonathan'];
-        $response = new InertiaResponse($request, 'User/Edit', ['user' => $user], __DIR__ . '/../Fixtures/root.view.php', '123');
+        $response = new InertiaResponse(
+            $request,
+            'User/Edit',
+            ['user' => $user],
+            __DIR__ . '/../Fixtures/root.view.php',
+            '123',
+        );
         $view = $response->body;
         $page = $view->get('pageData');
 
@@ -37,7 +43,10 @@ final class ResponseTest extends TestCase
         static::assertSame('Jonathan', $page['props']['user']['name']);
         static::assertSame('/user/123', $page['url']);
         static::assertSame('123', $page['version']);
-        static::assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;}"></div>',  get(ViewRenderer::class)->render($view));
+        static::assertSame(
+            '<main>     <div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;}"></div></main>',
+            get(ViewRenderer::class)->render($view),
+        );
     }
 
     public function test_xhr_response(): void
@@ -220,7 +229,13 @@ final class ResponseTest extends TestCase
         ]);
 
         $user = (object) ['name' => 'Jonathan'];
-        $response = new InertiaResponse($request, 'User/Edit', ['user' => $user, 'partial' => 'partial-data'], 'app', '123');
+        $response = new InertiaResponse(
+            $request,
+            'User/Edit',
+            ['user' => $user, 'partial' => 'partial-data'],
+            'app',
+            '123',
+        );
 
         $page = $response->body;
 
@@ -243,10 +258,16 @@ final class ResponseTest extends TestCase
         ]);
 
         $user = (object) ['name' => 'Jonathan'];
-        $response = new InertiaResponse($request, 'User/Edit', [
-            'user' => $user,
-            'partial' => 'partial-data',
-        ], 'app', '123');
+        $response = new InertiaResponse(
+            $request,
+            'User/Edit',
+            [
+                'user' => $user,
+                'partial' => 'partial-data',
+            ],
+            'app',
+            '123',
+        );
 
         $page = $response->body;
 
@@ -453,11 +474,16 @@ final class ResponseTest extends TestCase
     {
         $request = new GenericRequest(Method::GET, '/years');
 
-        $response = new InertiaResponse($request, 'Test', [
-            'auth' => ['user' => ['name' => 'Jonathan']], // shared prop
-            'auth.user.is_super' => true,
-        ], 'app', '123');
-
+        $response = new InertiaResponse(
+            $request,
+            'Test',
+            [
+                'auth' => ['user' => ['name' => 'Jonathan']], // shared prop
+                'auth.user.is_super' => true,
+            ],
+            'app',
+            '123',
+        );
 
         $view = $response->body;
         $page = $view->get('pageData');
@@ -474,15 +500,20 @@ final class ResponseTest extends TestCase
 
     public function test_dot_notation_props_are_merged_with_lazy_shared_props(): void
     {
-
         $request = new GenericRequest(Method::GET, '/years');
 
-        $response = new InertiaResponse($request, 'Test', [
-            'auth' => function (): array {
-                return ['user' => ['name' => 'Jonathan']];
-            },
-            'auth.user.is_super' => true,
-        ], 'app', '123');
+        $response = new InertiaResponse(
+            $request,
+            'Test',
+            [
+                'auth' => function (): array {
+                    return ['user' => ['name' => 'Jonathan']];
+                },
+                'auth.user.is_super' => true,
+            ],
+            'app',
+            '123',
+        );
 
         /** @var InertiaBaseView */
         $view = $response->body;
@@ -502,10 +533,16 @@ final class ResponseTest extends TestCase
     {
         $request = new GenericRequest(Method::GET, '/years');
 
-        $response = new InertiaResponse($request, 'Test', [
-            'auth.user' => ['name' => 'Jonathan'],
-            'auth.user.is_super' => true,
-        ], 'app', '123');
+        $response = new InertiaResponse(
+            $request,
+            'Test',
+            [
+                'auth.user' => ['name' => 'Jonathan'],
+                'auth.user.is_super' => true,
+            ],
+            'app',
+            '123',
+        );
 
         $view = $response->body;
         $page = $view->get('pageData');
@@ -549,6 +586,7 @@ final class ResponseTest extends TestCase
         static::assertSame([
             'default' => ['foo'],
         ], $pageData['deferredProps']);
+
         // $this->assertFalse($pageData['clearHistory']);
         // $this->assertFalse($pageData['encryptHistory']);
     }
@@ -574,7 +612,7 @@ final class ResponseTest extends TestCase
                 }, 'custom'),
             ],
             rootView: 'app',
-            version: '123'
+            version: '123',
         );
 
         $page = $response->body;
@@ -587,6 +625,7 @@ final class ResponseTest extends TestCase
             'default' => ['foo', 'bar'],
             'custom' => ['baz'],
         ], $page['deferredProps']);
+
         // $this->assertFalse($page['clearHistory']);
         // $this->assertFalse($page['encryptHistory']);
         // $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false,&quot;deferredProps&quot;:{&quot;default&quot;:[&quot;foo&quot;,&quot;bar&quot;],&quot;custom&quot;:[&quot;baz&quot;]}}"></div>', $view->render());

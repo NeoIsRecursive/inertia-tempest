@@ -11,7 +11,10 @@ use function Tempest\root_path;
 
 final readonly class ManifestVersionResolver implements InertiaVersionResolver
 {
-    public function __construct(public ?string $manifestPath = null) {}
+    public function __construct(
+        public null|string $manifestPath = null,
+    ) {
+    }
 
     public function resolve(Container $container): string
     {
@@ -21,6 +24,6 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
             return hash_file('xxh128', $manifestPath);
         }
 
-        return "";
+        return '';
     }
 }

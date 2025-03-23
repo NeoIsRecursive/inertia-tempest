@@ -6,7 +6,9 @@ namespace NeoIsRecursive\Inertia\Contracts;
 
 interface MergeableProp
 {
-    public bool $shouldMerge { get; }
+    public bool $shouldMerge {
+        get;
+    }
 
     public function merge(): self;
 }

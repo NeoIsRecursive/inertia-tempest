@@ -19,7 +19,13 @@
   "scripts": {
     "test": "vendor/bin/phpunit",
     "mago:lint": "vendor/bin/mago lint",
-    "mago:fix": "vendor/bin/mago fix"
+    "mago:fix": "vendor/bin/mago lint --fix",
+    "mago:fmt": "vendor/bin/mago fmt",
+    "qa": [
+      "@mago:fmt",
+      "@mago:lint",
+      "@test"
+    ]
   },
   "authors": [
     {

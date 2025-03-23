@@ -13,7 +13,6 @@ use function NeoIsRecursive\Inertia\inertia;
 
 final readonly class TestController
 {
-
     public function index(): InertiaResponse
     {
         return inertia('Index');

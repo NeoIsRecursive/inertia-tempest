@@ -24,7 +24,6 @@ abstract class TestCase extends IntegrationTest
             path: __DIR__ . '/Fixtures',
         );
 
-
         parent::setUp();
 
         $this->actAsHttpApplication();
@@ -32,9 +31,7 @@ abstract class TestCase extends IntegrationTest
 
     protected function actAsHttpApplication(): HttpApplication
     {
-        $application = new HttpApplication(
-            $this->container,
-        );
+        $application = new HttpApplication($this->container);
 
         $this->container->singleton(Application::class, fn() => $application);
 

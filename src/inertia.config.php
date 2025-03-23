@@ -14,5 +14,5 @@ return new InertiaConfig(
     sharedProps: [
         'user' => new AlwaysProp(fn(Authenticator $auth) => $auth->currentUser()),
         'errors' => new AlwaysProp(fn(ResolveErrorProps $errors) => $errors->resolve()),
-    ]
+    ],
 );

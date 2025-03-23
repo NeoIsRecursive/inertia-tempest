@@ -18,8 +18,9 @@ final class LazyProp implements MergeableProp
 
     public function __construct(
         public MethodReflector|FunctionReflector|string|array|Closure $callback,
-        public private(set) bool $shouldMerge = false
-    ) {}
+        public private(set) bool $shouldMerge = false,
+    ) {
+    }
 
     public function __invoke(): mixed
     {

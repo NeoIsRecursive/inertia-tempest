@@ -19,7 +19,11 @@ use Tempest\Router\Router;
 
 final class Middleware implements HttpMiddleware
 {
-    public function __construct(private Inertia $inertia, private Container $container) {}
+    public function __construct(
+        private Inertia $inertia,
+        private Container $container,
+    ) {
+    }
 
     #[EventHandler(event: KernelEvent::BOOTED)]
     public function register(): void
@@ -47,7 +51,10 @@ final class Middleware implements HttpMiddleware
             return $this->inertia->location($request->uri);
         }
 
-        if ($response->status === Status::FOUND && in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)) {
+        if (
+            $response->status === Status::FOUND &&
+                in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
+        ) {
             // TODO: set status to 303
             // return new GenericResponse(
             //     status: Status::SEE_OTHER,

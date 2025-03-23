@@ -18,6 +18,7 @@ use Tempest\Support\Arr\ImmutableArray;
 
 use function Tempest\invoke;
 use function Tempest\Support\arr;
+use function Tempest\Support\str;
 
 final class InertiaResponse implements Response
 {
@@ -30,36 +31,34 @@ final class InertiaResponse implements Response
         readonly string $rootView,
         readonly string $version,
     ) {
-
         $deferredProps = self::resolvePropKeysThatShouldDefer(
             props: $props,
             request: $request,
-            component: $page
+            component: $page,
         );
 
         $mergeProps = self::resolvePropKeysThatShouldMerge(
             props: $props,
-            request: $request
+            request: $request,
         );
 
         // Build page data immutably
         $pageData = array_merge(
             [
-                'component'  => $page,
-                'props'      => self::composeProps(
+                'component' => $page,
+                'props' => self::composeProps(
                     props: $this->props,
                     request: $this->request,
-                    component: $page
+                    component: $page,
                 ),
-                'url'        => $request->uri,
-                'version'    => $version,
+                'url' => $request->uri,
+                'version' => $version,
             ],
             count($deferredProps) ? ['deferredProps' => $deferredProps] : [],
-            count($mergeProps) ? ['mergeProps' => $mergeProps] : []
+            count($mergeProps) ? ['mergeProps' => $mergeProps] : [],
         );
 
-        $isInertia = ($request->headers->offsetExists(Header::INERTIA)
-            && $request->headers[Header::INERTIA] === 'true');
+        $isInertia = $request->headers->offsetExists(Header::INERTIA) && $request->headers[Header::INERTIA] === 'true';
 
         $this->body = $isInertia
             ? (function () use ($pageData) {
@@ -70,7 +69,7 @@ final class InertiaResponse implements Response
             })()
             : new InertiaBaseView(
                 view: $rootView,
-                pageData: $pageData
+                pageData: $pageData,
             );
     }
 
@@ -88,11 +87,7 @@ final class InertiaResponse implements Response
         $always = static::resolveAlwaysProps($props);
         $partial = static::resolvePartialProps($request, $component, $props);
 
-        return static::evaluateProps(
-            array_merge($always, $partial),
-            $request,
-            true
-        );
+        return static::evaluateProps(array_merge($always, $partial), $request, true);
     }
 
     /**
@@ -119,20 +114,13 @@ final class InertiaResponse implements Response
         $only = array_filter(explode(',', $headers[Header::PARTIAL_ONLY] ?? ''));
         $except = array_filter(explode(',', $headers[Header::PARTIAL_EXCEPT] ?? ''));
 
-        $filtered = $only
-            ? array_intersect_key($props, array_flip($only))
-            : $props;
+        $filtered = $only ? array_intersect_key($props, array_flip($only)) : $props;
 
-        return array_filter(
-            $filtered,
-            static fn($key) => !in_array($key, $except, true),
-            ARRAY_FILTER_USE_KEY
-        );
+        return array_filter($filtered, static fn($key) => !in_array($key, $except, true), ARRAY_FILTER_USE_KEY);
     }
 
     private static function resolvePropKeysThatShouldDefer(array $props, Request $request, string $component): array
     {
-
         if (static::isPartial($request, $component)) {
             return [];
         }
@@ -143,7 +131,7 @@ final class InertiaResponse implements Response
             })
             ->map(fn(DeferProp $prop, string $key) => [
                 'group' => $prop->group,
-                'key'   => $key,
+                'key' => $key,
             ])
             ->groupBy(fn(array $prop) => $prop['group'])
             ->map(fn(array $group) => arr($group)->pluck('key')->toArray())
@@ -164,33 +152,27 @@ final class InertiaResponse implements Response
      * @pure
      * Evaluates props recursively.
      */
-    private static function evaluateProps(array $props, Request $request): array
+    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array // @mago-expect best-practices/no-boolean-flag-parameter
     {
         return arr($props)
             ->map(function ($value, string|int $key) use ($request): array {
-                $evaluated = $value instanceof Closure ? invoke($value) : $value;
-                $evaluated = ($evaluated instanceof LazyProp || $evaluated instanceof AlwaysProp)
-                    ? $evaluated()
-                    : $evaluated;
-                $evaluated = $evaluated instanceof ImmutableArray
-                    ? $evaluated->toArray()
-                    : $evaluated;
+                $evaluated = ($value instanceof Closure) ? invoke($value) : $value;
+                $evaluated =
+                    $evaluated instanceof LazyProp || $evaluated instanceof AlwaysProp ? $evaluated() : $evaluated;
+                $evaluated = ($evaluated instanceof ImmutableArray) ? $evaluated->toArray() : $evaluated;
                 $evaluated = is_array($evaluated)
-                    ? self::evaluateProps($evaluated, $request, false)
+                    ? self::evaluateProps($evaluated, $request, unpackDotProps: false)
                     : $evaluated;
 
                 return [$key, $evaluated];
             })
-            ->reduce(
-                function (array $acc, array $item): array {
-                    [$key, $value] = $item;
-                    if (str_contains($key, '.')) {
-                        return arr($acc)->set($key, $value)->toArray();
-                    }
-                    $acc[$key] = $value;
-                    return $acc;
-                },
-                []
-            );
+            ->reduce(function (array $acc, array $item) use ($unpackDotProps): array {
+                [$key, $value] = $item;
+                if ($unpackDotProps && is_string($key) && str_contains($key, '.')) {
+                    return arr($acc)->set($key, $value)->toArray();
+                }
+                $acc[$key] = $value;
+                return $acc;
+            }, []);
     }
 }
