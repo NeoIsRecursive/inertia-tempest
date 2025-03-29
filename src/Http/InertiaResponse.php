@@ -58,12 +58,12 @@ final class InertiaResponse implements Response
             count($mergeProps) ? ['mergeProps' => $mergeProps] : [],
         );
 
-        $isInertia = $request->headers->offsetExists(Header::INERTIA) && $request->headers[Header::INERTIA] === 'true';
+        $isInertia = $request->headers->has(Header::INERTIA);
 
         $this->body = $isInertia
             ? (function () use ($pageData) {
                 // side effect to set Inertia header
-                $this->headers[Header::INERTIA] = 'true';
+                $this->addHeader(Header::INERTIA, 'true');
 
                 return $pageData;
             })()
@@ -75,7 +75,7 @@ final class InertiaResponse implements Response
 
     public static function isPartial(Request $request, string $component): bool
     {
-        return ($request->headers[Header::PARTIAL_COMPONENT] ?? null) === $component;
+        return $request->headers->get(Header::PARTIAL_COMPONENT) === $component;
     }
 
     /**
@@ -111,8 +111,8 @@ final class InertiaResponse implements Response
             return array_filter($props, static fn($prop) => !($prop instanceof LazyProp || $prop instanceof DeferProp));
         }
 
-        $only = array_filter(explode(',', $headers[Header::PARTIAL_ONLY] ?? ''));
-        $except = array_filter(explode(',', $headers[Header::PARTIAL_EXCEPT] ?? ''));
+        $only = array_filter(explode(',', $headers->get(Header::PARTIAL_ONLY) ?? ''));
+        $except = array_filter(explode(',', $headers->get(Header::PARTIAL_EXCEPT) ?? ''));
 
         $filtered = $only ? array_intersect_key($props, array_flip($only)) : $props;
 
@@ -140,7 +140,7 @@ final class InertiaResponse implements Response
 
     private static function resolvePropKeysThatShouldMerge(array $props, Request $request): array
     {
-        $resetProps = arr(explode(',', $request->headers[Header::RESET] ?? ''));
+        $resetProps = arr(explode(',', $request->headers->get(Header::RESET) ?? ''));
         return arr($props)
             ->filter(fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
             ->filter(fn($_, $key) => !$resetProps->contains($key))

@@ -22,8 +22,7 @@ final class Middleware implements HttpMiddleware
     public function __construct(
         private Inertia $inertia,
         private Container $container,
-    ) {
-    }
+    ) {}
 
     #[EventHandler(event: KernelEvent::BOOTED)]
     public function register(): void
@@ -39,11 +38,11 @@ final class Middleware implements HttpMiddleware
 
         $response->addHeader('Vary', Header::INERTIA);
 
-        if (!$request->headers->offsetExists(Header::INERTIA)) {
+        if (!$request->headers->has(Header::INERTIA)) {
             return $response;
         }
 
-        $versionHeaderValue = $request->headers[Header::VERSION] ?? '';
+        $versionHeaderValue = $request->headers->get(Header::VERSION) ?? '';
 
         if ($request->method === Method::GET && $versionHeaderValue !== $this->inertia->version) {
             // TODO: reflash session data
@@ -53,7 +52,7 @@ final class Middleware implements HttpMiddleware
 
         if (
             $response->status === Status::FOUND &&
-                in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
+            in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
         ) {
             // TODO: set status to 303
             // return new GenericResponse(
