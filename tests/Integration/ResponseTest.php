@@ -11,9 +11,9 @@ use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
+use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
-use Tempest\Router\GenericRequest;
-use Tempest\Router\Response;
+use Tempest\Http\Response;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
 

@@ -8,27 +8,22 @@ use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Core\KernelEvent;
+use Tempest\Core\Priority;
 use Tempest\EventBus\EventHandler;
 use Tempest\Http\Method;
+use Tempest\Http\Request;
+use Tempest\Http\Response;
 use Tempest\Http\Status;
 use Tempest\Router\HttpMiddleware;
 use Tempest\Router\HttpMiddlewareCallable;
-use Tempest\Router\Request;
-use Tempest\Router\Response;
-use Tempest\Router\Router;
 
+#[Priority(Priority::HIGH)]
 final class Middleware implements HttpMiddleware
 {
     public function __construct(
         private Inertia $inertia,
         private Container $container,
-    ) {}
-
-    #[EventHandler(event: KernelEvent::BOOTED)]
-    public function register(): void
-    {
-        $router = $this->container->get(Router::class);
-        $router->addMiddleware(self::class);
+    ) {
     }
 
     public function __invoke(Request $request, HttpMiddlewareCallable $next): Response
@@ -52,7 +47,7 @@ final class Middleware implements HttpMiddleware
 
         if (
             $response->status === Status::FOUND &&
-            in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
+                in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
         ) {
             // TODO: set status to 303
             // return new GenericResponse(

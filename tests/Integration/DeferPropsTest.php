@@ -6,7 +6,7 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Tests\TestCase;
-use Tempest\Router\Request;
+use Tempest\Http\Request;
 
 final class DeferPropsTest extends TestCase
 {

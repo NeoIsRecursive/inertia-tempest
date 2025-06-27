@@ -6,7 +6,7 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Tests\TestCase;
-use Tempest\Router\Response;
+use Tempest\Http\Response;
 
 use function NeoIsRecursive\Inertia\inertia;
 

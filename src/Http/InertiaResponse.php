@@ -11,9 +11,9 @@ use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
-use Tempest\Router\IsResponse;
-use Tempest\Router\Request;
-use Tempest\Router\Response;
+use Tempest\Http\IsResponse;
+use Tempest\Http\Request;
+use Tempest\Http\Response;
 use Tempest\Support\Arr\ImmutableArray;
 
 use function Tempest\invoke;

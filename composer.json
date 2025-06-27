@@ -35,17 +35,16 @@
   ],
   "require": {
     "php": "^8.4",
-    "tempest/framework": "dev-main"
+    "tempest/framework": "^1.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^11.0",
-    "carthage-software/mago": "^0.20"
+    "phpunit/phpunit": "^11.5.15",
+    "carthage-software/mago": "^0.20.4"
   },
+  "minimum-stability": "dev",
   "config": {
     "allow-plugins": {
-      "php-http/discovery": true,
       "carthage-software/mago": true
     }
-  },
-  "minimum-stability": "dev"
+  }
 }

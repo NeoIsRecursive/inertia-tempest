@@ -9,11 +9,11 @@ use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;
+use Tempest\Http\GenericResponse;
+use Tempest\Http\Request;
+use Tempest\Http\Response;
+use Tempest\Http\Responses\Redirect;
 use Tempest\Http\Status;
-use Tempest\Router\GenericResponse;
-use Tempest\Router\Request;
-use Tempest\Router\Response;
-use Tempest\Router\Responses\Redirect;
 
 #[Singleton]
 final class Inertia
@@ -21,7 +21,8 @@ final class Inertia
     public function __construct(
         private Container $container,
         private InertiaConfig $config,
-    ) {}
+    ) {
+    }
 
     public function share(string|array $key, null|string $value = null): void
     {
@@ -50,7 +51,8 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        $isInertiaRequest = $this->container->get(Request::class)->headers->has(Header::INERTIA);
+        $isInertiaRequest = $this->container->get(Request::class)
+            ->headers->has(Header::INERTIA);
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {

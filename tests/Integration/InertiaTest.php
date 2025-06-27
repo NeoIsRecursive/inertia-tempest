@@ -10,10 +10,10 @@ use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\Fixtures\TestController;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use Tempest\Http\Method;
+use Tempest\Http\Request;
+use Tempest\Http\Response;
+use Tempest\Http\Responses\Redirect;
 use Tempest\Http\Status;
-use Tempest\Router\Request;
-use Tempest\Router\Response;
-use Tempest\Router\Responses\Redirect;
 
 use function Tempest\get;
 use function Tempest\uri;

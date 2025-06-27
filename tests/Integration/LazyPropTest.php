@@ -6,7 +6,7 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Tests\TestCase;
-use Tempest\Router\Request;
+use Tempest\Http\Request;
 
 final class LazyPropTest extends TestCase
 {
