@@ -13,15 +13,17 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
 {
     public function __construct(
         public null|string $manifestPath = null,
-    ) {
-    }
+    ) {}
 
     public function resolve(Container $container): string
     {
-        $manifestPath = $this->manifestPath ?? root_path('/public/build/manifest.json');
+        $manifestPath = $this->manifestPath ?? root_path('/public/build/manifest.json'); // @mago-expect best-practices/literal-named-argument
 
         if (file_exists($manifestPath)) {
-            return hash_file('xxh128', $manifestPath);
+            return hash_file(
+                algo: 'xxh128',
+                filename: $manifestPath,
+            );
         }
 
         return '';

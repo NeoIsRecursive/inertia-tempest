@@ -16,14 +16,20 @@ final class LazyPropTest extends TestCase
             return 'A lazy value';
         });
 
-        static::assertSame('A lazy value', $lazyProp());
+        static::assertSame(
+            expected: 'A lazy value',
+            actual: $lazyProp(),
+        );
     }
 
     public function test_can_accept_scalar_values(): void
     {
         $lazyProp = new LazyProp(fn() => 'A lazy value');
 
-        static::assertSame('A lazy value', $lazyProp());
+        static::assertSame(
+            expected: 'A lazy value',
+            actual: $lazyProp(),
+        );
     }
 
     public function test_can_resolve_bindings_when_invoked(): void

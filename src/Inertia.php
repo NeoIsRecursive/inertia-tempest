@@ -21,8 +21,7 @@ final class Inertia
     public function __construct(
         private Container $container,
         private InertiaConfig $config,
-    ) {
-    }
+    ) {}
 
     public function share(string|array $key, null|string $value = null): void
     {
@@ -51,12 +50,13 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        $isInertiaRequest = $this->container->get(Request::class)
+        $isInertiaRequest = $this
+            ->container->get(Request::class)
             ->headers->has(Header::INERTIA);
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
-                $url = $url->getHeader('Location')->values[0];
+                $url = $url->getHeader(name: 'Location')->values[0];
             }
 
             return new GenericResponse(

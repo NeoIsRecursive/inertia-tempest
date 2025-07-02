@@ -63,7 +63,7 @@ final class InertiaResponse implements Response
         $this->body = $isInertia
             ? (function () use ($pageData) {
                 // side effect to set Inertia header
-                $this->addHeader(Header::INERTIA, 'true');
+                $this->addHeader(Header::INERTIA, value: 'true');
 
                 return $pageData;
             })()
@@ -87,7 +87,7 @@ final class InertiaResponse implements Response
         $always = static::resolveAlwaysProps($props);
         $partial = static::resolvePartialProps($request, $component, $props);
 
-        return static::evaluateProps(array_merge($always, $partial), $request, true);
+        return static::evaluateProps(array_merge($always, $partial), $request, unpackDotProps: true);
     }
 
     /**
@@ -111,12 +111,18 @@ final class InertiaResponse implements Response
             return array_filter($props, static fn($prop) => !($prop instanceof LazyProp || $prop instanceof DeferProp));
         }
 
-        $only = array_filter(explode(',', $headers->get(Header::PARTIAL_ONLY) ?? ''));
-        $except = array_filter(explode(',', $headers->get(Header::PARTIAL_EXCEPT) ?? ''));
+        $only = array_filter(explode(
+            separator: ',',
+            string: $headers->get(Header::PARTIAL_ONLY) ?? '',
+        ));
+        $except = array_filter(explode(
+            separator: ',',
+            string: $headers->get(Header::PARTIAL_EXCEPT) ?? '',
+        ));
 
         $filtered = $only ? array_intersect_key($props, array_flip($only)) : $props;
 
-        return array_filter($filtered, static fn($key) => !in_array($key, $except, true), ARRAY_FILTER_USE_KEY);
+        return array_filter($filtered, static fn($key) => !in_array($key, $except, strict: true), ARRAY_FILTER_USE_KEY);
     }
 
     private static function resolvePropKeysThatShouldDefer(array $props, Request $request, string $component): array
@@ -134,13 +140,16 @@ final class InertiaResponse implements Response
                 'key' => $key,
             ])
             ->groupBy(fn(array $prop) => $prop['group'])
-            ->map(fn(array $group) => arr($group)->pluck('key')->toArray())
+            ->map(fn(array $group) => arr($group)->pluck(value: 'key')->toArray())
             ->toArray();
     }
 
     private static function resolvePropKeysThatShouldMerge(array $props, Request $request): array
     {
-        $resetProps = arr(explode(',', $request->headers->get(Header::RESET) ?? ''));
+        $resetProps = arr(explode(
+            separator: ',',
+            string: $request->headers->get(Header::RESET) ?? '',
+        ));
         return arr($props)
             ->filter(fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
             ->filter(fn($_, $key) => !$resetProps->contains($key))
@@ -168,7 +177,7 @@ final class InertiaResponse implements Response
             })
             ->reduce(function (array $acc, array $item) use ($unpackDotProps): array {
                 [$key, $value] = $item;
-                if ($unpackDotProps && is_string($key) && str_contains($key, '.')) {
+                if ($unpackDotProps && is_string($key) && str_contains($key, needle: '.')) {
                     return arr($acc)->set($key, $value)->toArray();
                 }
                 $acc[$key] = $value;

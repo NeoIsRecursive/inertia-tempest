@@ -16,19 +16,25 @@ final class AlwaysPropTest extends TestCase
             return 'An always value';
         });
 
-        static::assertSame('An always value', $alwaysProp());
+        static::assertSame(
+            expected: 'An always value',
+            actual: $alwaysProp(),
+        );
     }
 
     public function test_can_accept_scalar_values(): void
     {
-        $alwaysProp = new AlwaysProp('An always value');
+        $alwaysProp = new AlwaysProp(value: 'An always value');
 
-        static::assertSame('An always value', $alwaysProp());
+        static::assertSame(
+            expected: 'An always value',
+            actual: $alwaysProp(),
+        );
     }
 
     public function test_can_accept_invokable_class(): void
     {
-        static::markTestSkipped('Dont really know if this is necessary or possible');
+        static::markTestSkipped(message: 'Dont really know if this is necessary or possible');
 
         $callable = new class() {
             public function __invoke(): string
@@ -39,7 +45,10 @@ final class AlwaysPropTest extends TestCase
 
         $alwaysProp = new AlwaysProp(fn() => $callable);
 
-        static::assertSame('An always value', $alwaysProp());
+        static::assertSame(
+            expected: 'An always value',
+            actual: $alwaysProp(),
+        );
     }
 
     public function test_can_resolve_bindings_when_invoked(): void

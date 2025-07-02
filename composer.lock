@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "90fe6eae7f36a004f8e8dbb1d5ed9790",
+    "content-hash": "56d7705f7001c5859a6c8cfcf9111a6e",
     "packages": [
         {
             "name": "composer/semver",
@@ -2187,12 +2187,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "ff5417e9205f2462e187c5fb35443f58fb36d37c"
+                "reference": "b5a845db551b166dcc47d3aef60872d2e920f6c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/ff5417e9205f2462e187c5fb35443f58fb36d37c",
-                "reference": "ff5417e9205f2462e187c5fb35443f58fb36d37c",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/b5a845db551b166dcc47d3aef60872d2e920f6c3",
+                "reference": "b5a845db551b166dcc47d3aef60872d2e920f6c3",
                 "shasum": ""
             },
             "require": {
@@ -2277,7 +2277,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-19T14:19:51+00:00"
+            "time": "2025-06-27T19:57:42+00:00"
         },
         {
             "name": "symfony/cache-contracts",
@@ -3064,12 +3064,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/uid.git",
-                "reference": "1771bfe862003671629c4294321e48f06eceaedd"
+                "reference": "134541141c3311872dbc373bc399a3119f6316cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/uid/zipball/1771bfe862003671629c4294321e48f06eceaedd",
-                "reference": "1771bfe862003671629c4294321e48f06eceaedd",
+                "url": "https://api.github.com/repos/symfony/uid/zipball/134541141c3311872dbc373bc399a3119f6316cb",
+                "reference": "134541141c3311872dbc373bc399a3119f6316cb",
                 "shasum": ""
             },
             "require": {
@@ -3130,7 +3130,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-09T15:40:54+00:00"
+            "time": "2025-06-26T08:17:20+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -3138,12 +3138,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "92f583c9f8be1282354c2e003c6d924b81f53933"
+                "reference": "db6726ca18f9fcedc5d832713d923dc2ae780272"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/92f583c9f8be1282354c2e003c6d924b81f53933",
-                "reference": "92f583c9f8be1282354c2e003c6d924b81f53933",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/db6726ca18f9fcedc5d832713d923dc2ae780272",
+                "reference": "db6726ca18f9fcedc5d832713d923dc2ae780272",
                 "shasum": ""
             },
             "require": {
@@ -3214,7 +3214,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-26T07:47:56+00:00"
+            "time": "2025-06-27T19:57:42+00:00"
         },
         {
             "name": "symfony/var-exporter",
@@ -3367,16 +3367,16 @@
         },
         {
             "name": "tempest/framework",
-            "version": "v1.0.0",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tempestphp/tempest-framework.git",
-                "reference": "e2d8bb2cc656e42072809d19778da4d76d922c20"
+                "reference": "e698e8518f06975eec7590e8695d46e55372a6a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/e2d8bb2cc656e42072809d19778da4d76d922c20",
-                "reference": "e2d8bb2cc656e42072809d19778da4d76d922c20",
+                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/e698e8518f06975eec7590e8695d46e55372a6a2",
+                "reference": "e698e8518f06975eec7590e8695d46e55372a6a2",
                 "shasum": ""
             },
             "require": {
@@ -3551,7 +3551,7 @@
             "description": "The PHP framework that gets out of your way.",
             "support": {
                 "issues": "https://github.com/tempestphp/tempest-framework/issues",
-                "source": "https://github.com/tempestphp/tempest-framework/tree/v1.0.0"
+                "source": "https://github.com/tempestphp/tempest-framework/tree/v1.0.3"
             },
             "funding": [
                 {
@@ -3559,7 +3559,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-06-27T08:50:32+00:00"
+            "time": "2025-06-30T07:39:10+00:00"
         },
         {
             "name": "tempest/highlight",
@@ -3777,16 +3777,16 @@
     "packages-dev": [
         {
             "name": "carthage-software/mago",
-            "version": "0.20.4",
+            "version": "0.26.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/carthage-software/mago.git",
-                "reference": "54a5f2292ac5b7cc5865bcd6209365f17e687112"
+                "reference": "baad2c067e7be59af500683769b72ac356eac10f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/carthage-software/mago/zipball/54a5f2292ac5b7cc5865bcd6209365f17e687112",
-                "reference": "54a5f2292ac5b7cc5865bcd6209365f17e687112",
+                "url": "https://api.github.com/repos/carthage-software/mago/zipball/baad2c067e7be59af500683769b72ac356eac10f",
+                "reference": "baad2c067e7be59af500683769b72ac356eac10f",
                 "shasum": ""
             },
             "require": {
@@ -3824,7 +3824,7 @@
             ],
             "support": {
                 "issues": "https://github.com/carthage-software/mago/issues",
-                "source": "https://github.com/carthage-software/mago/tree/0.20.4"
+                "source": "https://github.com/carthage-software/mago/tree/0.26.1"
             },
             "funding": [
                 {
@@ -3832,7 +3832,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-18T19:40:49+00:00"
+            "time": "2025-06-29T23:11:29+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4355,12 +4355,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "864ab32b3ff52058f917c5b19b3cef821e4a4f1b"
+                "reference": "78a8e65e199fceb5aa8db5f6764c81fa1da9361e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/864ab32b3ff52058f917c5b19b3cef821e4a4f1b",
-                "reference": "864ab32b3ff52058f917c5b19b3cef821e4a4f1b",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/78a8e65e199fceb5aa8db5f6764c81fa1da9361e",
+                "reference": "78a8e65e199fceb5aa8db5f6764c81fa1da9361e",
                 "shasum": ""
             },
             "require": {
@@ -4432,7 +4432,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.25"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5"
             },
             "funding": [
                 {
@@ -4456,7 +4456,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-27T04:36:07+00:00"
+            "time": "2025-07-02T06:46:52+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -5528,7 +5528,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {},
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.4"

@@ -17,8 +17,7 @@ final class InertiaConfig
         public readonly InertiaVersionResolver $versionResolver = new ManifestVersionResolver(),
         /** @var array<AlwaysProp|LazyProp|string|array|Closue> */
         public private(set) array $sharedProps = [],
-    ) {
-    }
+    ) {}
 
     public function flushSharedProps(): self
     {

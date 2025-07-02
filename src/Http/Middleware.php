@@ -23,15 +23,17 @@ final class Middleware implements HttpMiddleware
     public function __construct(
         private Inertia $inertia,
         private Container $container,
-    ) {
-    }
+    ) {}
 
     public function __invoke(Request $request, HttpMiddlewareCallable $next): Response
     {
         /** @var Response $response */
         $response = $next($request);
 
-        $response->addHeader('Vary', Header::INERTIA);
+        $response->addHeader(
+            key: 'Vary',
+            value: Header::INERTIA,
+        );
 
         if (!$request->headers->has(Header::INERTIA)) {
             return $response;

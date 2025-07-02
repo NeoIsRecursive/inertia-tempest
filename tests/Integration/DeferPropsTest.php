@@ -13,17 +13,23 @@ final class DeferPropsTest extends TestCase
     public function test_can_invoke(): void
     {
         $deferProp = new DeferProp(function () {
-            return 'A lazy value';
+            return 'A defered value';
         });
 
-        static::assertSame('A lazy value', $deferProp());
+        static::assertSame(
+            expected: 'A defered value',
+            actual: $deferProp(),
+        );
     }
 
     public function test_can_accept_scalar_values(): void
     {
-        $deferProp = new DeferProp(fn() => 'A lazy value');
+        $deferProp = new DeferProp(fn() => 'A defered value');
 
-        static::assertSame('A lazy value', $deferProp());
+        static::assertSame(
+            expected: 'A defered value',
+            actual: $deferProp(),
+        );
     }
 
     public function test_can_resolve_bindings_when_invoked(): void

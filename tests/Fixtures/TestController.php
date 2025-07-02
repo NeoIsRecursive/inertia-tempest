@@ -15,28 +15,37 @@ final readonly class TestController
 {
     public function index(): InertiaResponse
     {
-        return inertia('Index');
+        return inertia(page: 'Index');
     }
 
     #[Get(uri: '/can-share-props-from-any-where')]
     public function testCanSharePropsFromAnyWhere(Inertia $inertia): InertiaResponse
     {
-        $inertia->share('foo', 'bar');
+        $inertia->share(
+            key: 'foo',
+            value: 'bar',
+        );
 
         $inertia->share([
             'baz' => 'qux',
         ]);
 
-        return inertia('User/Edit');
+        return inertia(page: 'User/Edit');
     }
 
     #[Get(uri: '/all-sorts-of-props')]
     public function testAllSortsOfProps(Inertia $inertia): InertiaResponse
     {
-        $inertia->share('foo', 'bar');
+        $inertia->share(
+            key: 'foo',
+            value: 'bar',
+        );
 
-        return inertia('User/Edit', [
-            new AlwaysProp(fn() => 'baz'),
-        ]);
+        return inertia(
+            page: 'User/Edit',
+            props: [
+                new AlwaysProp(fn() => 'baz'),
+            ],
+        );
     }
 }

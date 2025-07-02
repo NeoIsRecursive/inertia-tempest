@@ -20,8 +20,7 @@ final class DeferProp implements MergeableProp
         public MethodReflector|FunctionReflector|string|array|Closure $callback,
         public string $group = 'default',
         public private(set) bool $shouldMerge = false,
-    ) {
-    }
+    ) {}
 
     public function __invoke(): mixed
     {

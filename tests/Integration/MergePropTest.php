@@ -14,7 +14,10 @@ final class MergePropTest extends TestCase
     {
         $mergeProp = new AlwaysProp(fn() => 'A merge prop value')->merge();
 
-        static::assertSame('A merge prop value', $mergeProp());
+        static::assertSame(
+            expected: 'A merge prop value',
+            actual: $mergeProp(),
+        );
     }
 
     public function test_can_invoke_with_a_non_callback(): void

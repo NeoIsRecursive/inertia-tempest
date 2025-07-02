@@ -19,8 +19,7 @@ final class AlwaysProp implements MergeableProp
     public function __construct(
         public readonly MethodReflector|FunctionReflector|string|Closure|array $value,
         public private(set) bool $shouldMerge = false,
-    ) {
-    }
+    ) {}
 
     public function __invoke(): mixed
     {
