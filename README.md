@@ -26,7 +26,7 @@ return new InertiaConfig(
     /**
      * The view that inertia should render on the first request
      */
-    rootView: root_path('/views/app.view.php'),
+    rootView: 'app.view.php',
     /**
      * Version resolver, if you use vite for example you probably want to use the default here,
      * or you can add a custom one to maybe get from enviroment variables etc.
@@ -77,5 +77,5 @@ final class ReviewController
 ## TODO
 
 - [ ] Installer with js boilerplate?
-- [ ] Migrate tests from the laravel adapter.
+- [ ] "Migrate" all tests from the laravel adapter.
 - [ ] Add history encryption setting.
