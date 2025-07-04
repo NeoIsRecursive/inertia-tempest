@@ -158,6 +158,8 @@ final class InertiaTest extends TestCase
                 ],
                 'url' => uri([TestController::class, 'testCanSharePropsFromAnyWhere']),
                 'version' => $version,
+                'clearHistory' => false,
+                'encryptHistory' => false,
             ],
             actual: $response->body,
         );

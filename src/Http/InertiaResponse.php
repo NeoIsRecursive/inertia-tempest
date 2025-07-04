@@ -14,11 +14,12 @@ use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\IsResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
-use Tempest\Support\Arr\ImmutableArray;
+use Tempest\Http\Session\Session;
+use Tempest\Support\Arr\ArrayInterface;
 
+use function Tempest\get;
 use function Tempest\invoke;
 use function Tempest\Support\arr;
-use function Tempest\Support\str;
 
 final class InertiaResponse implements Response
 {
@@ -26,15 +27,16 @@ final class InertiaResponse implements Response
 
     public function __construct(
         readonly Request $request,
-        readonly string $page,
+        readonly string $component,
         readonly array $props,
         readonly string $rootView,
         readonly string $version,
+        readonly bool $encryptHistory = false,
     ) {
         $deferredProps = self::resolvePropKeysThatShouldDefer(
             props: $props,
             request: $request,
-            component: $page,
+            component: $component,
         );
 
         $mergeProps = self::resolvePropKeysThatShouldMerge(
@@ -45,14 +47,16 @@ final class InertiaResponse implements Response
         // Build page data immutably
         $pageData = array_merge(
             [
-                'component' => $page,
+                'component' => $component,
                 'props' => self::composeProps(
-                    props: $this->props,
-                    request: $this->request,
-                    component: $page,
+                    props: $props,
+                    request: $request,
+                    component: $component,
                 ),
                 'url' => $request->uri,
                 'version' => $version,
+                'clearHistory' => get(Session::class)->consume(key: 'inertia.clear_history', default: false),
+                'encryptHistory' => $encryptHistory,
             ],
             count($deferredProps) ? ['deferredProps' => $deferredProps] : [],
             count($mergeProps) ? ['mergeProps' => $mergeProps] : [],
@@ -168,7 +172,7 @@ final class InertiaResponse implements Response
                 $evaluated = ($value instanceof Closure) ? invoke($value) : $value;
                 $evaluated =
                     $evaluated instanceof LazyProp || $evaluated instanceof AlwaysProp ? $evaluated() : $evaluated;
-                $evaluated = ($evaluated instanceof ImmutableArray) ? $evaluated->toArray() : $evaluated;
+                $evaluated = ($evaluated instanceof ArrayInterface) ? $evaluated->toArray() : $evaluated;
                 $evaluated = is_array($evaluated)
                     ? self::evaluateProps($evaluated, $request, unpackDotProps: false)
                     : $evaluated;

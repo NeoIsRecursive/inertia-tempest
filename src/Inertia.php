@@ -13,6 +13,7 @@ use Tempest\Http\GenericResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
+use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
 
 #[Singleton]
@@ -41,10 +42,18 @@ final class Inertia
     {
         return new InertiaResponse(
             request: $this->container->get(Request::class),
-            page: $page,
+            component: $page,
             props: array_merge($this->config->sharedProps, $props),
             rootView: $this->config->rootView,
             version: $this->version,
+        );
+    }
+
+    public function clearHistory(): void
+    {
+        $this->container->get(Session::class)->set(
+            key: 'inertia.clear_history',
+            value: true,
         );
     }
 
