@@ -6,13 +6,11 @@ namespace NeoIsRecursive\Inertia\Http;
 
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Support\Header;
-use Tempest\Container\Container;
-use Tempest\Core\KernelEvent;
 use Tempest\Core\Priority;
-use Tempest\EventBus\EventHandler;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
+use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
 use Tempest\Router\HttpMiddleware;
 use Tempest\Router\HttpMiddlewareCallable;
@@ -22,7 +20,7 @@ final class Middleware implements HttpMiddleware
 {
     public function __construct(
         private Inertia $inertia,
-        private Container $container,
+        private Session $session,
     ) {}
 
     public function __invoke(Request $request, HttpMiddlewareCallable $next): Response
@@ -42,7 +40,7 @@ final class Middleware implements HttpMiddleware
         $versionHeaderValue = $request->headers->get(Header::VERSION) ?? '';
 
         if ($request->method === Method::GET && $versionHeaderValue !== $this->inertia->version) {
-            // TODO: reflash session data
+            $this->session->reflash();
 
             return $this->inertia->location($request->uri);
         }
