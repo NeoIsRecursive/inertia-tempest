@@ -25,6 +25,7 @@ final class InertiaResponse implements Response
 {
     use IsResponse;
 
+    // @mago-expect maintainability/excessive-parameter-list
     public function __construct(
         readonly Request $request,
         readonly string $component,
@@ -55,7 +56,10 @@ final class InertiaResponse implements Response
                 ),
                 'url' => $request->uri,
                 'version' => $version,
-                'clearHistory' => get(Session::class)->consume(key: 'inertia.clear_history', default: false),
+                'clearHistory' => get(Session::class)->consume(
+                    key: 'inertia.clear_history',
+                    default: false,
+                ),
                 'encryptHistory' => $encryptHistory,
             ],
             count($deferredProps) ? ['deferredProps' => $deferredProps] : [],

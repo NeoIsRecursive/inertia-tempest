@@ -439,7 +439,13 @@ final class ResponseTest extends TestCase
             }),
         ];
 
-        $response = new InertiaResponse($request, component: 'User/Edit', props: $props, rootView: 'app', version: '123');
+        $response = new InertiaResponse(
+            $request,
+            component: 'User/Edit',
+            props: $props,
+            rootView: 'app',
+            version: '123',
+        );
         $page = $response->body;
 
         static::assertSame(
@@ -472,7 +478,13 @@ final class ResponseTest extends TestCase
             uri: '/products/123',
         );
 
-        $response = new InertiaResponse($request, component: 'User/Edit', props: $props, rootView: 'app', version: '123');
+        $response = new InertiaResponse(
+            $request,
+            component: 'User/Edit',
+            props: $props,
+            rootView: 'app',
+            version: '123',
+        );
 
         $page = $response->body;
 
@@ -507,7 +519,13 @@ final class ResponseTest extends TestCase
             uri: '/products/123',
         );
 
-        $response = new InertiaResponse($request, component: 'User/Edit', props: $props, rootView: 'app', version: '123');
+        $response = new InertiaResponse(
+            $request,
+            component: 'User/Edit',
+            props: $props,
+            rootView: 'app',
+            version: '123',
+        );
         $page = $response->body;
 
         $auth = $page['props']['auth'];
