@@ -20,6 +20,7 @@ use Tempest\Http\Status;
 final class Inertia
 {
     public function __construct(
+        private Session $session,
         private Container $container,
         private InertiaConfig $config,
     ) {}
@@ -46,12 +47,28 @@ final class Inertia
             props: array_merge($this->config->sharedProps, $props),
             rootView: $this->config->rootView,
             version: $this->version,
+            clearHistory: $this->session->get(
+                key: 'inertia.clear_history',
+                default: false,
+            ),
+            encryptHistory: $this->session->get(
+                key: 'inertia.encrypt_history',
+                default: false,
+            ),
+        );
+    }
+
+    public function encryptHistory(): void
+    {
+        $this->session->flash(
+            key: 'inertia.encrypt_history',
+            value: true,
         );
     }
 
     public function clearHistory(): void
     {
-        $this->container->get(Session::class)->set(
+        $this->session->flash(
             key: 'inertia.clear_history',
             value: true,
         );

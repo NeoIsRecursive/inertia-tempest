@@ -51,4 +51,12 @@ abstract class TestCase extends IntegrationTest
         $this->container->singleton(Request::class, fn() => $request);
         return $request;
     }
+
+    public function assertArraySubsetValues(array $subset, array $array): void
+    {
+        foreach ($subset as $key => $value) {
+            $this->assertArrayHasKey($key, $array);
+            $this->assertSame($value, $array[$key]);
+        }
+    }
 }

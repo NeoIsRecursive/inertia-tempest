@@ -7,9 +7,11 @@ namespace NeoIsRecursive\Inertia\Tests\Fixtures;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use Tempest\Http\Responses\Redirect;
 use Tempest\Router\Get;
 
 use function NeoIsRecursive\Inertia\inertia;
+use function Tempest\uri;
 
 final readonly class TestController
 {
@@ -47,5 +49,26 @@ final readonly class TestController
                 new AlwaysProp(fn() => 'baz'),
             ],
         );
+    }
+
+    #[Get(uri: '/encrypted-history')]
+    public function testEncryptedHistory(Inertia $inertia): InertiaResponse
+    {
+        $inertia->encryptHistory();
+        return inertia(page: 'User/Edit');
+    }
+
+    #[Get(uri: '/cleared-history')]
+    public function testClearedHistory(Inertia $inertia): InertiaResponse
+    {
+        $inertia->clearHistory();
+        return inertia(page: 'User/Edit');
+    }
+
+    #[Get(uri: '/redirect-with-clear-history')]
+    public function testRedirectWithClearHistory(Inertia $inertia): Redirect
+    {
+        $inertia->clearHistory();
+        return new Redirect(to: uri([self::class, 'testCanSharePropsFromAnyWhere']));
     }
 }

@@ -32,6 +32,7 @@ final class InertiaResponse implements Response
         readonly array $props,
         readonly string $rootView,
         readonly string $version,
+        readonly bool $clearHistory = false,
         readonly bool $encryptHistory = false,
     ) {
         $deferredProps = self::resolvePropKeysThatShouldDefer(
@@ -56,10 +57,7 @@ final class InertiaResponse implements Response
                 ),
                 'url' => $request->uri,
                 'version' => $version,
-                'clearHistory' => get(Session::class)->consume(
-                    key: 'inertia.clear_history',
-                    default: false,
-                ),
+                'clearHistory' => $clearHistory,
                 'encryptHistory' => $encryptHistory,
             ],
             count($deferredProps) ? ['deferredProps' => $deferredProps] : [],

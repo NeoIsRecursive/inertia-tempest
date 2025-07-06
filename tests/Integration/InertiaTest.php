@@ -22,7 +22,7 @@ final class InertiaTest extends TestCase
 {
     private function createFactory(): Inertia
     {
-        return new Inertia($this->container, $this->container->get(InertiaConfig::class));
+        return $this->container->get(Inertia::class);
     }
 
     public function test_location_response_for_inertia_requests(): void
