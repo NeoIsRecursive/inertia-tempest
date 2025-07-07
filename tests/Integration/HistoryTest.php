@@ -139,7 +139,8 @@ class HistoryTest extends TestCase
 
         $response->assertRedirect(uri([TestController::class, 'testCanSharePropsFromAnyWhere']));
 
-        static::assertTrue(get(Session::class)->get('inertia.clear_history'));
+        static::assertTrue(get(Session::class)->get(key: 'inertia.clear_history'));
+
         // $response->assertContent('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;errors&quot;:{}},&quot;url&quot;:&quot;\/users&quot;,&quot;version&quot;:&quot;&quot;,&quot;clearHistory&quot;:true,&quot;encryptHistory&quot;:false}"></div>');
     }
 }
