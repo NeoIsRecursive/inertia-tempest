@@ -7,6 +7,7 @@ namespace NeoIsRecursive\Inertia\Tests\Fixtures;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use Tempest\Http\Responses\Ok;
 use Tempest\Http\Responses\Redirect;
 use Tempest\Router\Get;
 
@@ -18,6 +19,14 @@ final readonly class TestController
     public function index(): InertiaResponse
     {
         return inertia(component: 'Index');
+    }
+
+    #[Get(uri: '/non-inertia-page')]
+    public function nonInertiaPage(): Ok
+    {
+        return new Ok(body: [
+            'message' => 'This is a non-Inertia page.',
+        ]);
     }
 
     #[Get(uri: '/can-share-props-from-any-where')]
