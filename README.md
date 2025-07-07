@@ -76,6 +76,6 @@ final class ReviewController
 
 ## TODO
 
-- [ ] Installer with js boilerplate?
+- [ ] Installer?
 - [ ] "Migrate" all tests from the laravel adapter.
-- [ ] Add history encryption setting.
+- [x] Add history encryption setting.
