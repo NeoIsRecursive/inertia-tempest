@@ -9,6 +9,7 @@ use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\Fixtures\TestController;
 use NeoIsRecursive\Inertia\Tests\TestCase;
+use Tempest\Http\Session\Session;
 
 use function Tempest\get;
 use function Tempest\uri;
@@ -102,21 +103,15 @@ class HistoryTest extends TestCase
 
     public function test_the_history_can_be_encrypted_globally_and_overridden(): void
     {
-        static::markTestIncomplete(message: 'This test is incomplete and needs to be fixed.');
+        $response = $this->http->get(uri([TestController::class, 'testEncryptedHistoryWithMiddleware']), headers: [
+            Header::INERTIA => 'true',
+        ]);
 
-        // Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
-        //     Config::set('inertia.history.encrypt', true);
-        //     Inertia::encryptHistory(false);
-        //     return Inertia::render('User/Edit');
-        // });
-        // $response = $this->withoutExceptionHandling()->get('/', [
-        //     'X-Inertia' => 'true',
-        // ]);
-        // $response->assertSuccessful();
-        // $response->assertJson([
-        //     'component' => 'User/Edit',
-        //     'encryptHistory' => false,
-        // ]);
+        $response->assertOk();
+        $this->assertArraySubsetValues([
+            'component' => 'User/Edit',
+            'encryptHistory' => true,
+        ], $response->body);
     }
 
     public function test_the_history_can_be_cleared(): void
@@ -136,8 +131,6 @@ class HistoryTest extends TestCase
 
     public function test_the_history_can_be_cleared_when_redirecting(): void
     {
-        static::markTestIncomplete(message: 'This test is incomplete and needs to be fixed.');
-
         $version = get(Inertia::class)->version;
         $response = $this->http->get(uri([TestController::class, 'testRedirectWithClearHistory']), headers: [
             Header::INERTIA => 'true',
@@ -146,18 +139,7 @@ class HistoryTest extends TestCase
 
         $response->assertRedirect(uri([TestController::class, 'testCanSharePropsFromAnyWhere']));
 
-        // Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
-        //     Inertia::clearHistory();
-        //     return redirect('/users');
-        // });
-        // Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/users', function () {
-        //     return Inertia::render('User/Edit');
-        // });
-        // $this->followingRedirects();
-        // $response = $this->withoutExceptionHandling()->get('/', [
-        //     'X-Inertia' => 'true',
-        // ]);
-        // $response->assertSuccessful();
+        static::assertTrue(get(Session::class)->get('inertia.clear_history'));
         // $response->assertContent('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;errors&quot;:{}},&quot;url&quot;:&quot;\/users&quot;,&quot;version&quot;:&quot;&quot;,&quot;clearHistory&quot;:true,&quot;encryptHistory&quot;:false}"></div>');
     }
 }

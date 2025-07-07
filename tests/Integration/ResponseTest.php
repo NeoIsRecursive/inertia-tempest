@@ -758,8 +758,8 @@ final class ResponseTest extends TestCase
             actual: $pageData['deferredProps'],
         );
 
-        // $this->assertFalse($pageData['clearHistory']);
-        // $this->assertFalse($pageData['encryptHistory']);
+        $this->assertFalse($pageData['clearHistory']);
+        $this->assertFalse($pageData['encryptHistory']);
     }
 
     public function test_server_response_with_deferred_prop_and_multiple_groups(): void
@@ -812,8 +812,8 @@ final class ResponseTest extends TestCase
             actual: $page['deferredProps'],
         );
 
-        // $this->assertFalse($page['clearHistory']);
-        // $this->assertFalse($page['encryptHistory']);
+        $this->assertFalse($page['clearHistory']);
+        $this->assertFalse($page['encryptHistory']);
         // $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false,&quot;deferredProps&quot;:{&quot;default&quot;:[&quot;foo&quot;,&quot;bar&quot;],&quot;custom&quot;:[&quot;baz&quot;]}}"></div>', $view->render());
     }
 }

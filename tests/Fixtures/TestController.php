@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Tests\Fixtures;
 
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\Http\Middleware\EncryptHistory;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use Tempest\Http\Responses\Ok;
 use Tempest\Http\Responses\Redirect;
+use Tempest\Http\Session\Session;
 use Tempest\Router\Get;
 
 use function NeoIsRecursive\Inertia\inertia;
@@ -62,6 +64,12 @@ final readonly class TestController
     public function testEncryptedHistory(Inertia $inertia): InertiaResponse
     {
         return $inertia->encryptHistory()->render(component: 'User/Edit');
+    }
+
+    #[Get(uri: '/encrypted-history-middleware', middleware: [EncryptHistory::class])]
+    public function testEncryptedHistoryWithMiddleware(Inertia $inertia): InertiaResponse
+    {
+        return $inertia->render(component: 'User/Edit');
     }
 
     #[Get(uri: '/cleared-history')]
