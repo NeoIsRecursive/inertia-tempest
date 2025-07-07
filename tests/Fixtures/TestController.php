@@ -17,34 +17,32 @@ final readonly class TestController
 {
     public function index(): InertiaResponse
     {
-        return inertia(page: 'Index');
+        return inertia(component: 'Index');
     }
 
     #[Get(uri: '/can-share-props-from-any-where')]
     public function testCanSharePropsFromAnyWhere(Inertia $inertia): InertiaResponse
     {
-        $inertia->share(
-            key: 'foo',
-            value: 'bar',
-        );
+        $inertia
+            ->share(
+                key: 'foo',
+                value: 'bar',
+            )
+            ->share([
+                'baz' => 'qux',
+            ]);
 
-        $inertia->share([
-            'baz' => 'qux',
-        ]);
-
-        return inertia(page: 'User/Edit');
+        return inertia(component: 'User/Edit');
     }
 
     #[Get(uri: '/all-sorts-of-props')]
     public function testAllSortsOfProps(Inertia $inertia): InertiaResponse
     {
-        $inertia->share(
+        return $inertia->share(
             key: 'foo',
             value: 'bar',
-        );
-
-        return inertia(
-            page: 'User/Edit',
+        )->render(
+            component: 'User/Edit',
             props: [
                 new AlwaysProp(fn() => 'baz'),
             ],
@@ -54,15 +52,13 @@ final readonly class TestController
     #[Get(uri: '/encrypted-history')]
     public function testEncryptedHistory(Inertia $inertia): InertiaResponse
     {
-        $inertia->encryptHistory();
-        return inertia(page: 'User/Edit');
+        return $inertia->encryptHistory()->render(component: 'User/Edit');
     }
 
     #[Get(uri: '/cleared-history')]
     public function testClearedHistory(Inertia $inertia): InertiaResponse
     {
-        $inertia->clearHistory();
-        return inertia(page: 'User/Edit');
+        return $inertia->clearHistory()->render(component: 'User/Edit');
     }
 
     #[Get(uri: '/redirect-with-clear-history')]

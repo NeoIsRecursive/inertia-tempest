@@ -20,7 +20,7 @@ final class HelperTest extends TestCase
     public function test_the_helper_function_returns_a_response_instance(): void
     {
         static::assertInstanceOf(Response::class, inertia(
-            page: 'User/Edit',
+            component: 'User/Edit',
             props: ['user' => ['name' => 'Jonathan']],
         ));
     }
