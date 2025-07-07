@@ -28,7 +28,7 @@ final class ResponseTest extends TestCase
         $user = ['name' => 'Jonathan'];
         $response = new InertiaResponse(
             $request,
-            page: 'User/Edit',
+            component: 'User/Edit',
             props: ['user' => $user],
             rootView: __DIR__ . '/../Fixtures/root.view.php',
             version: '123',
@@ -56,7 +56,7 @@ final class ResponseTest extends TestCase
             actual: $page['version'],
         );
         static::assertSame(
-            expected: '<main>     <div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;}"></div></main>',
+            expected: '<main>     <div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div></main>',
             actual: get(ViewRenderer::class)->render($view),
         );
     }
@@ -68,7 +68,7 @@ final class ResponseTest extends TestCase
         $user = ['name' => 'Jonathan'];
         $response = new InertiaResponse(
             $request,
-            page: 'User/Edit',
+            component: 'User/Edit',
             props: ['user' => $user],
             rootView: 'app',
             version: '123',
@@ -135,7 +135,7 @@ final class ResponseTest extends TestCase
 
         $response = new InertiaResponse(
             $request,
-            page: 'User/Index',
+            component: 'User/Index',
             props: ['users' => $callable],
             rootView: 'app',
             version: '123',
@@ -279,7 +279,7 @@ final class ResponseTest extends TestCase
         $user = (object) ['name' => 'Jonathan'];
         $response = new InertiaResponse(
             $request,
-            page: 'User/Edit',
+            component: 'User/Edit',
             props: ['user' => $user, 'partial' => 'partial-data'],
             rootView: 'app',
             version: '123',
@@ -323,7 +323,7 @@ final class ResponseTest extends TestCase
         $user = (object) ['name' => 'Jonathan'];
         $response = new InertiaResponse(
             $request,
-            page: 'User/Edit',
+            component: 'User/Edit',
             props: [
                 'user' => $user,
                 'partial' => 'partial-data',
@@ -368,7 +368,7 @@ final class ResponseTest extends TestCase
 
         $response = new InertiaResponse(
             $request,
-            page: 'Users',
+            component: 'Users',
             props: ['users' => [], 'lazy' => $lazyProp],
             rootView: 'app',
             version: '123',
@@ -398,7 +398,7 @@ final class ResponseTest extends TestCase
 
         $response = new InertiaResponse(
             $request,
-            page: 'Users',
+            component: 'Users',
             props: ['users' => [], 'lazy' => $lazyProp],
             rootView: 'app',
             version: '123',
@@ -439,7 +439,13 @@ final class ResponseTest extends TestCase
             }),
         ];
 
-        $response = new InertiaResponse($request, page: 'User/Edit', props: $props, rootView: 'app', version: '123');
+        $response = new InertiaResponse(
+            $request,
+            component: 'User/Edit',
+            props: $props,
+            rootView: 'app',
+            version: '123',
+        );
         $page = $response->body;
 
         static::assertSame(
@@ -472,7 +478,13 @@ final class ResponseTest extends TestCase
             uri: '/products/123',
         );
 
-        $response = new InertiaResponse($request, page: 'User/Edit', props: $props, rootView: 'app', version: '123');
+        $response = new InertiaResponse(
+            $request,
+            component: 'User/Edit',
+            props: $props,
+            rootView: 'app',
+            version: '123',
+        );
 
         $page = $response->body;
 
@@ -507,7 +519,13 @@ final class ResponseTest extends TestCase
             uri: '/products/123',
         );
 
-        $response = new InertiaResponse($request, page: 'User/Edit', props: $props, rootView: 'app', version: '123');
+        $response = new InertiaResponse(
+            $request,
+            component: 'User/Edit',
+            props: $props,
+            rootView: 'app',
+            version: '123',
+        );
         $page = $response->body;
 
         $auth = $page['props']['auth'];
@@ -584,7 +602,7 @@ final class ResponseTest extends TestCase
 
         $response = new InertiaResponse(
             $request,
-            page: 'Years',
+            component: 'Years',
             props: ['years' => [2022, 2023, 2024]],
             rootView: 'app',
             version: '123',
@@ -605,7 +623,7 @@ final class ResponseTest extends TestCase
 
         $response = new InertiaResponse(
             $request,
-            page: 'Test',
+            component: 'Test',
             props: [
                 'auth' => ['user' => ['name' => 'Jonathan']], // shared prop
                 'auth.user.is_super' => true,
@@ -636,7 +654,7 @@ final class ResponseTest extends TestCase
 
         $response = new InertiaResponse(
             $request,
-            page: 'Test',
+            component: 'Test',
             props: [
                 'auth' => function (): array {
                     return ['user' => ['name' => 'Jonathan']];
@@ -670,7 +688,7 @@ final class ResponseTest extends TestCase
 
         $response = new InertiaResponse(
             $request,
-            page: 'Test',
+            component: 'Test',
             props: [
                 'auth.user' => ['name' => 'Jonathan'],
                 'auth.user.is_super' => true,
@@ -702,7 +720,7 @@ final class ResponseTest extends TestCase
         $user = ['name' => 'Jonathan'];
         $response = new InertiaResponse(
             request: $request,
-            page: 'User/Edit',
+            component: 'User/Edit',
             props: [
                 'user' => $user,
                 'foo' => new DeferProp(function () {
@@ -740,8 +758,8 @@ final class ResponseTest extends TestCase
             actual: $pageData['deferredProps'],
         );
 
-        // $this->assertFalse($pageData['clearHistory']);
-        // $this->assertFalse($pageData['encryptHistory']);
+        $this->assertFalse($pageData['clearHistory']);
+        $this->assertFalse($pageData['encryptHistory']);
     }
 
     public function test_server_response_with_deferred_prop_and_multiple_groups(): void
@@ -751,7 +769,7 @@ final class ResponseTest extends TestCase
         $user = ['name' => 'Jonathan'];
         $response = new InertiaResponse(
             request: $request,
-            page: 'User/Edit',
+            component: 'User/Edit',
             props: [
                 'user' => $user,
                 'foo' => new DeferProp(function (): string {
@@ -794,8 +812,8 @@ final class ResponseTest extends TestCase
             actual: $page['deferredProps'],
         );
 
-        // $this->assertFalse($page['clearHistory']);
-        // $this->assertFalse($page['encryptHistory']);
+        $this->assertFalse($page['clearHistory']);
+        $this->assertFalse($page['encryptHistory']);
         // $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false,&quot;deferredProps&quot;:{&quot;default&quot;:[&quot;foo&quot;,&quot;bar&quot;],&quot;custom&quot;:[&quot;baz&quot;]}}"></div>', $view->render());
     }
 }

@@ -22,7 +22,7 @@ final class InertiaTest extends TestCase
 {
     private function createFactory(): Inertia
     {
-        return new Inertia($this->container, $this->container->get(InertiaConfig::class));
+        return $this->container->get(Inertia::class);
     }
 
     public function test_location_response_for_inertia_requests(): void
@@ -129,11 +129,37 @@ final class InertiaTest extends TestCase
             expected: 'https://inertiajs.com',
             actual: $response->getHeader(name: 'Location')->values[0],
         );
-        // $this->assertSame(get(Session::class), $response->());
-        // $this->assertSame($request, $response->getRequest());
+
         static::assertSame(
             expected: $response,
             actual: $redirect,
+        );
+    }
+
+    public function test_returns_conflict_response_for_inertia_requests_with_different_version(): void
+    {
+        $response = $this->http->get(uri([TestController::class, 'testCanSharePropsFromAnyWhere']), headers: [
+            Header::INERTIA => 'true',
+            Header::VERSION => 'invalid-version',
+        ]);
+
+        $response->assertStatus(Status::CONFLICT);
+    }
+
+    public function test_returns_response_if_it_isnt_an_inertia_request(): void
+    {
+        $response = $this->http->get(uri([TestController::class, 'nonInertiaPage']));
+
+        $response->assertOk();
+        $response->assertHeaderContains(
+            name: 'Vary',
+            value: Header::INERTIA,
+        );
+        static::assertSame(
+            expected: [
+                'message' => 'This is a non-Inertia page.',
+            ],
+            actual: $response->body,
         );
     }
 
@@ -158,6 +184,8 @@ final class InertiaTest extends TestCase
                 ],
                 'url' => uri([TestController::class, 'testCanSharePropsFromAnyWhere']),
                 'version' => $version,
+                'clearHistory' => false,
+                'encryptHistory' => false,
             ],
             actual: $response->body,
         );
