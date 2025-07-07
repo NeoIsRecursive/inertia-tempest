@@ -121,8 +121,6 @@ class HistoryTest extends TestCase
 
     public function test_the_history_can_be_cleared(): void
     {
-        static::markTestIncomplete(message: 'This test is incomplete and needs to be fixed.');
-
         $version = get(Inertia::class)->version;
         $response = $this->http->get(uri([TestController::class, 'testClearedHistory']), headers: [
             Header::INERTIA => 'true',
