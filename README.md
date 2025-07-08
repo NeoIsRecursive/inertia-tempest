@@ -10,8 +10,63 @@ composer require neoisrecursive/inertia-tempest
 
 ## Setup
 
-First you need to create a `InertiaConfig` in your apps Config directory.
-Otherwise the default one will be used, which looks like this:
+It should be very familiar if you have used inertia before, with some small differences, for example:
+
+- No configuration is done in the middleware, use the the config file, a provider class or your own middleware to set your "globally-shared-props".
+- No automatic redirect back handling in non get requests, since all tempest routes must return a response you have to return your own `Back` response.
+- No `Inertia::defer/lazy/always` method, in favor of just using the prop classes (`new DeferProp/LazyProp/AlwaysProp`) (unless people like that syntax more?)
+
+### Backend
+
+If you use the default config, a view called `app.view.php` is required. That view will then be rendered as an `NeoIsRecursive\Inertia\Views\InertiaBaseView` and to render the inertia element you just do:
+(think of this like laravels `@inertia` directive)
+
+```php
+<?= $this->renderInertiaElement(id: 'app') ?>
+```
+
+### Frontend
+
+Install the bundler of your choice, since tempest comes with a vite installer, that is very much recommended. [Tempest vite docs](https://tempestphp.com/1.x/features/asset-bundling).
+
+When that is done, you can go on to install your prefered inertia client by following the guide on inertia's official site [here](https://inertiajs.com/client-side-setup)
+
+### Usage
+
+It is pretty similar to the laravel adapter, except that the `inertia` function is a namespaced function.
+
+```php
+use Tempest\Http\Get;
+use NeoIsRecursive\Inertia\InertiaResponse;
+use NeoIsRecursive\Inertia\Inertia;
+
+use function NeoIsRecursive\Inertia\inertia;
+
+final class ReviewController
+{
+    // Using the inertia helper function
+    #[Get(uri: '/reviews/{review}')]
+    public function show(Review $review): InertiaResponse
+    {
+        return inertia('reviews/show', [
+            'review' => $review,
+        ]);
+    }
+
+    // Using dependency injection
+    #[Get(uri: '/reviews')]
+    public function show(Inertia $inertia): InertiaResponse
+    {
+        return $inertia->render('reviews/index', [
+            'reviews' => Review::all(),
+        ]);
+    }
+}
+```
+
+## Configuration
+
+This is the default config:
 
 ```php
 <?php
@@ -42,36 +97,6 @@ return new InertiaConfig(
         'errors' => new AlwaysProp(fn(ResolveErrorProps $errors) => $errors->resolve()),
     ]
 );
-```
-
-The view will then be rendered as an `NeoIsRecursive\Inertia\Views\InertiaBaseView` and to render the inertia element you just do:
-
-```php
-<?= $this->renderInertiaElement(id: 'app') ?>
-```
-
-in your view, that will render a div with the page data (the id here should match the id you specified in your client setup).
-
-See how to install inertia to your frontend on inertia's official site [here](https://inertiajs.com/client-side-setup).
-
-When that is done you can start returning inertia responses from your tempest app!
-
-```php
-use Tempest\Http\Get;
-use NeoIsRecursive\Inertia\InertiaResponse;
-
-use function NeoIsRecursive\Inertia\inertia;
-
-final class ReviewController
-{
-    #[Get(uri: '/review/{review}')]
-    public function show(Review $review): InertiaResponse
-    {
-        return inertia('review/show', [
-            'review' => $review,
-        ]);
-    }
-}
 ```
 
 ## TODO
