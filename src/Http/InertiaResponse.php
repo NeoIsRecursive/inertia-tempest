@@ -14,10 +14,8 @@ use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\IsResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
-use Tempest\Http\Session\Session;
 use Tempest\Support\Arr\ArrayInterface;
 
-use function Tempest\get;
 use function Tempest\invoke;
 use function Tempest\Support\arr;
 
@@ -173,7 +171,11 @@ final class InertiaResponse implements Response
             ->map(function ($value, string|int $key) use ($request): array {
                 $evaluated = ($value instanceof Closure) ? invoke($value) : $value;
                 $evaluated =
-                    $evaluated instanceof LazyProp || $evaluated instanceof AlwaysProp ? $evaluated() : $evaluated;
+                    $evaluated instanceof DeferProp ||
+                    $evaluated instanceof LazyProp ||
+                    $evaluated instanceof AlwaysProp
+                        ? $evaluated()
+                        : $evaluated;
                 $evaluated = ($evaluated instanceof ArrayInterface) ? $evaluated->toArray() : $evaluated;
                 $evaluated = is_array($evaluated)
                     ? self::evaluateProps($evaluated, $request, unpackDotProps: false)
