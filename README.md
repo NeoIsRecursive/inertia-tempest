@@ -98,9 +98,3 @@ return new InertiaConfig(
     ]
 );
 ```
-
-## TODO
-
-- [ ] Installer?
-- [ ] "Migrate" all tests from the laravel adapter.
-- [x] Add history encryption setting.
