@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia;
 
+use Closure;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\InertiaConfig;
+use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\DeferProp;
+use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;
@@ -25,8 +29,10 @@ final class Inertia
         private InertiaConfig $config,
     ) {}
 
-    public function share(string|array $key, null|string $value = null): self
-    {
+    public function share(
+        string|array $key,
+        LazyProp|AlwaysProp|DeferProp|Closure|string|array|null $value = null,
+    ): self {
         $this->config->share($key, $value);
 
         return $this;
