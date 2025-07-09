@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Http;
 
 use Closure;
+use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
-use NeoIsRecursive\Inertia\Props\CallableProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;

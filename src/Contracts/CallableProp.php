@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NeoIsRecursive\Inertia\Props;
+namespace NeoIsRecursive\Inertia\Contracts;
 
 interface CallableProp
 {

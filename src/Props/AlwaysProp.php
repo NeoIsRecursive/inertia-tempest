@@ -6,6 +6,7 @@ namespace NeoIsRecursive\Inertia\Props;
 
 use Closure;
 use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
+use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
