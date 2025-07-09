@@ -7,6 +7,7 @@ namespace NeoIsRecursive\Inertia\Http;
 use Closure;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\CallableProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
@@ -62,9 +63,7 @@ final class InertiaResponse implements Response
             count($mergeProps) ? ['mergeProps' => $mergeProps] : [],
         );
 
-        $isInertia = $request->headers->has(Header::INERTIA);
-
-        $this->body = $isInertia
+        $this->body = $request->headers->has(Header::INERTIA)
             ? (function () use ($pageData) {
                 // side effect to set Inertia header
                 $this->addHeader(Header::INERTIA, value: 'true');
@@ -162,20 +161,15 @@ final class InertiaResponse implements Response
     }
 
     /**
-     * @pure
      * Evaluates props recursively.
+     * @pure
      */
     private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array // @mago-expect best-practices/no-boolean-flag-parameter
     {
         return arr($props)
             ->map(function ($value, string|int $key) use ($request): array {
                 $evaluated = ($value instanceof Closure) ? invoke($value) : $value;
-                $evaluated =
-                    $evaluated instanceof DeferProp ||
-                    $evaluated instanceof LazyProp ||
-                    $evaluated instanceof AlwaysProp
-                        ? $evaluated()
-                        : $evaluated;
+                $evaluated = ($evaluated instanceof CallableProp) ? $evaluated() : $evaluated;
                 $evaluated = ($evaluated instanceof ArrayInterface) ? $evaluated->toArray() : $evaluated;
                 $evaluated = is_array($evaluated)
                     ? self::evaluateProps($evaluated, $request, unpackDotProps: false)
