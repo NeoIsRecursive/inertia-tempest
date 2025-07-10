@@ -58,6 +58,7 @@ final class InertiaInstaller implements Installer
 
         match ($framework) {
             'react' => $this->installReact($clientPath, $pagesPath),
+            'vue' => $this->installVue($clientPath, $pagesPath),
         };
     }
 
