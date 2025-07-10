@@ -34,25 +34,25 @@ final class InertiaInstaller implements Installer
             options: [
                 'react' => 'React',
             ],
-            default: 'react'
+            default: 'react',
         );
 
         $clientPath = $this->ask(
             question: 'Where is your client-side code located?',
+            // @mago-expect best-practices/literal-named-argument
             default: to_relative_path(root_path(), src_path('Client')),
         );
 
         $pagesPath = $this->ask(
             question: 'Where do you want to keep your Inertia pages?',
+            // @mago-expect best-practices/literal-named-argument
             default: to_relative_path(to_absolute_path($clientPath), to_absolute_path($clientPath, 'pages')),
         );
 
         $this->publish(
             source: __DIR__ . '/app.view.stub',
-            destination: (string) path(
-                src_path(),
-                'app.view.php'
-            ),
+            // @mago-expect best-practices/literal-named-argument
+            destination: (string) path(src_path(), 'app.view.php'),
         );
 
         match ($framework) {
@@ -73,28 +73,23 @@ final class InertiaInstaller implements Installer
 
         $this->publish(
             source: __DIR__ . '/React/main.tsx',
-            destination: (string) path(
-                $clientPath,
-                'main.entrypoint.tsx'
-            ),
-            callback: function (string $source, string $target) use ($pagesPath): void {
+            // @mago-expect best-practices/literal-named-argument
+            destination: (string) path($clientPath, 'main.entrypoint.tsx'),
+            callback: function (string $_, string $target) use ($pagesPath): void {
                 $content = read_file($target);
 
                 write_file($target, replace(
                     string: $content,
                     search: '{{page_directory}}',
-                    replace: "./{$pagesPath}"
+                    replace: "./{$pagesPath}",
                 ));
-            }
+            },
         );
 
         $this->publish(
             source: __DIR__ . '/React/example-page.tsx',
-            destination: (string) path(
-                $clientPath,
-                $pagesPath,
-                'example-page.tsx'
-            )
+            // @mago-expect best-practices/literal-named-argument
+            destination: (string) path($clientPath, $pagesPath, 'example-page.tsx'),
         );
 
         $this->publishImports();

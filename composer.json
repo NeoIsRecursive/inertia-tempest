@@ -35,7 +35,7 @@
   ],
   "require": {
     "php": "^8.4",
-    "tempest/framework": "^1.1"
+    "tempest/framework": "^1.3"
   },
   "require-dev": {
     "phpunit/phpunit": "^11.5.15",
