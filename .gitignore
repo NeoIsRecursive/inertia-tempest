@@ -1,10 +1,11 @@
 /vendor/
 .cache
 .tempest
+# testbench related files
 .vite
-node_modules
-package-lock.json
-package.json
 vite-tempest
+node_modules
 public/build/
+package.json
+package-lock.json
 log/
