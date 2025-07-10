@@ -98,21 +98,19 @@ final class InertiaInstaller implements Installer
             destination: (string) path($clientPath, $pagesPath, 'example-page.tsx'),
         );
 
-        $this->write(
-            contents: <<<'CODE'
-            To make vite bundle jsx and enable fast refresh, you need the @vitejs/plugin-react plugin.
-            We have installed it for you, but you need to add it to your Vite config.
+        $this->write(contents: <<<'CODE'
+        To make vite bundle jsx and enable fast refresh, you need the @vitejs/plugin-react plugin.
+        We have installed it for you, but you need to add it to your Vite config.
 
-            import react from '@vitejs/plugin-react';
-            // ...
-            export default defineConfig({
-                plugins: [
-                    // ... other plugins
-                    react(),
-                ],
-            });
-            CODE,
-        );
+        import react from '@vitejs/plugin-react';
+        // ...
+        export default defineConfig({
+            plugins: [
+                // ... other plugins
+                react(),
+            ],
+        });
+        CODE);
     }
 
     private function installVue(string $clientPath, string $pagesPath): void
@@ -147,20 +145,18 @@ final class InertiaInstaller implements Installer
             destination: (string) path($clientPath, $pagesPath, 'example-page.vue'),
         );
 
-        $this->write(
-            contents: <<<'CODE'
-            Vite requires a plugin to parse Vue files.
-            We have installed it for you, but you need to add it to your Vite config.
+        $this->write(contents: <<<'CODE'
+        Vite requires a plugin to parse Vue files.
+        We have installed it for you, but you need to add it to your Vite config.
 
-            import vue from '@vitejs/plugin-vue';
-            // ...
-            export default defineConfig({
-                plugins: [
-                    // ... other plugins
-                    vue(),
-                ],
-            });
-            CODE,
-        );
+        import vue from '@vitejs/plugin-vue';
+        // ...
+        export default defineConfig({
+            plugins: [
+                // ... other plugins
+                vue(),
+            ],
+        });
+        CODE);
     }
 }
