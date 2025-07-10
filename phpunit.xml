@@ -20,6 +20,9 @@
     <include>
       <directory suffix=".php">src</directory>
     </include>
+    <exclude>
+      <directory>src/Installer/</directory>
+    </exclude>
   </source>
   <php>
     <env name="ENVIRONMENT" value="testing" />
