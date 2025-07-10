@@ -15,6 +15,7 @@ use function Tempest\Support\Filesystem\write_file;
 use function Tempest\Support\path;
 use function Tempest\Support\Path\to_absolute_path;
 use function Tempest\Support\Path\to_relative_path;
+use function Tempest\Support\Str\ensure_starts_with;
 use function Tempest\Support\Str\replace;
 
 final class InertiaInstaller implements Installer
@@ -68,6 +69,8 @@ final class InertiaInstaller implements Installer
                 '@inertiajs/react',
                 'react',
                 'react-dom',
+                '@types/react',
+                '@types/react-dom',
             ],
         );
 
@@ -81,7 +84,7 @@ final class InertiaInstaller implements Installer
                 write_file($target, replace(
                     string: $content,
                     search: '{{page_directory}}',
-                    replace: "./{$pagesPath}",
+                    replace: ensure_starts_with($pagesPath, prefix: './'),
                 ));
             },
         );
@@ -91,7 +94,37 @@ final class InertiaInstaller implements Installer
             // @mago-expect best-practices/literal-named-argument
             destination: (string) path($clientPath, $pagesPath, 'example-page.tsx'),
         );
+    }
 
-        $this->publishImports();
+    private function installVue(string $clientPath, string $pagesPath): void
+    {
+        $this->javascript->installDependencies(
+            cwd: root_path(),
+            dependencies: [
+                '@inertiajs/vue3',
+                'vue',
+            ],
+        );
+
+        $this->publish(
+            source: __DIR__ . '/Vue/main.ts',
+            // @mago-expect best-practices/literal-named-argument
+            destination: (string) path($clientPath, 'main.entrypoint.ts'),
+            callback: function (string $_, string $target) use ($pagesPath): void {
+                $content = read_file($target);
+
+                write_file($target, replace(
+                    string: $content,
+                    search: '{{page_directory}}',
+                    replace: ensure_starts_with($pagesPath, prefix: './'),
+                ));
+            },
+        );
+
+        $this->publish(
+            source: __DIR__ . '/Vue/example-page.vue',
+            // @mago-expect best-practices/literal-named-argument
+            destination: (string) path($clientPath, $pagesPath, 'example-page.vue'),
+        );
     }
 }
