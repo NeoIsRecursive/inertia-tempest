@@ -34,6 +34,7 @@ final class InertiaInstaller implements Installer
             question: 'What frontend framework are you going to use?',
             options: [
                 'react' => 'React',
+                'vue' => 'Vue',
             ],
             default: 'react',
         );
@@ -70,6 +71,7 @@ final class InertiaInstaller implements Installer
                 '@inertiajs/react',
                 'react',
                 'react-dom',
+                '@vitejs/plugin-react',
                 '@types/react',
                 '@types/react-dom',
             ],
@@ -95,6 +97,22 @@ final class InertiaInstaller implements Installer
             // @mago-expect best-practices/literal-named-argument
             destination: (string) path($clientPath, $pagesPath, 'example-page.tsx'),
         );
+
+        $this->write(
+            contents: <<<'CODE'
+            To make vite bundle jsx and enable fast refresh, you need the @vitejs/plugin-react plugin.
+            We have installed it for you, but you need to add it to your Vite config.
+
+            import react from '@vitejs/plugin-react';
+            // ...
+            export default defineConfig({
+                plugins: [
+                    // ... other plugins
+                    react(),
+                ],
+            });
+            CODE,
+        );
     }
 
     private function installVue(string $clientPath, string $pagesPath): void
@@ -104,6 +122,7 @@ final class InertiaInstaller implements Installer
             dependencies: [
                 '@inertiajs/vue3',
                 'vue',
+                '@vitejs/plugin-vue',
             ],
         );
 
@@ -126,6 +145,22 @@ final class InertiaInstaller implements Installer
             source: __DIR__ . '/Vue/example-page.vue',
             // @mago-expect best-practices/literal-named-argument
             destination: (string) path($clientPath, $pagesPath, 'example-page.vue'),
+        );
+
+        $this->write(
+            contents: <<<'CODE'
+            Vite requires a plugin to parse Vue files.
+            We have installed it for you, but you need to add it to your Vite config.
+
+            import vue from '@vitejs/plugin-vue';
+            // ...
+            export default defineConfig({
+                plugins: [
+                    // ... other plugins
+                    vue(),
+                ],
+            });
+            CODE,
         );
     }
 }
