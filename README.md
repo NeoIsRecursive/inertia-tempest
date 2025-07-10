@@ -16,7 +16,29 @@ It should be very familiar if you have used inertia before, with some small diff
 - No automatic redirect back handling in non get requests, since all tempest routes must return a response you have to return your own `Back` response.
 - No `Inertia::defer/lazy/always` method, in favor of just using the prop classes (`new DeferProp/LazyProp/AlwaysProp`) (unless people like that syntax more?)
 
-### Backend
+We provide an installer that you can use to set up some of the boilerplate code, but you can also do it manually.
+
+### Installer
+
+First run the tempest vite installer (the inertia installer assumes you use vite):
+
+```sh
+./tempest install vite
+```
+
+Then you can run the inertia installer:
+
+```sh
+./tempest install inertia
+```
+
+Then all you have to do is to follow the instructions in the terminal. The only manual step is to add the vite plugin for your fe-framework to the vite config file.
+
+### Manual setup
+
+If you don't want to use the installer, you can do the following steps manually:
+
+#### Backend
 
 If you use the default config, a view called `app.view.php` is required. That view will then be rendered as an `NeoIsRecursive\Inertia\Views\InertiaBaseView` and to render the inertia element you just do:
 (think of this like laravels `@inertia` directive)
@@ -25,7 +47,7 @@ If you use the default config, a view called `app.view.php` is required. That vi
 <?= $this->renderInertiaElement(id: 'app') ?>
 ```
 
-### Frontend
+#### Frontend
 
 Install the bundler of your choice, since tempest comes with a vite installer, that is very much recommended. [Tempest vite docs](https://tempestphp.com/1.x/features/asset-bundling).
 
