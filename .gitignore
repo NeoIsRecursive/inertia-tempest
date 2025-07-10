@@ -1,3 +1,10 @@
 /vendor/
 .cache
 .tempest
+.vite
+node_modules
+package-lock.json
+package.json
+vite-tempest
+public/build/
+log/

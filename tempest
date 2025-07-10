@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+use Tempest\Console\ConsoleApplication;
+use Tempest\Discovery\DiscoveryLocation;
+
+require_once getcwd() . '/vendor/autoload.php';
+
+ConsoleApplication::boot(discoveryLocations: [
+    new DiscoveryLocation('Testbench\\', getcwd() . '/testbench/'),
+])->run();
+
+exit;

@@ -13,7 +13,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "NeoIsRecursive\\Inertia\\Tests\\": "tests/"
+      "NeoIsRecursive\\Inertia\\Tests\\": "tests/",
+      "Testbench\\": "testbench/"
     }
   },
   "scripts": {
