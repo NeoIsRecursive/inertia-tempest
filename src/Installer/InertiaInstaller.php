@@ -6,6 +6,7 @@ namespace NeoIsRecursive\Inertia\Installer;
 
 use Tempest\Core\Installer;
 use Tempest\Core\PublishesFiles;
+use Tempest\Highlight\Languages\JavaScript\JavaScriptLanguage;
 use Tempest\Support\JavaScript\DependencyInstaller;
 
 use function Tempest\root_path;
@@ -98,20 +99,23 @@ final class InertiaInstaller implements Installer
             destination: (string) path($clientPath, $pagesPath, 'example-page.tsx'),
         );
 
-        $this->write(
-            contents: <<<'CODE'
-            To make vite bundle jsx and enable fast refresh, you need the @vitejs/plugin-react plugin.
-            We have installed it for you, but you need to add it to your Vite config.
+        $this->console->instructions(lines: [
+            'To make vite bundle jsx and enable fast refresh, you need the @vitejs/plugin-react plugin.',
+            'We have installed it for you, but you need to add it to your Vite config:',
+        ]);
 
-            import react from '@vitejs/plugin-react';
-            // ...
-            export default defineConfig({
-                plugins: [
-                    // ... other plugins
-                    react(),
-                ],
-            });
-            CODE,
+        $this->console->writeWithLanguage(
+            contents: <<<'JS'
+                import react from '@vitejs/plugin-react';
+                // ...
+                export default defineConfig({
+                    plugins: [
+                        // ... other plugins
+                        react(),
+                    ],
+                });
+            JS,
+            language: new JavaScriptLanguage(),
         );
     }
 
@@ -147,20 +151,23 @@ final class InertiaInstaller implements Installer
             destination: (string) path($clientPath, $pagesPath, 'example-page.vue'),
         );
 
-        $this->write(
-            contents: <<<'CODE'
-            Vite requires a plugin to parse Vue files.
-            We have installed it for you, but you need to add it to your Vite config.
+        $this->console->instructions(lines: [
+            'Vite requires a plugin to parse Vue files',
+            'we have installed it for you, but you need to add it to your vite config:',
+        ]);
 
-            import vue from '@vitejs/plugin-vue';
-            // ...
-            export default defineConfig({
-                plugins: [
-                    // ... other plugins
-                    vue(),
-                ],
-            });
-            CODE,
+        $this->console->writeWithLanguage(
+            contents: <<<'js'
+                import vue from '@vitejs/plugin-vue';
+                // ...
+                export default defineConfig({
+                    plugins: [
+                        // ... other plugins
+                        vue(),
+                    ],
+                });
+            js,
+            language: new JavaScriptLanguage(),
         );
     }
 }
