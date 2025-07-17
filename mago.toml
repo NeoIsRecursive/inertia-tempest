@@ -5,7 +5,10 @@ php_version = "8.4.0"
 [source]
 paths = ["src/", "tests/"]
 includes = ["vendor"]
-excludes = []
+excludes = [
+    "./vendor/symfony/cache/Traits/ValueWrapper.php",
+    "./vendor/composer",
+]
 
 [format]
 print_width = 120
