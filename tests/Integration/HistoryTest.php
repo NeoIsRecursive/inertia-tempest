@@ -66,23 +66,6 @@ class HistoryTest extends TestCase
         //     ]);
     }
 
-    public function test_the_history_can_be_encrypted_via_middleware_alias(): void
-    {
-        static::markTestIncomplete(message: 'This test is incomplete and needs to be fixed.');
-
-        // Route::middleware([StartSession::class, ExampleMiddleware::class, 'inertia.encrypt'])->get('/', function () {
-        //     return Inertia::render('User/Edit');
-        // });
-        // $response = $this->withoutExceptionHandling()->get('/', [
-        //     'X-Inertia' => 'true',
-        // ]);
-        // $response->assertSuccessful();
-        // $response->assertJson([
-        //     'component' => 'User/Edit',
-        //     'encryptHistory' => true,
-        // ]);
-    }
-
     public function test_the_history_can_be_encrypted_globally(): void
     {
         static::markTestIncomplete(message: 'This test is incomplete and needs to be fixed.');

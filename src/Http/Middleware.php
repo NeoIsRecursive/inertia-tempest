@@ -49,13 +49,7 @@ final class Middleware implements HttpMiddleware
             $response->status === Status::FOUND &&
                 in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
         ) {
-            // TODO: set status to 303
-            // return new GenericResponse(
-            //     status: Status::SEE_OTHER,
-            //     headers: [
-            //         'Location' => $response->getHeader('Location'),
-            //     ]
-            // );
+            $response->setStatus(Status::SEE_OTHER);
         }
 
         return $response;

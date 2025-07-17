@@ -10,14 +10,17 @@ use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use Tempest\Http\Responses\Ok;
 use Tempest\Http\Responses\Redirect;
-use Tempest\Http\Session\Session;
 use Tempest\Router\Get;
+use Tempest\Router\Patch;
+use Tempest\Router\Post;
+use Tempest\Router\Put;
 
 use function NeoIsRecursive\Inertia\inertia;
 use function Tempest\uri;
 
 final readonly class TestController
 {
+    #[Get(uri: '/')]
     public function index(): InertiaResponse
     {
         return inertia(component: 'Index');
@@ -83,5 +86,23 @@ final readonly class TestController
     {
         $inertia->clearHistory();
         return new Redirect(to: uri([self::class, 'testCanSharePropsFromAnyWhere']));
+    }
+
+    #[Post(uri: '/test-post-with-redirect')]
+    public function testPostWithRedirect(): Redirect
+    {
+        return new Redirect(to: uri([static::class, 'index']));
+    }
+
+    #[Patch(uri: '/test-patch-with-redirect')]
+    public function testPatchWithRedirect(): Redirect
+    {
+        return new Redirect(to: uri([static::class, 'index']));
+    }
+
+    #[Put(uri: '/test-put-with-redirect')]
+    public function testPutWithRedirect(): Redirect
+    {
+        return new Redirect(to: uri([static::class, 'index']));
     }
 }
