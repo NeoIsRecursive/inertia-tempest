@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia;
 
 use JsonSerializable;
+use Tempest\Support\Html\HtmlString;
 
 final readonly class PageData implements JsonSerializable
 {
@@ -45,5 +46,16 @@ final readonly class PageData implements JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    public function render(string $id): HtmlString
+    {
+        return HtmlString::createTag(
+            'div',
+            [
+                'id' => $id,
+                'data-page' => htmlentities(json_encode($this, JSON_THROW_ON_ERROR)),
+            ],
+        );
     }
 }

@@ -16,15 +16,4 @@ final class InertiaBaseView implements View
         public string $path,
         public PageData $page,
     ) {}
-
-    public function renderInertiaElement(string $id): string
-    {
-        $pageData = htmlentities(json_encode($this->page));
-
-        $template = <<<HTML
-             <div id="{$id}" data-page="{$pageData}"></div>
-        HTML;
-
-        return $template;
-    }
 }
