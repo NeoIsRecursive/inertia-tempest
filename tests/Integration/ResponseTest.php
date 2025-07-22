@@ -33,27 +33,28 @@ final class ResponseTest extends TestCase
             rootView: __DIR__ . '/../Fixtures/root.view.php',
             version: '123',
         );
+        /** @var InertiaBaseView */
         $view = $response->body;
-        $page = $view->get(key: 'pageData');
+        $page = $view->page;
 
         static::assertInstanceOf(Response::class, $response);
         static::assertInstanceOf(View::class, $view);
 
         static::assertSame(
             expected: 'User/Edit',
-            actual: $page['component'],
+            actual: $page->component,
         );
         static::assertSame(
             expected: 'Jonathan',
-            actual: $page['props']['user']['name'],
+            actual: $page->props['user']['name'],
         );
         static::assertSame(
             expected: '/user/123',
-            actual: $page['url'],
+            actual: $page->url,
         );
         static::assertSame(
             expected: '123',
-            actual: $page['version'],
+            actual: $page->version,
         );
         static::assertSame(
             expected: '<main>     <div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div></main>',
@@ -608,12 +609,13 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
+        /** @var InertiaBaseView */
         $view = $response->body;
-        $page = $view->get(key: 'pageData');
+        $page = $view->page;
 
         static::assertSame(
             expected: [2022, 2023, 2024],
-            actual: $page['props']['years'],
+            actual: $page->props['years'],
         );
     }
 
@@ -632,8 +634,9 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
+        /** @var InertiaBaseView */
         $view = $response->body;
-        $page = $view->get(key: 'pageData');
+        $page = $view->page;
 
         static::assertSame(
             expected: [
@@ -644,7 +647,7 @@ final class ResponseTest extends TestCase
                     ],
                 ],
             ],
-            actual: $page['props'],
+            actual: $page->props,
         );
     }
 
@@ -667,7 +670,7 @@ final class ResponseTest extends TestCase
 
         /** @var InertiaBaseView */
         $view = $response->body;
-        $page = $view->get(key: 'pageData');
+        $page = $view->page;
 
         static::assertSame(
             expected: [
@@ -678,7 +681,7 @@ final class ResponseTest extends TestCase
                     ],
                 ],
             ],
-            actual: $page['props'],
+            actual: $page->props,
         );
     }
 
@@ -697,8 +700,9 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
+        /** @var InertiaBaseView */
         $view = $response->body;
-        $page = $view->get(key: 'pageData');
+        $page = $view->page;
 
         static::assertSame(
             expected: [
@@ -709,7 +713,7 @@ final class ResponseTest extends TestCase
                     ],
                 ],
             ],
-            actual: $page['props'],
+            actual: $page->props,
         );
     }
 

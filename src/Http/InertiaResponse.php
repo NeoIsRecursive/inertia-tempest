@@ -7,6 +7,7 @@ namespace NeoIsRecursive\Inertia\Http;
 use Closure;
 use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
+use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
@@ -45,22 +46,19 @@ final class InertiaResponse implements Response
             request: $request,
         );
 
-        // Build page data immutably
-        $pageData = array_merge(
-            [
-                'component' => $component,
-                'props' => self::composeProps(
-                    props: $props,
-                    request: $request,
-                    component: $component,
-                ),
-                'url' => $request->uri,
-                'version' => $version,
-                'clearHistory' => $clearHistory,
-                'encryptHistory' => $encryptHistory,
-            ],
-            count($deferredProps) ? ['deferredProps' => $deferredProps] : [],
-            count($mergeProps) ? ['mergeProps' => $mergeProps] : [],
+        $pageData = new PageData(
+            component: $component,
+            props: self::composeProps(
+                props: $props,
+                request: $request,
+                component: $component,
+            ),
+            url: $request->uri,
+            version: $version,
+            clearHistory: $clearHistory,
+            encryptHistory: $encryptHistory,
+            deferredProps: count($deferredProps) ? $deferredProps : null,
+            mergeProps: count($mergeProps) ? $mergeProps : null,
         );
 
         $this->body = $request->headers->has(Header::INERTIA)
@@ -68,11 +66,11 @@ final class InertiaResponse implements Response
                 // side effect to set Inertia header
                 $this->addHeader(Header::INERTIA, value: 'true');
 
-                return $pageData;
+                return $pageData->toArray();
             })()
             : new InertiaBaseView(
-                view: $rootView,
-                pageData: $pageData,
+                path: $rootView,
+                page: $pageData,
             );
     }
 
