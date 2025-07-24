@@ -46,12 +46,12 @@ final class InertiaResponse implements Response
             version: $version,
             clearHistory: $clearHistory,
             encryptHistory: $encryptHistory,
-            deferredProps: self::resolvePropKeysThatShouldDefer(
+            propKeysToDefer: self::resolvePropKeysThatShouldDefer(
                 props: $props,
                 request: $request,
                 component: $component,
             ),
-            mergeProps: self::resolvePropKeysThatShouldMerge(
+            propsKeysToMerge: self::resolvePropKeysThatShouldMerge(
                 props: $props,
                 request: $request,
             ),

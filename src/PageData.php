@@ -17,10 +17,9 @@ final readonly class PageData implements JsonSerializable
         public string $version,
         public bool $clearHistory,
         public bool $encryptHistory,
-        public ?array $deferredProps = null,
-        public ?array $mergeProps = null,
-    ) {
-    }
+        public ?array $propKeysToDefer = null,
+        public ?array $propsKeysToMerge = null,
+    ) {}
 
     public function toArray(): array
     {
@@ -33,12 +32,12 @@ final readonly class PageData implements JsonSerializable
             'encryptHistory' => $this->encryptHistory,
         ];
 
-        if ($this->deferredProps !== null) {
-            $data['deferredProps'] = $this->deferredProps;
+        if ($this->propKeysToDefer !== null) {
+            $data['deferredProps'] = $this->propKeysToDefer;
         }
 
-        if ($this->mergeProps !== null) {
-            $data['mergeProps'] = $this->mergeProps;
+        if ($this->propsKeysToMerge !== null) {
+            $data['mergeProps'] = $this->propsKeysToMerge;
         }
 
         return $data;

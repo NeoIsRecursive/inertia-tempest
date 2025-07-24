@@ -13,8 +13,7 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
 {
     public function __construct(
         public ?string $manifestPath = null,
-    ) {
-    }
+    ) {}
 
     public function resolve(Container $container): string
     {
