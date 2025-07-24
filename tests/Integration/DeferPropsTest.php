@@ -38,6 +38,6 @@ final class DeferPropsTest extends TestCase
             return $request;
         });
 
-        $this->assertInstanceOf(Request::class, $deferProp());
+        static::assertInstanceOf(Request::class, $deferProp());
     }
 }
