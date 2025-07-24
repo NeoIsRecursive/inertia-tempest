@@ -211,6 +211,39 @@ final class InertiaTest extends TestCase
         );
     }
 
+    public function test_mergeable_props_can_be_merged(): void
+    {
+        $version = get(Inertia::class)->version;
+
+        $response = $this->http->get(uri([TestController::class, 'testCanMergeProps']), headers: [
+            Header::INERTIA => 'true',
+            Header::VERSION => $version,
+            Header::PARTIAL_COMPONENT => 'test',
+        ]);
+
+        $response->assertOk();
+        static::assertSame(
+            expected: [
+                'component' => 'test',
+                'props' => [
+                    'user' => null,
+                    'errors' => [],
+                    'foo' => 'bar',
+                    'baz' => 'qux',
+                ],
+                'url' => uri([TestController::class, 'testCanMergeProps']),
+                'version' => $version,
+                'clearHistory' => false,
+                'encryptHistory' => false,
+                'mergeProps' => [
+                    'foo',
+                    'baz',
+                ],
+            ],
+            actual: $response->body,
+        );
+    }
+
     // public function test_will_accept_arrayabe_props()
     // {
     //     Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {

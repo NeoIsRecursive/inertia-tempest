@@ -62,8 +62,8 @@ abstract class TestCase extends IntegrationTest
 
     public static function assertSnippetsMatch(string $expected, string $actual): void
     {
-        $expected = str_replace([PHP_EOL, ' '], '', $expected);
-        $actual = str_replace([PHP_EOL, ' '], '', $actual);
+        $expected = str_replace([PHP_EOL, ' '], replace: '', subject: $expected);
+        $actual = str_replace([PHP_EOL, ' '], replace: '', subject: $actual);
 
         static::assertSame($expected, $actual);
     }
