@@ -1,4 +1,4 @@
-name: Run mago
+name: Run code quality
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
         run: |
           composer install --prefer-dist --no-progress
 
-      - name: Run mago
+      - name: Run Mago
         run: |
-          vendor/bin/mago lint
           vendor/bin/mago fmt --dry-run
+          vendor/bin/mago lint --reporting-format=github
