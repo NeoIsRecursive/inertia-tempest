@@ -44,7 +44,7 @@ If you use the default config, a view called `app.view.php` is required. That vi
 (think of this like laravels `@inertia` directive)
 
 ```php
-<?= $this->renderInertiaElement(id: 'app') ?>
+<?= $this->page->render(id: 'app') ?>
 ```
 
 #### Frontend
