@@ -35,17 +35,6 @@ final class InertiaResponse implements Response
         readonly bool $clearHistory = false,
         readonly bool $encryptHistory = false,
     ) {
-        $deferredProps = self::resolvePropKeysThatShouldDefer(
-            props: $props,
-            request: $request,
-            component: $component,
-        );
-
-        $mergeProps = self::resolvePropKeysThatShouldMerge(
-            props: $props,
-            request: $request,
-        );
-
         $pageData = new PageData(
             component: $component,
             props: self::composeProps(
@@ -57,8 +46,15 @@ final class InertiaResponse implements Response
             version: $version,
             clearHistory: $clearHistory,
             encryptHistory: $encryptHistory,
-            deferredProps: count($deferredProps) ? $deferredProps : null,
-            mergeProps: count($mergeProps) ? $mergeProps : null,
+            deferredProps: self::resolvePropKeysThatShouldDefer(
+                props: $props,
+                request: $request,
+                component: $component,
+            ),
+            mergeProps: self::resolvePropKeysThatShouldMerge(
+                props: $props,
+                request: $request,
+            ),
         );
 
         $this->body = $request->headers->has(Header::INERTIA)
@@ -126,36 +122,37 @@ final class InertiaResponse implements Response
         return array_filter($filtered, static fn($key) => !in_array($key, $except, strict: true), ARRAY_FILTER_USE_KEY);
     }
 
-    private static function resolvePropKeysThatShouldDefer(array $props, Request $request, string $component): array
+    private static function resolvePropKeysThatShouldDefer(array $props, Request $request, string $component): ?array
     {
         if (static::isPartial($request, $component)) {
-            return [];
+            return null;
         }
 
-        return arr($props)
-            ->filter(function ($prop) {
-                return $prop instanceof DeferProp;
-            })
-            ->map(fn(DeferProp $prop, string $key) => [
+        $propKeysToMerge = arr($props)
+            ->filter(static fn($prop) => $prop instanceof DeferProp)
+            ->map(static fn(DeferProp $prop, string $key) => [
                 'group' => $prop->group,
                 'key' => $key,
             ])
-            ->groupBy(fn(array $prop) => $prop['group'])
-            ->map(fn(array $group) => arr($group)->pluck(value: 'key')->toArray())
-            ->toArray();
+            ->groupBy(static fn(array $prop) => $prop['group'])
+            ->map(static fn(array $group) => arr($group)->pluck(value: 'key')->toArray());
+
+        return $propKeysToMerge->isEmpty() ? null : $propKeysToMerge->toArray();
     }
 
-    private static function resolvePropKeysThatShouldMerge(array $props, Request $request): array
+    private static function resolvePropKeysThatShouldMerge(array $props, Request $request): ?array
     {
         $resetProps = arr(explode(
             separator: ',',
             string: $request->headers->get(Header::RESET) ?? '',
         ));
-        return arr($props)
+
+        $propKeysToMerge = arr($props)
             ->filter(fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
             ->filter(fn($_, $key) => !$resetProps->contains($key))
-            ->keys()
-            ->toArray();
+            ->keys();
+
+        return $propKeysToMerge->isEmpty() ? null : $propKeysToMerge->toArray();
     }
 
     /**

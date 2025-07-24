@@ -11,7 +11,7 @@ namespace NeoIsRecursive\Inertia {
     /**
      * @return ($component is null ? Inertia : InertiaResponse)
      */
-    function inertia(string|null $component = null, array $props = []): InertiaResponse|Inertia
+    function inertia(?string $component = null, array $props = []): InertiaResponse|Inertia
     {
         if ($component === null) {
             return get(Inertia::class);
