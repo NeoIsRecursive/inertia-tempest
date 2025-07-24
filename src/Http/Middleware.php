@@ -37,9 +37,9 @@ final class Middleware implements HttpMiddleware
             return $response;
         }
 
-        $versionHeaderValue = $request->headers->get(Header::VERSION) ?? '';
+        $clientVersion = $request->headers->get(Header::VERSION) ?? '';
 
-        if ($request->method === Method::GET && $versionHeaderValue !== $this->inertia->version) {
+        if ($request->method === Method::GET && $clientVersion !== $this->inertia->version) {
             $this->session->reflash();
 
             return $this->inertia->location($request->uri);

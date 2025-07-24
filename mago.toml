@@ -14,6 +14,7 @@ excludes = [
 print_width = 120
 tab_width = 4
 use_tabs = false
+null_type_hint = "Question"
 
 [linter]
 default_plugins = true

@@ -8,6 +8,7 @@ use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Http\Middleware\EncryptHistory;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\LazyProp;
 use Tempest\Http\Responses\Ok;
 use Tempest\Http\Responses\Redirect;
 use Tempest\Router\Get;
@@ -104,5 +105,17 @@ final readonly class TestController
     public function testPutWithRedirect(): Redirect
     {
         return new Redirect(to: uri([static::class, 'index']));
+    }
+
+    #[Get(uri: '/test-can-merge-props')]
+    public function testCanMergeProps(Inertia $inertia): InertiaResponse
+    {
+        return $inertia->render(
+            component: 'test',
+            props: [
+                'foo' => new AlwaysProp(fn() => 'bar')->merge(),
+                'baz' => new LazyProp(fn() => 'qux')->merge(),
+            ],
+        );
     }
 }
