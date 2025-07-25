@@ -47,15 +47,4 @@ final readonly class PageData implements JsonSerializable
     {
         return $this->toArray();
     }
-
-    public function render(string $id): HtmlString
-    {
-        return HtmlString::createTag(
-            tag: 'div',
-            attributes: [
-                'id' => $id,
-                'data-page' => htmlentities(json_encode($this, JSON_THROW_ON_ERROR)),
-            ],
-        );
-    }
 }
