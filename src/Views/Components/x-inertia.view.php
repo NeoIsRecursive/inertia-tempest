@@ -10,4 +10,4 @@ declare(strict_types=1);
 
 ?>
 
-<div id="{{ $id ?? 'app' }}" data-page="{{ json_encode($page ?? $this->page) }}"></div>
+<div id="<?= $id ?? 'app'; ?>" data-page="<?= htmlentities(json_encode($page ?? $this->page)); ?>"></div>
