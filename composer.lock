@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "45a02133ce69b883cbd5928ed59e828e",
+    "content-hash": "57ac1b7fb4a9b019ea38f1e901a8f3e7",
     "packages": [
         {
             "name": "composer/semver",
@@ -86,6 +86,81 @@
                 }
             ],
             "time": "2024-09-19T14:15:21+00:00"
+        },
+        {
+            "name": "dflydev/dot-access-data",
+            "version": "v3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dflydev/dflydev-dot-access-data.git",
+                "reference": "a23a2bf4f31d3518f3ecb38660c95715dfead60f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dflydev/dflydev-dot-access-data/zipball/a23a2bf4f31d3518f3ecb38660c95715dfead60f",
+                "reference": "a23a2bf4f31d3518f3ecb38660c95715dfead60f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12.42",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.3",
+                "scrutinizer/ocular": "1.6.0",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vimeo/psalm": "^4.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dflydev\\DotAccessData\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dragonfly Development Inc.",
+                    "email": "info@dflydev.com",
+                    "homepage": "http://dflydev.com"
+                },
+                {
+                    "name": "Beau Simensen",
+                    "email": "beau@dflydev.com",
+                    "homepage": "http://beausimensen.com"
+                },
+                {
+                    "name": "Carlos Frutos",
+                    "email": "carlos@kiwing.it",
+                    "homepage": "https://github.com/cfrutos"
+                },
+                {
+                    "name": "Colin O'Dell",
+                    "email": "colinodell@gmail.com",
+                    "homepage": "https://www.colinodell.com"
+                }
+            ],
+            "description": "Given a deep data structure, access data by dot notation.",
+            "homepage": "https://github.com/dflydev/dflydev-dot-access-data",
+            "keywords": [
+                "access",
+                "data",
+                "dot",
+                "notation"
+            ],
+            "support": {
+                "issues": "https://github.com/dflydev/dflydev-dot-access-data/issues",
+                "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.3"
+            },
+            "time": "2024-07-08T12:26:09+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -947,6 +1022,195 @@
             "time": "2025-05-05T16:03:34+00:00"
         },
         {
+            "name": "league/commonmark",
+            "version": "2.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/commonmark.git",
+                "reference": "10732241927d3971d28e7ea7b5712721fa2296ca"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/10732241927d3971d28e7ea7b5712721fa2296ca",
+                "reference": "10732241927d3971d28e7ea7b5712721fa2296ca",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "league/config": "^1.1.1",
+                "php": "^7.4 || ^8.0",
+                "psr/event-dispatcher": "^1.0",
+                "symfony/deprecation-contracts": "^2.1 || ^3.0",
+                "symfony/polyfill-php80": "^1.16"
+            },
+            "require-dev": {
+                "cebe/markdown": "^1.0",
+                "commonmark/cmark": "0.31.1",
+                "commonmark/commonmark.js": "0.31.1",
+                "composer/package-versions-deprecated": "^1.8",
+                "embed/embed": "^4.4",
+                "erusev/parsedown": "^1.0",
+                "ext-json": "*",
+                "github/gfm": "0.29.0",
+                "michelf/php-markdown": "^1.4 || ^2.0",
+                "nyholm/psr7": "^1.5",
+                "phpstan/phpstan": "^1.8.2",
+                "phpunit/phpunit": "^9.5.21 || ^10.5.9 || ^11.0.0",
+                "scrutinizer/ocular": "^1.8.1",
+                "symfony/finder": "^5.3 | ^6.0 | ^7.0",
+                "symfony/process": "^5.4 | ^6.0 | ^7.0",
+                "symfony/yaml": "^2.3 | ^3.0 | ^4.0 | ^5.0 | ^6.0 | ^7.0",
+                "unleashedtech/php-coding-standard": "^3.1.1",
+                "vimeo/psalm": "^4.24.0 || ^5.0.0 || ^6.0.0"
+            },
+            "suggest": {
+                "symfony/yaml": "v2.3+ required if using the Front Matter extension"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\CommonMark\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Colin O'Dell",
+                    "email": "colinodell@gmail.com",
+                    "homepage": "https://www.colinodell.com",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Highly-extensible PHP Markdown parser which fully supports the CommonMark spec and GitHub-Flavored Markdown (GFM)",
+            "homepage": "https://commonmark.thephpleague.com",
+            "keywords": [
+                "commonmark",
+                "flavored",
+                "gfm",
+                "github",
+                "github-flavored",
+                "markdown",
+                "md",
+                "parser"
+            ],
+            "support": {
+                "docs": "https://commonmark.thephpleague.com/",
+                "forum": "https://github.com/thephpleague/commonmark/discussions",
+                "issues": "https://github.com/thephpleague/commonmark/issues",
+                "rss": "https://github.com/thephpleague/commonmark/releases.atom",
+                "source": "https://github.com/thephpleague/commonmark"
+            },
+            "funding": [
+                {
+                    "url": "https://www.colinodell.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.paypal.me/colinpodell/10.00",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/colinodell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/league/commonmark",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-07-20T12:47:49+00:00"
+        },
+        {
+            "name": "league/config",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/config.git",
+                "reference": "754b3604fb2984c71f4af4a9cbe7b57f346ec1f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/config/zipball/754b3604fb2984c71f4af4a9cbe7b57f346ec1f3",
+                "reference": "754b3604fb2984c71f4af4a9cbe7b57f346ec1f3",
+                "shasum": ""
+            },
+            "require": {
+                "dflydev/dot-access-data": "^3.0.1",
+                "nette/schema": "^1.2",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.8.2",
+                "phpunit/phpunit": "^9.5.5",
+                "scrutinizer/ocular": "^1.8.1",
+                "unleashedtech/php-coding-standard": "^3.1",
+                "vimeo/psalm": "^4.7.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Config\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Colin O'Dell",
+                    "email": "colinodell@gmail.com",
+                    "homepage": "https://www.colinodell.com",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Define configuration arrays with strict schemas and access values with dot notation",
+            "homepage": "https://config.thephpleague.com",
+            "keywords": [
+                "array",
+                "config",
+                "configuration",
+                "dot",
+                "dot-access",
+                "nested",
+                "schema"
+            ],
+            "support": {
+                "docs": "https://config.thephpleague.com/",
+                "issues": "https://github.com/thephpleague/config/issues",
+                "rss": "https://github.com/thephpleague/config/releases.atom",
+                "source": "https://github.com/thephpleague/config"
+            },
+            "funding": [
+                {
+                    "url": "https://www.colinodell.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.paypal.me/colinpodell/10.00",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/colinodell",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-12-11T20:36:23+00:00"
+        },
+        {
             "name": "league/flysystem",
             "version": "3.30.0",
             "source": {
@@ -1305,6 +1569,68 @@
                 "source": "https://github.com/nette/php-generator/tree/v4.1.8"
             },
             "time": "2025-03-31T00:29:29+00:00"
+        },
+        {
+            "name": "nette/schema",
+            "version": "v1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nette/schema.git",
+                "reference": "da801d52f0354f70a638673c4a0f04e16529431d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nette/schema/zipball/da801d52f0354f70a638673c4a0f04e16529431d",
+                "reference": "da801d52f0354f70a638673c4a0f04e16529431d",
+                "shasum": ""
+            },
+            "require": {
+                "nette/utils": "^4.0",
+                "php": "8.1 - 8.4"
+            },
+            "require-dev": {
+                "nette/tester": "^2.5.2",
+                "phpstan/phpstan-nette": "^1.0",
+                "tracy/tracy": "^2.8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0-only",
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                },
+                {
+                    "name": "Nette Community",
+                    "homepage": "https://nette.org/contributors"
+                }
+            ],
+            "description": "📐 Nette Schema: validating data structures against a given Schema.",
+            "homepage": "https://nette.org",
+            "keywords": [
+                "config",
+                "nette"
+            ],
+            "support": {
+                "issues": "https://github.com/nette/schema/issues",
+                "source": "https://github.com/nette/schema/tree/v1.3.2"
+            },
+            "time": "2024-10-06T23:10:23+00:00"
         },
         {
             "name": "nette/utils",
@@ -3700,16 +4026,16 @@
         },
         {
             "name": "tempest/framework",
-            "version": "v1.4.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tempestphp/tempest-framework.git",
-                "reference": "92ae568e29635b784d9010ff1659d597b1f64772"
+                "reference": "2938cb95addb1737cf6fcae1bbe9f34bc67c8dec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/92ae568e29635b784d9010ff1659d597b1f64772",
-                "reference": "92ae568e29635b784d9010ff1659d597b1f64772",
+                "url": "https://api.github.com/repos/tempestphp/tempest-framework/zipball/2938cb95addb1737cf6fcae1bbe9f34bc67c8dec",
+                "reference": "2938cb95addb1737cf6fcae1bbe9f34bc67c8dec",
                 "shasum": ""
             },
             "require": {
@@ -3727,7 +4053,9 @@
                 "giggsey/libphonenumber-for-php-lite": "^9.0",
                 "guzzlehttp/guzzle": "^7.8.2",
                 "laminas/laminas-diactoros": "^3.3",
+                "league/commonmark": "^2.7",
                 "league/flysystem": "^3.29.1",
+                "league/mime-type-detection": "^1.16",
                 "monolog/monolog": "^3.7.0",
                 "nette/php-generator": "^4.1.6",
                 "nikic/php-parser": "^5.3",
@@ -3740,15 +4068,15 @@
                 "psr/http-factory": "^1.0",
                 "psr/http-message": "^1.0|^2.0",
                 "psr/log": "^3.0.0",
-                "symfony/cache": "^7.2",
+                "symfony/cache": "^7.3",
                 "symfony/mailer": "^7.2.6",
-                "symfony/process": "^7.1",
+                "symfony/process": "^7.1.7",
                 "symfony/uid": "^7.1",
                 "symfony/var-dumper": "^7.1",
                 "symfony/var-exporter": "^7.1",
                 "symfony/yaml": "^7.3",
                 "tempest/highlight": "^2.11.4",
-                "vlucas/phpdotenv": "^5.6",
+                "vlucas/phpdotenv": "^5.6.1",
                 "voku/portable-ascii": "^2.0.3"
             },
             "replace": {
@@ -3759,6 +4087,7 @@
                 "tempest/console": "self.version",
                 "tempest/container": "self.version",
                 "tempest/core": "self.version",
+                "tempest/cryptography": "self.version",
                 "tempest/database": "self.version",
                 "tempest/datetime": "self.version",
                 "tempest/debug": "self.version",
@@ -3769,6 +4098,7 @@
                 "tempest/http-client": "self.version",
                 "tempest/icon": "self.version",
                 "tempest/intl": "self.version",
+                "tempest/kv-store": "self.version",
                 "tempest/log": "self.version",
                 "tempest/mail": "self.version",
                 "tempest/mapper": "self.version",
@@ -3781,18 +4111,18 @@
                 "tempest/vite": "self.version"
             },
             "require-dev": {
+                "aws/aws-sdk-php": "^3.338.0",
                 "azure-oss/storage-blob-flysystem": "^1.2",
                 "carthage-software/mago": "0.26.1",
                 "guzzlehttp/psr7": "^2.6.1",
-                "league/flysystem-aws-s3-v3": "^3.0",
-                "league/flysystem-azure-blob-storage": "^3.0",
-                "league/flysystem-ftp": "^3.0",
-                "league/flysystem-google-cloud-storage": "^3.0",
+                "league/flysystem-aws-s3-v3": "^3.25.1",
+                "league/flysystem-ftp": "^3.25.1",
+                "league/flysystem-google-cloud-storage": "^3.25.1",
                 "league/flysystem-local": "^3.25.1",
-                "league/flysystem-memory": "^3.0",
-                "league/flysystem-read-only": "^3.0",
-                "league/flysystem-sftp-v3": "^3.0",
-                "league/flysystem-ziparchive": "^3.0",
+                "league/flysystem-memory": "^3.25.1",
+                "league/flysystem-read-only": "^3.25.1",
+                "league/flysystem-sftp-v3": "^3.25.1",
+                "league/flysystem-ziparchive": "^3.25.1",
                 "masterminds/html5": "^2.9",
                 "microsoft/azure-storage-blob": "^1.5",
                 "mikey179/vfsstream": "^2.0@dev",
@@ -3802,13 +4132,14 @@
                 "phpbench/phpbench": "84.x-dev",
                 "phpstan/phpstan": "^2.0",
                 "phpunit/phpunit": "^12.2.3",
+                "predis/predis": "^3.0.0",
                 "rector/rector": "^2.0-rc2",
                 "spatie/phpunit-snapshot-assertions": "^5.1.8",
                 "spaze/phpstan-disallowed-calls": "^4.0",
                 "symfony/amazon-mailer": "^7.2.0",
                 "symfony/postmark-mailer": "^7.2.6",
                 "symplify/monorepo-builder": "^11.2",
-                "tempest/blade": "^0.1.0",
+                "tempest/blade": "dev-main",
                 "twig/twig": "^3.16"
             },
             "suggest": {
@@ -3830,6 +4161,7 @@
                     "packages/datetime/src/functions.php",
                     "packages/debug/src/functions.php",
                     "packages/event-bus/src/functions.php",
+                    "packages/http/src/functions.php",
                     "packages/icon/src/functions.php",
                     "packages/intl/src/Number/functions.php",
                     "packages/intl/src/functions.php",
@@ -3874,6 +4206,7 @@
                     "Tempest\\Database\\": "packages/database/src",
                     "Tempest\\DateTime\\": "packages/datetime/src",
                     "Tempest\\EventBus\\": "packages/event-bus/src",
+                    "Tempest\\KeyValue\\": "packages/kv-store/src",
                     "Tempest\\Container\\": "packages/container/src",
                     "Tempest\\Discovery\\": "packages/discovery/src",
                     "Tempest\\Framework\\": "src/Tempest/Framework",
@@ -3881,7 +4214,8 @@
                     "Tempest\\Generation\\": "packages/generation/src",
                     "Tempest\\HttpClient\\": "packages/http-client/src",
                     "Tempest\\Reflection\\": "packages/reflection/src",
-                    "Tempest\\Validation\\": "packages/validation/src"
+                    "Tempest\\Validation\\": "packages/validation/src",
+                    "Tempest\\Cryptography\\": "packages/cryptography/src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3891,7 +4225,7 @@
             "description": "The PHP framework that gets out of your way.",
             "support": {
                 "issues": "https://github.com/tempestphp/tempest-framework/issues",
-                "source": "https://github.com/tempestphp/tempest-framework/tree/v1.4.0"
+                "source": "https://github.com/tempestphp/tempest-framework/tree/v1.6.0"
             },
             "funding": [
                 {
@@ -3899,7 +4233,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-17T09:45:41+00:00"
+            "time": "2025-08-08T09:31:52+00:00"
         },
         {
             "name": "tempest/highlight",

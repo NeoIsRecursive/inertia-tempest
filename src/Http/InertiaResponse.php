@@ -57,17 +57,16 @@ final class InertiaResponse implements Response
             ),
         );
 
-        $this->body = $request->headers->has(Header::INERTIA)
-            ? (function () use ($pageData) {
-                // side effect to set Inertia header
-                $this->addHeader(Header::INERTIA, value: 'true');
+        if ($request->headers->has(Header::INERTIA)) {
+            $this->addHeader(Header::INERTIA, value: 'true');
+            $this->body = $pageData;
+            return;
+        }
 
-                return $pageData->toArray();
-            })()
-            : new InertiaBaseView(
-                path: $rootView,
-                page: $pageData,
-            );
+        $this->body = new InertiaBaseView(
+            path: $rootView,
+            page: $pageData,
+        );
     }
 
     public static function isPartial(Request $request, string $component): bool

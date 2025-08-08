@@ -26,11 +26,16 @@ class HistoryTest extends TestCase
         ]);
 
         $response->assertOk();
-        static::assertArraySubsetValues([
-            'component' => 'User/Edit',
-            'encryptHistory' => false,
-            'clearHistory' => false,
-        ], $response->body);
+
+        /** @var PageData */
+        $body = $response->body;
+
+        static::assertSame(
+            expected: 'User/Edit',
+            actual: $body->component,
+        );
+        static::assertFalse($body->encryptHistory);
+        static::assertFalse($body->clearHistory);
     }
 
     public function test_the_history_can_be_encrypted(): void
@@ -43,10 +48,15 @@ class HistoryTest extends TestCase
         ]);
 
         $response->assertOk();
-        $this->assertArraySubsetValues([
-            'component' => 'User/Edit',
-            'encryptHistory' => true,
-        ], $response->body);
+
+        /** @var PageData */
+        $body = $response->body;
+
+        static::assertSame(
+            expected: 'User/Edit',
+            actual: $body->component,
+        );
+        static::assertTrue($body->encryptHistory);
     }
 
     public function test_the_history_can_be_encrypted_via_middleware(): void
@@ -91,10 +101,15 @@ class HistoryTest extends TestCase
         ]);
 
         $response->assertOk();
-        $this->assertArraySubsetValues([
-            'component' => 'User/Edit',
-            'encryptHistory' => true,
-        ], $response->body);
+
+        /** @var PageData */
+        $body = $response->body;
+
+        static::assertSame(
+            expected: 'User/Edit',
+            actual: $body->component,
+        );
+        static::assertTrue($body->encryptHistory);
     }
 
     public function test_the_history_can_be_cleared(): void
@@ -106,10 +121,15 @@ class HistoryTest extends TestCase
         ]);
 
         $response->assertOk();
-        $this->assertArraySubsetValues([
-            'component' => 'User/Edit',
-            'clearHistory' => true,
-        ], $response->body);
+
+        /** @var PageData */
+        $body = $response->body;
+
+        static::assertSame(
+            expected: 'User/Edit',
+            actual: $body->component,
+        );
+        static::assertTrue($body->clearHistory);
     }
 
     public function test_the_history_can_be_cleared_when_redirecting(): void

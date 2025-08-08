@@ -41,10 +41,9 @@ If you don't want to use the installer, you can do the following steps manually:
 #### Backend
 
 If you use the default config, a view called `app.view.php` is required. That view will then be rendered as an `NeoIsRecursive\Inertia\Views\InertiaBaseView` and to render the inertia element you just do:
-(think of this like laravels `@inertia` directive)
 
 ```php
-<?= $this->page->render(id: 'app') ?>
+<x-inertia />
 ```
 
 #### Frontend

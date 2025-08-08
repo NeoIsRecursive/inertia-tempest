@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <?= $this->page->render(id: 'app'); ?>
+    <x-inertia />
 </body>
 
 </html>

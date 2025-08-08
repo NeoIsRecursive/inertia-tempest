@@ -12,6 +12,9 @@ use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Router\HttpApplication;
+use Tempest\View\GenericView;
+use Tempest\View\View;
+use Tempest\View\ViewRenderer;
 
 abstract class TestCase extends IntegrationTest
 {
@@ -66,5 +69,16 @@ abstract class TestCase extends IntegrationTest
         $actual = str_replace([PHP_EOL, ' '], replace: '', subject: $actual);
 
         static::assertSame($expected, $actual);
+    }
+
+    protected function render(string|View $view, mixed ...$params): string
+    {
+        if (is_string($view)) {
+            $view = new GenericView($view);
+        }
+
+        $view->data(...$params);
+
+        return $this->container->get(ViewRenderer::class)->render($view);
     }
 }

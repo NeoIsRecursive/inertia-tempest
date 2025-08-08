@@ -187,7 +187,7 @@ final class InertiaTest extends TestCase
                 'clearHistory' => false,
                 'encryptHistory' => false,
             ],
-            actual: $response->body,
+            actual: $response->body->jsonSerialize(),
         );
     }
 
@@ -240,7 +240,7 @@ final class InertiaTest extends TestCase
                     'baz',
                 ],
             ],
-            actual: $response->body,
+            actual: $response->body->jsonSerialize(),
         );
     }
 
