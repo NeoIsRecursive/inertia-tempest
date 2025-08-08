@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
@@ -75,7 +76,7 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
-        $page = $response->body;
+        $page = $response->body->jsonSerialize();
 
         static::assertInstanceOf(Response::class, $response);
 
@@ -142,7 +143,7 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
-        $page = $response->body;
+        $page = $response->body->jsonSerialize();
 
         $expected = [
             'users' => [
@@ -286,7 +287,7 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
-        $page = $response->body;
+        $page = $response->body->jsonSerialize();
 
         $props = $page['props'];
 
@@ -333,7 +334,7 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
-        $page = $response->body;
+        $page = $response->body->jsonSerialize();
 
         $props = $page['props'];
 
@@ -374,7 +375,7 @@ final class ResponseTest extends TestCase
             rootView: 'app',
             version: '123',
         );
-        $page = $response->body;
+        $page = $response->body->jsonSerialize();
 
         static::assertSame(
             expected: [],
@@ -404,7 +405,7 @@ final class ResponseTest extends TestCase
             rootView: 'app',
             version: '123',
         );
-        $page = $response->body;
+        $page = $response->body->jsonSerialize();
 
         static::assertFalse(array_key_exists(
             key: 'users',
@@ -447,7 +448,8 @@ final class ResponseTest extends TestCase
             rootView: 'app',
             version: '123',
         );
-        $page = $response->body;
+
+        $page = $response->body->jsonSerialize();
 
         static::assertSame(
             expected: 'The email field is required.',
@@ -487,7 +489,9 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
+        /** @var PageData */
         $page = $response->body;
+        $page = $page->toArray();
 
         $user = $page['props']['auth']['user'];
         static::assertSame(
@@ -527,7 +531,10 @@ final class ResponseTest extends TestCase
             rootView: 'app',
             version: '123',
         );
+
+        /** @var PageData */
         $page = $response->body;
+        $page = $page->toArray();
 
         $auth = $page['props']['auth'];
         static::assertSame(
@@ -735,35 +742,39 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
+        /** @var PageData */
         $pageData = $response->body;
 
-        static::assertIsArray($pageData);
+        static::assertInstanceOf(
+            expected: PageData::class,
+            actual: $pageData,
+        );
 
         static::assertSame(
             expected: 'User/Edit',
-            actual: $pageData['component'],
+            actual: $pageData->component,
         );
         static::assertSame(
             expected: 'Jonathan',
-            actual: $pageData['props']['user']['name'],
+            actual: $pageData->props['user']['name'],
         );
         static::assertSame(
             expected: '/user/123',
-            actual: $pageData['url'],
+            actual: $pageData->url,
         );
         static::assertSame(
             expected: '123',
-            actual: $pageData['version'],
+            actual: $pageData->version,
         );
         static::assertSame(
             expected: [
                 'default' => ['foo'],
             ],
-            actual: $pageData['deferredProps'],
+            actual: $pageData->propKeysToDefer,
         );
 
-        static::assertFalse($pageData['clearHistory']);
-        static::assertFalse($pageData['encryptHistory']);
+        static::assertFalse($pageData->clearHistory);
+        static::assertFalse($pageData->encryptHistory);
     }
 
     public function test_server_response_with_deferred_prop_and_multiple_groups(): void
@@ -790,35 +801,30 @@ final class ResponseTest extends TestCase
             version: '123',
         );
 
+        /** @var PageData */
         $page = $response->body;
 
-        static::assertSame(
-            expected: 'User/Edit',
-            actual: $page['component'],
-        );
-        static::assertSame(
-            expected: 'Jonathan',
-            actual: $page['props']['user']['name'],
-        );
-        static::assertSame(
-            expected: '/user/123',
-            actual: $page['url'],
-        );
-        static::assertSame(
-            expected: '123',
-            actual: $page['version'],
-        );
-        static::assertSame(
-            expected: [
-                'default' => ['foo', 'bar'],
-                'custom' => ['baz'],
-            ],
-            actual: $page['deferredProps'],
+        static::assertInstanceOf(
+            expected: PageData::class,
+            actual: $page,
         );
 
-        static::assertFalse($page['clearHistory']);
-        static::assertFalse($page['encryptHistory']);
-
-        // $this->assertSame('<div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false,&quot;deferredProps&quot;:{&quot;default&quot;:[&quot;foo&quot;,&quot;bar&quot;],&quot;custom&quot;:[&quot;baz&quot;]}}"></div>', $view->render());
+        static::assertSame(
+            new PageData(
+                component: 'User/Edit',
+                props: [
+                    'user' => $user,
+                ],
+                url: '/user/123',
+                version: '123',
+                clearHistory: false,
+                encryptHistory: false,
+                propKeysToDefer: [
+                    'default' => ['foo', 'bar'],
+                    'custom' => ['baz'],
+                ],
+            )->toArray(),
+            $page->toArray(),
+        );
     }
 }
