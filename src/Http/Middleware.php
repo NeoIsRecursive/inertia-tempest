@@ -6,6 +6,7 @@ namespace NeoIsRecursive\Inertia\Http;
 
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Support\Header;
+use Override;
 use Tempest\Core\Priority;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
@@ -23,6 +24,7 @@ final class Middleware implements HttpMiddleware
         private Session $session,
     ) {}
 
+    #[Override]
     public function __invoke(Request $request, HttpMiddlewareCallable $next): Response
     {
         /** @var Response $response */

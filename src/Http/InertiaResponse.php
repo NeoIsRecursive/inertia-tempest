@@ -25,7 +25,7 @@ final class InertiaResponse implements Response
 {
     use IsResponse;
 
-    // @mago-expect maintainability/excessive-parameter-list
+    // @mago-expect lint:maintainability/excessive-parameter-list
     public function __construct(
         readonly Request $request,
         readonly string $component,
@@ -158,7 +158,7 @@ final class InertiaResponse implements Response
      * Evaluates props recursively.
      * @pure
      */
-    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array // @mago-expect best-practices/no-boolean-flag-parameter
+    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array // @mago-expect lint:best-practices/no-boolean-flag-parameter
     {
         return arr($props)
             ->map(function ($value, string|int $key) use ($request): array {

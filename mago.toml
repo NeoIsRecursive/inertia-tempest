@@ -8,6 +8,7 @@ includes = ["vendor"]
 excludes = [
     "./vendor/symfony/cache/Traits/ValueWrapper.php",
     "./vendor/composer",
+    "./tests",
 ]
 
 [format]
@@ -44,10 +45,6 @@ ignore_closure = true
 name = "strictness/require-return-type"
 ignore_arrow_function = true
 ignore_closure = true
-
-[[linter.rules]]
-name = "analysis/override-attribute"
-level = "off"
 
 [[linter.rules]]
 name = "maintainability/halstead"

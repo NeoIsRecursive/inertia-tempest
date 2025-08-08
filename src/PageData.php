@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia;
 
 use JsonSerializable;
-use Tempest\Support\Html\HtmlString;
+use Override;
 
 final readonly class PageData implements JsonSerializable
 {
-    // @mago-expect maintainability/excessive-parameter-list
+    // @mago-expect lint:maintainability/excessive-parameter-list
     public function __construct(
         public string $component,
         public array $props,
@@ -43,6 +43,7 @@ final readonly class PageData implements JsonSerializable
         return $data;
     }
 
+    #[Override]
     public function jsonSerialize(): array
     {
         return $this->toArray();
