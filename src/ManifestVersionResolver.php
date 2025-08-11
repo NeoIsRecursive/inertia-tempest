@@ -22,10 +22,15 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
         $manifestPath = $this->manifestPath ?? root_path('/public/build/manifest.json'); // @mago-expect lint:best-practices/literal-named-argument
 
         if (file_exists($manifestPath)) {
-            return hash_file(
+            $hash = hash_file(
                 algo: 'xxh128',
                 filename: $manifestPath,
-            ) ?? '';
+            );
+
+            if (!$hash)
+                return '';
+
+            return $hash;
         }
 
         return '';

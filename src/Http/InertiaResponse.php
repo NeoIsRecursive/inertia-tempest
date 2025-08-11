@@ -116,6 +116,7 @@ final class InertiaResponse implements Response
             string: $headers->get(Header::PARTIAL_EXCEPT) ?? '',
         ));
 
+        /** @var mixed[]  */
         $filtered = $only ? array_intersect_key($props, array_flip($only)) : $props;
 
         return array_filter($filtered, static fn($key) => !in_array($key, $except, strict: true), ARRAY_FILTER_USE_KEY);
@@ -171,13 +172,17 @@ final class InertiaResponse implements Response
 
                 return [$key, $evaluated];
             })
-            ->reduce(function (array $acc, array $item) use ($unpackDotProps): array {
-                [$key, $value] = $item;
-                if ($unpackDotProps && is_string($key) && str_contains($key, needle: '.')) {
-                    return arr($acc)->set($key, $value)->toArray();
-                }
-                $acc[$key] = $value;
-                return $acc;
-            }, []);
+            ->reduce(
+                function (array $acc, array $item) use ($unpackDotProps): array {
+                    /** @var string|int $key */
+                    [$key, $value] = $item;
+                    if ($unpackDotProps && is_string($key) && str_contains($key, needle: '.')) {
+                        return arr($acc)->set($key, $value)->toArray();
+                    }
+                    $acc[$key] = $value;
+                    return $acc;
+                },
+                [],
+            );
     }
 }
