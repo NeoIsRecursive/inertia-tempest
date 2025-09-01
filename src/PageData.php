@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia;
 
 use JsonSerializable;
-use Tempest\Support\Html\HtmlString;
 
 final readonly class PageData implements JsonSerializable
 {
-    // @mago-expect maintainability/excessive-parameter-list
+    // @mago-expect lint:excessive-parameter-list
     public function __construct(
         public string $component,
         public array $props,
@@ -19,7 +18,8 @@ final readonly class PageData implements JsonSerializable
         public bool $encryptHistory,
         public ?array $propKeysToDefer = null,
         public ?array $propsKeysToMerge = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

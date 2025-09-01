@@ -12,7 +12,7 @@ final class DeferPropsTest extends TestCase
 {
     public function test_can_invoke(): void
     {
-        $deferProp = new DeferProp(function () {
+        $deferProp = new DeferProp(function (): string {
             return 'A defered value';
         });
 
@@ -34,9 +34,7 @@ final class DeferPropsTest extends TestCase
 
     public function test_can_resolve_bindings_when_invoked(): void
     {
-        $deferProp = new DeferProp(function (Request $request) {
-            return $request;
-        });
+        $deferProp = new DeferProp(fn(Request $request) => $request);
 
         static::assertInstanceOf(Request::class, $deferProp());
     }

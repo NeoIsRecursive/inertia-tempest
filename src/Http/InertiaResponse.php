@@ -25,7 +25,7 @@ final class InertiaResponse implements Response
 {
     use IsResponse;
 
-    // @mago-expect maintainability/excessive-parameter-list
+    // @mago-expect lint:excessive-parameter-list
     public function __construct(
         readonly Request $request,
         readonly string $component,
@@ -158,26 +158,25 @@ final class InertiaResponse implements Response
      * Evaluates props recursively.
      * @pure
      */
-    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array // @mago-expect best-practices/no-boolean-flag-parameter
+    // @mago-expect lint:no-boolean-flag-parameter
+    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array
     {
-        return arr($props)
-            ->map(function ($value, string|int $key) use ($request): array {
-                $evaluated = ($value instanceof Closure) ? invoke($value) : $value;
-                $evaluated = ($evaluated instanceof CallableProp) ? $evaluated() : $evaluated;
-                $evaluated = ($evaluated instanceof ArrayInterface) ? $evaluated->toArray() : $evaluated;
-                $evaluated = is_array($evaluated)
-                    ? self::evaluateProps($evaluated, $request, unpackDotProps: false)
-                    : $evaluated;
+        return arr($props)->map(function ($value, string|int $key) use ($request): array {
+            $evaluated = $value instanceof Closure ? invoke($value) : $value;
+            $evaluated = $evaluated instanceof CallableProp ? $evaluated() : $evaluated;
+            $evaluated = $evaluated instanceof ArrayInterface ? $evaluated->toArray() : $evaluated;
+            $evaluated = is_array($evaluated)
+                ? self::evaluateProps($evaluated, $request, unpackDotProps: false)
+                : $evaluated;
 
-                return [$key, $evaluated];
-            })
-            ->reduce(function (array $acc, array $item) use ($unpackDotProps): array {
-                [$key, $value] = $item;
-                if ($unpackDotProps && is_string($key) && str_contains($key, needle: '.')) {
-                    return arr($acc)->set($key, $value)->toArray();
-                }
-                $acc[$key] = $value;
-                return $acc;
-            }, []);
+            return [$key, $evaluated];
+        })->reduce(function (array $acc, array $item) use ($unpackDotProps): array {
+            [$key, $value] = $item;
+            if ($unpackDotProps && is_string($key) && str_contains($key, needle: '.')) {
+                return arr($acc)->set($key, $value)->toArray();
+            }
+            $acc[$key] = $value;
+            return $acc;
+        }, []);
     }
 }
