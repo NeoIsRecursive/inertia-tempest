@@ -29,6 +29,7 @@ interface-name = { enabled = false}
 cyclomatic-complexity = { threshold = 18 }
 
 [analyzer]
+excludes = ["tests"]
 find-unused-definitions = true
 find-unused-expressions = false
 analyze-dead-code = false

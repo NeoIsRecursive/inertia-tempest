@@ -18,8 +18,7 @@ final readonly class PageData implements JsonSerializable
         public bool $encryptHistory,
         public ?array $propKeysToDefer = null,
         public ?array $propsKeysToMerge = null,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
