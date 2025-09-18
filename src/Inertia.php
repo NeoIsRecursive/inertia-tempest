@@ -90,12 +90,11 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        $isInertiaRequest = $this
-            ->container->get(Request::class)
-            ->headers->has(Header::INERTIA);
+        $isInertiaRequest = $this->container->get(Request::class)->headers->has(Header::INERTIA);
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
+                /** @var string */
                 $url = $url->getHeader(name: 'Location')->values[0];
             }
 
@@ -108,6 +107,6 @@ final class Inertia
             );
         }
 
-        return ($url instanceof Redirect) ? $url : new Redirect($url);
+        return $url instanceof Redirect ? $url : new Redirect($url);
     }
 }

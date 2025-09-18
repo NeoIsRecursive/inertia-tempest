@@ -23,19 +23,21 @@ final class ViewTest extends TestCase
 
     public function test_inertia_page_can_render_compnent(): void
     {
-        $output = $this->render(new InertiaBaseView(
-            <<<HTML
-                <x-inertia />
-            HTML,
-            new \NeoIsRecursive\Inertia\PageData(
-                component: 'TestComponent',
-                props: ['key' => 'value'],
-                url: '/test-url',
-                version: '1.0.0',
-                clearHistory: false,
-                encryptHistory: false,
+        $output = $this->render(
+            new InertiaBaseView(
+                <<<HTML
+                    <x-inertia />
+                HTML,
+                new \NeoIsRecursive\Inertia\PageData(
+                    component: 'TestComponent',
+                    props: ['key' => 'value'],
+                    url: '/test-url',
+                    version: '1.0.0',
+                    clearHistory: false,
+                    encryptHistory: false,
+                ),
             ),
-        ));
+        );
 
         static::assertSnippetsMatch(
             expected: '<div id="app" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;\/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',

@@ -30,7 +30,7 @@ final class Middleware implements HttpMiddleware
         /** @var Response $response */
         $response = $next($request);
 
-        $response->addHeader(
+        $response = $response->addHeader(
             key: 'Vary',
             value: Header::INERTIA,
         );
@@ -48,10 +48,10 @@ final class Middleware implements HttpMiddleware
         }
 
         if (
-            $response->status === Status::FOUND &&
-                in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
+            $response->status === Status::FOUND
+            && in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
         ) {
-            $response->setStatus(Status::SEE_OTHER);
+            $response = $response->setStatus(Status::SEE_OTHER);
         }
 
         return $response;

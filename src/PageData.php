@@ -9,7 +9,7 @@ use Override;
 
 final readonly class PageData implements JsonSerializable
 {
-    // @mago-expect lint:maintainability/excessive-parameter-list
+    // @mago-expect lint:excessive-parameter-list
     public function __construct(
         public string $component,
         public array $props,

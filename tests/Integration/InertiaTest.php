@@ -16,7 +16,7 @@ use Tempest\Http\Responses\Redirect;
 use Tempest\Http\Status;
 
 use function Tempest\get;
-use function Tempest\uri;
+use function Tempest\Router\uri;
 
 final class InertiaTest extends TestCase
 {

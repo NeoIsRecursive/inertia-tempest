@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\Inertia;
-use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\Fixtures\TestController;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use Tempest\Http\Session\Session;
 
 use function Tempest\get;
-use function Tempest\uri;
+use function Tempest\Router\uri;
 
 class HistoryTest extends TestCase
 {

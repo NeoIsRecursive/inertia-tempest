@@ -17,7 +17,7 @@ use Tempest\Router\Post;
 use Tempest\Router\Put;
 
 use function NeoIsRecursive\Inertia\inertia;
-use function Tempest\uri;
+use function Tempest\Router\uri;
 
 final readonly class TestController
 {

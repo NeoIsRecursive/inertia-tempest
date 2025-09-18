@@ -9,7 +9,7 @@ use NeoIsRecursive\Inertia\Tests\TestCase;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tempest\Http\Status;
 
-use function Tempest\uri;
+use function Tempest\Router\uri;
 
 final class MiddlewareTest extends TestCase
 {
@@ -20,18 +20,27 @@ final class MiddlewareTest extends TestCase
         static::assertInstanceOf(\NeoIsRecursive\Inertia\Http\Middleware::class, $middleware);
     }
 
-    #[TestWith([
-        'testPostWithRedirect',
-        'post',
-    ], name: 'post')]
-    #[TestWith([
-        'testPutWithRedirect',
-        'put',
-    ], name: 'put')]
-    #[TestWith([
-        'testPatchWithRedirect',
-        'patch',
-    ], name: 'patch')]
+    #[TestWith(
+        [
+            'testPostWithRedirect',
+            'post',
+        ],
+        name: 'post',
+    )]
+    #[TestWith(
+        [
+            'testPutWithRedirect',
+            'put',
+        ],
+        name: 'put',
+    )]
+    #[TestWith(
+        [
+            'testPatchWithRedirect',
+            'patch',
+        ],
+        name: 'patch',
+    )]
     public function test_middleware_converts_post_put_or_patch_302_to_303(string $action, string $method): void
     {
         $response = $this->http->{$method}(uri([TestController::class, $action]), headers: [
