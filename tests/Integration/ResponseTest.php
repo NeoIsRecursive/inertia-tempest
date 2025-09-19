@@ -734,7 +734,7 @@ final class ResponseTest extends TestCase
             component: 'User/Edit',
             props: [
                 'user' => $user,
-                'foo' => new DeferProp(function () {
+                'foo' => new DeferProp(function (): string {
                     return 'bar';
                 }, group: 'default'),
             ],

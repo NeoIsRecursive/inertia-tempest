@@ -21,19 +21,19 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
     {
         $manifestPath = $this->manifestPath ?? root_path('/public/build/manifest.json');
 
-        if (file_exists($manifestPath)) {
-            $hash = hash_file(
-                algo: 'xxh128',
-                filename: $manifestPath,
-            );
-
-            if (!$hash) {
-                return '';
-            }
-
-            return $hash;
+        if (!file_exists($manifestPath)) {
+            return '';
         }
 
-        return '';
+        $hash = hash_file(
+            algo: 'xxh128',
+            filename: $manifestPath,
+        );
+
+        if (!$hash) {
+            return '';
+        }
+
+        return $hash;
     }
 }

@@ -193,10 +193,11 @@ final class InertiaTest extends TestCase
 
     public function test_can_flush_shared_data(): void
     {
-        get(Inertia::class)->share(
-            key: 'foo',
-            value: 'bar',
-        );
+        get(Inertia::class)
+            ->share(
+                key: 'foo',
+                value: 'bar',
+            );
 
         static::assertArrayHasKey(
             key: 'foo',

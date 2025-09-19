@@ -12,7 +12,7 @@ final class LazyPropTest extends TestCase
 {
     public function test_can_invoke(): void
     {
-        $lazyProp = new LazyProp(function () {
+        $lazyProp = new LazyProp(function (): string {
             return 'A lazy value';
         });
 
@@ -34,9 +34,7 @@ final class LazyPropTest extends TestCase
 
     public function test_can_resolve_bindings_when_invoked(): void
     {
-        $lazyProp = new LazyProp(function (Request $request) {
-            return $request;
-        });
+        $lazyProp = new LazyProp(fn(Request $request) => $request);
 
         static::assertInstanceOf(Request::class, $lazyProp());
     }
