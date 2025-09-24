@@ -19,7 +19,7 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
     #[Override]
     public function resolve(Container $container): string
     {
-        $manifestPath = $this->manifestPath ?? root_path('/public/build/manifest.json'); // @mago-expect best-practices/literal-named-argument
+        $manifestPath = $this->manifestPath ?? root_path('/public/build/manifest.json');
 
         if (!file_exists($manifestPath)) {
             return '';

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Tests;
 
 use NeoIsRecursive\Inertia\Support\Header;
+use Override;
 use Tempest\Core\Application;
 use Tempest\Discovery\DiscoveryLocation;
 use Tempest\Framework\Testing\IntegrationTest;
@@ -20,6 +21,7 @@ abstract class TestCase extends IntegrationTest
 {
     protected string $root = __DIR__ . '/../';
 
+    #[Override]
     public function setUp(): void
     {
         $this->discoveryLocations[] = new DiscoveryLocation(

@@ -8,6 +8,7 @@ use Closure;
 use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
 use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
+use Override;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
@@ -22,6 +23,7 @@ final class LazyProp implements CallableProp, MergeableProp
         public private(set) bool $shouldMerge = false,
     ) {}
 
+    #[Override]
     public function __invoke(): mixed
     {
         return invoke($this->callback);

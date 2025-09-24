@@ -94,6 +94,7 @@ final class Inertia
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
+                /** @var string */
                 $url = $url->getHeader(name: 'Location')->values[0];
             }
 

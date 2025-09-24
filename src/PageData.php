@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia;
 
 use JsonSerializable;
+use Override;
 
 final readonly class PageData implements JsonSerializable
 {
@@ -42,6 +43,7 @@ final readonly class PageData implements JsonSerializable
         return $data;
     }
 
+    #[Override]
     public function jsonSerialize(): array
     {
         return $this->toArray();

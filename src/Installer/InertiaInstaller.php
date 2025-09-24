@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Installer;
 
+use Override;
 use Tempest\Core\Installer;
 use Tempest\Core\PublishesFiles;
 use Tempest\Highlight\Languages\JavaScript\JavaScriptLanguage;
@@ -29,8 +30,10 @@ final class InertiaInstaller implements Installer
         private readonly DependencyInstaller $javascript,
     ) {}
 
+    #[Override]
     public function install(): void
     {
+        /** @var 'react'|'vue' */
         $framework = $this->ask(
             question: 'What frontend framework are you going to use?',
             options: [
@@ -40,21 +43,20 @@ final class InertiaInstaller implements Installer
             default: 'react',
         );
 
+        /** @var string */
         $clientPath = $this->ask(
             question: 'Where is your client-side code located?',
-            // @mago-expect best-practices/literal-named-argument
             default: to_relative_path(root_path(), src_path('Client')),
         );
 
+        /** @var string */
         $pagesPath = $this->ask(
             question: 'Where do you want to keep your Inertia pages?',
-            // @mago-expect best-practices/literal-named-argument
             default: to_relative_path(to_absolute_path($clientPath), to_absolute_path($clientPath, 'pages')),
         );
 
         $this->publish(
             source: __DIR__ . '/app.view.stub',
-            // @mago-expect best-practices/literal-named-argument
             destination: (string) path(src_path(), 'app.view.php'),
         );
 
@@ -72,15 +74,20 @@ final class InertiaInstaller implements Installer
                 '@inertiajs/react',
                 'react',
                 'react-dom',
+            ],
+        );
+        $this->javascript->installDependencies(
+            cwd: root_path(),
+            dependencies: [
                 '@vitejs/plugin-react',
                 '@types/react',
                 '@types/react-dom',
             ],
+            dev: true,
         );
 
         $this->publish(
             source: __DIR__ . '/React/main.tsx',
-            // @mago-expect best-practices/literal-named-argument
             destination: (string) path($clientPath, 'main.entrypoint.tsx'),
             callback: function (string $_, string $target) use ($pagesPath): void {
                 $content = read_file($target);
@@ -95,7 +102,6 @@ final class InertiaInstaller implements Installer
 
         $this->publish(
             source: __DIR__ . '/React/example-page.tsx',
-            // @mago-expect best-practices/literal-named-argument
             destination: (string) path($clientPath, $pagesPath, 'example-page.tsx'),
         );
 
@@ -126,13 +132,18 @@ final class InertiaInstaller implements Installer
             dependencies: [
                 '@inertiajs/vue3',
                 'vue',
+            ],
+        );
+        $this->javascript->installDependencies(
+            cwd: root_path(),
+            dependencies: [
                 '@vitejs/plugin-vue',
             ],
+            dev: true,
         );
 
         $this->publish(
             source: __DIR__ . '/Vue/main.ts',
-            // @mago-expect best-practices/literal-named-argument
             destination: (string) path($clientPath, 'main.entrypoint.ts'),
             callback: function (string $_, string $target) use ($pagesPath): void {
                 $content = read_file($target);
@@ -147,7 +158,6 @@ final class InertiaInstaller implements Installer
 
         $this->publish(
             source: __DIR__ . '/Vue/example-page.vue',
-            // @mago-expect best-practices/literal-named-argument
             destination: (string) path($clientPath, $pagesPath, 'example-page.vue'),
         );
 

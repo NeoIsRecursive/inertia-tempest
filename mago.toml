@@ -5,13 +5,18 @@ php-version = "8.4.0"
 [source]
 paths = ["src/", "tests/"]
 includes = ["vendor"]
-excludes = []
+excludes = [
+    "./vendor/symfony/cache/Traits/ValueWrapper.php",
+    "./vendor/composer",
+    "./tests"
+]
 
 [formatter]
 print-width = 120
 tab-width = 4
 use-tabs = false
-null-type-hint = "question"
+null-type-hint = "Question"
+
 
 [linter]
 integrations = ["phpunit"]
@@ -20,19 +25,17 @@ integrations = ["phpunit"]
 ambiguous-function-call = { enabled = false }
 literal-named-argument = { enabled = false }
 halstead = { effort-threshold = 7000 }
-parameter-type = { ignore-closure = true, ignore-arrow-function = true }
+interface-name = { enabled = false }
+trait-name = { enabled = false }
 return-type = { ignore-arrow-function = true }
-too-many-methods = { enabled = false }
-trait-name = { enabled = false}
-class-name = { enabled = false}
-interface-name = { enabled = false}
-cyclomatic-complexity = { threshold = 18 }
+parameter-type = { ignore-closure = true, ignore-arrow-function = true }
+
 
 [analyzer]
-excludes = ["tests"]
+excludes = ["./tests"]
 find-unused-definitions = true
 find-unused-expressions = false
 analyze-dead-code = false
 check-throws = true
 allow-possibly-undefined-array-keys = true
-perform-heuristic-checks = true
+perform-heuristic-checks = false

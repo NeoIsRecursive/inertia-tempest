@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Concerns;
 
-use NeoIsRecursive\Inertia\Contracts\MergeableProp;
-
 /**
- * @implements MergeableProp
+ * @require-implements \NeoIsRecursive\Inertia\Contracts\MergeableProp
  */
 trait IsMergeableProp
 {
