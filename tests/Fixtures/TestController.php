@@ -9,6 +9,7 @@ use NeoIsRecursive\Inertia\Http\Middleware\EncryptHistory;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\LazyProp;
+use NeoIsRecursive\Inertia\Tests\Fixtures\Requests\CreatePerson;
 use Tempest\Http\Responses\Ok;
 use Tempest\Http\Responses\Redirect;
 use Tempest\Router\Get;
@@ -117,5 +118,12 @@ final readonly class TestController
                 'baz' => new LazyProp(fn() => 'qux')->merge(),
             ],
         );
+    }
+
+    #[Post(uri: '/test-validation-errors')]
+    public function testValidationErrors(CreatePerson $request, Inertia $inertia): Redirect
+    {
+        // If we reach here, the request is valid.
+        return new Redirect(to: uri([static::class, 'index']));
     }
 }

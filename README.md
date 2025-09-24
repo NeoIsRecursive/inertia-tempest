@@ -14,7 +14,7 @@ It should be very familiar if you have used inertia before, with some small diff
 
 - No configuration is done in the middleware, use the the config file, a provider class or your own middleware to set your "globally-shared-props".
 - No automatic redirect back handling in non get requests, since all tempest routes must return a response you have to return your own `Back` response.
-- No `Inertia::defer/lazy/always` method, in favor of just using the prop classes (`new DeferProp/LazyProp/AlwaysProp`) (unless people like that syntax more?)
+- Includes all validation errors for each field by default, instead of just the first one.
 
 We provide an installer that you can use to set up some of the boilerplate code, but you can also do it manually.
 

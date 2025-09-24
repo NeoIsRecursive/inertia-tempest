@@ -6,6 +6,7 @@ namespace NeoIsRecursive\Inertia\Support;
 
 use Tempest\Http\Session\Session;
 use Tempest\Validation\Rule;
+use Tempest\Validation\Validator;
 
 use function Tempest\Support\arr;
 
@@ -13,13 +14,18 @@ final readonly class ResolveErrorProps
 {
     public function __construct(
         private Session $session,
+        private Validator $validator,
     ) {}
 
     public function resolve(): array
     {
-        return array_map(
-            fn(array $rules) => array_map(fn(Rule $rule) => arr($rule->message())->first(), $rules),
-            $this->session->get(Session::VALIDATION_ERRORS) ?? [],
-        );
+        /** @var Rule[][] */
+        $failingRules = $this->session->get(Session::VALIDATION_ERRORS) ?? [];
+
+        return arr($failingRules)->map(
+            fn(array $rules): array => arr($rules)->map(
+                fn(Rule $rule): string => $this->validator->getErrorMessage($rule),
+            )->toArray(),
+        )->toArray();
     }
 }
