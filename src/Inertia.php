@@ -49,15 +49,11 @@ final class Inertia
 
     /**
      * @param array<string, mixed> $props
-     * @mago-expect analyzer:unhandled-thrown-type
      */
     public function render(string $component, array $props = []): InertiaResponse
     {
+        /** @var Request */
         $request = $this->container->get(Request::class);
-
-        if (!$request) {
-            throw new Exception('No request');
-        }
 
         return new InertiaResponse(
             request: $request,
