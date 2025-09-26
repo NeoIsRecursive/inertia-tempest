@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia;
 
-use Closure;
+use Exception;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\InertiaConfig;
-use NeoIsRecursive\Inertia\Props\AlwaysProp;
-use NeoIsRecursive\Inertia\Props\DeferProp;
-use NeoIsRecursive\Inertia\Props\LazyProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;
@@ -29,10 +26,11 @@ final class Inertia
         private InertiaConfig $config,
     ) {}
 
-    public function share(
-        string|array $key,
-        LazyProp|AlwaysProp|DeferProp|Closure|string|array|null $value = null,
-    ): self {
+    /**
+     * @param string|array<string, mixed> $key
+     */
+    public function share(string|array $key, mixed $value = null): self
+    {
         $this->config->share($key, $value);
 
         return $this;
@@ -49,10 +47,20 @@ final class Inertia
         get => $this->container->invoke($this->config->versionResolver->resolve(...));
     }
 
+    /**
+     * @param array<string, mixed> $props
+     * @mago-expect analyzer:unhandled-thrown-type
+     */
     public function render(string $component, array $props = []): InertiaResponse
     {
+        $request = $this->container->get(Request::class);
+
+        if (!$request) {
+            throw new Exception('No request');
+        }
+
         return new InertiaResponse(
-            request: $this->container->get(Request::class),
+            request: $request,
             component: $component,
             props: array_merge($this->config->sharedProps, $props),
             rootView: $this->config->rootView,
@@ -90,12 +98,13 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        $isInertiaRequest = $this->container->get(Request::class)->headers->has(Header::INERTIA);
+        /** @var bool */
+        $isInertiaRequest = $this->container->get(Request::class)?->headers?->has(Header::INERTIA) ?? false;
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
                 /** @var string */
-                $url = $url->getHeader(name: 'Location')->values[0];
+                $url = $url->getHeader(name: 'Location')->values[0] ?? '/';
             }
 
             return new GenericResponse(

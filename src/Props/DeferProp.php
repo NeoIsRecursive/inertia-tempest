@@ -19,7 +19,7 @@ final class DeferProp implements CallableProp, MergeableProp
     use IsMergeableProp;
 
     public function __construct(
-        public MethodReflector|FunctionReflector|string|array|Closure $callback,
+        public MethodReflector|FunctionReflector|Closure $callback,
         public string $group = 'default',
         public private(set) bool $shouldMerge = false,
     ) {}

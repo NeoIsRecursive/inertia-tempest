@@ -16,7 +16,7 @@ final class ViewTest extends TestCase
         HTML);
 
         static::assertSnippetsMatch(
-            expected: '<div id="app" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;\/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
+            expected: '<div id="app" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
             actual: $output,
         );
     }
@@ -40,7 +40,7 @@ final class ViewTest extends TestCase
         );
 
         static::assertSnippetsMatch(
-            expected: '<div id="app" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;\/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
+            expected: '<div id="app" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
             actual: $output,
         );
     }
@@ -52,7 +52,7 @@ final class ViewTest extends TestCase
         HTML);
 
         static::assertSnippetsMatch(
-            expected: '<div id="custom-id" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;\/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
+            expected: '<div id="custom-id" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
             actual: $output,
         );
     }

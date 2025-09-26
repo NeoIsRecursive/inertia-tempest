@@ -24,6 +24,7 @@ final readonly class ResolveErrorProps
 
         return arr($failingRules)->map(
             fn(array $rules): array => arr($rules)->map(
+                // @mago-expect lint:prefer-first-class-callable
                 fn(Rule $rule): string => $this->validator->getErrorMessage($rule),
             )->toArray(),
         )->toArray();

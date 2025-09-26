@@ -58,7 +58,7 @@ final class ResponseTest extends TestCase
             actual: $page->version,
         );
         static::assertSnippetsMatch(
-            expected: '<main><div id="app" data-page="{&quot;component&quot;:&quot;User\/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;\/user\/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div></main>',
+            expected: '<main><div id="app" data-page="{&quot;component&quot;:&quot;User/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;/user/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div></main>',
             actual: get(ViewRenderer::class)->render($view),
         );
     }

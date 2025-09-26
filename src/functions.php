@@ -9,6 +9,8 @@ namespace NeoIsRecursive\Inertia {
     use function Tempest\get;
 
     /**
+     * @param string|null $component
+     * @param array<string, mixed> $props
      * @return ($component is null ? Inertia : InertiaResponse)
      */
     function inertia(?string $component = null, array $props = []): InertiaResponse|Inertia

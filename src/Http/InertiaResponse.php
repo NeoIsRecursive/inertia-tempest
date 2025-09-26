@@ -84,7 +84,7 @@ final class InertiaResponse implements Response
         $always = static::resolveAlwaysProps($props);
         $partial = static::resolvePartialProps($request, $component, $props);
 
-        return static::evaluateProps(array_merge($always, $partial), $request, unpackDotProps: true);
+        return static::evaluateProps(array_merge($always, $partial), unpackDotProps: true);
     }
 
     /**
@@ -131,12 +131,12 @@ final class InertiaResponse implements Response
 
         $propKeysToMerge = arr($props)
             ->filter(static fn($prop) => $prop instanceof DeferProp)
-            ->map(static fn(DeferProp $prop, string $key) => [
+            ->map(static fn(DeferProp $prop, string|int $key) => [
                 'group' => $prop->group,
                 'key' => $key,
             ])
-            ->groupBy(static fn(array $prop) => $prop['group'])
-            ->map(static fn(array $group) => arr($group)->pluck(value: 'key')->toArray());
+            ->groupBy(static fn($prop) => $prop['group'])
+            ->map(static fn($group) => arr($group)->pluck(value: 'key')->toArray());
 
         return $propKeysToMerge->isEmpty() ? null : $propKeysToMerge->toArray();
     }
@@ -158,22 +158,22 @@ final class InertiaResponse implements Response
 
     /**
      * Evaluates props recursively.
+     * @param array<mixed> $props
      * @pure
      * @mago-expect lint:no-boolean-flag-parameter
+     * @mago-expect analysis:mixed-assignment
      */
-    private static function evaluateProps(array $props, Request $request, bool $unpackDotProps = true): array
+    private static function evaluateProps(array $props, bool $unpackDotProps = true): array
     {
-        return arr($props)->map(function ($value, string|int $key) use ($request): array {
+        return arr($props)->map(static function (mixed $value, string|int $key): array {
             $evaluated = $value instanceof Closure ? invoke($value) : $value;
             $evaluated = $evaluated instanceof CallableProp ? $evaluated() : $evaluated;
             $evaluated = $evaluated instanceof ArrayInterface ? $evaluated->toArray() : $evaluated;
-            $evaluated = is_array($evaluated)
-                ? self::evaluateProps($evaluated, $request, unpackDotProps: false)
-                : $evaluated;
+            $evaluated = is_array($evaluated) ? static::evaluateProps($evaluated, unpackDotProps: false) : $evaluated;
 
             return [$key, $evaluated];
         })->reduce(
-            function (array $acc, array $item) use ($unpackDotProps): array {
+            static function (array $acc, array $item) use ($unpackDotProps): array {
                 /** @var string|int $key */
                 [$key, $value] = $item;
                 if ($unpackDotProps && is_string($key) && str_contains($key, '.')) {
