@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia;
 
-use Exception;
+use Closure;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\InertiaConfig;
+use NeoIsRecursive\Inertia\Props\AlwaysProp;
+use NeoIsRecursive\Inertia\Props\DeferProp;
+use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use Tempest\Container\Container;
 use Tempest\Container\Singleton;
@@ -16,6 +19,8 @@ use Tempest\Http\Response;
 use Tempest\Http\Responses\Redirect;
 use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
+use Tempest\Reflection\FunctionReflector;
+use Tempest\Reflection\MethodReflector;
 
 #[Singleton]
 final class Inertia
@@ -34,6 +39,21 @@ final class Inertia
         $this->config->share($key, $value);
 
         return $this;
+    }
+
+    public static function optional(MethodReflector|FunctionReflector|Closure $callback): OptionalProp
+    {
+        return new OptionalProp($callback);
+    }
+
+    public static function defer(MethodReflector|FunctionReflector|Closure $callback): DeferProp
+    {
+        return new DeferProp($callback);
+    }
+
+    public static function always(mixed $value): AlwaysProp
+    {
+        return new AlwaysProp($value);
     }
 
     public function flushShared(): self

@@ -8,7 +8,7 @@ use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
-use NeoIsRecursive\Inertia\Props\LazyProp;
+use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
@@ -366,7 +366,7 @@ final class ResponseTest extends TestCase
     {
         $request = $this->createInertiaRequest(Method::GET, uri: '/users');
 
-        $lazyProp = new LazyProp(fn() => 'A lazy value');
+        $lazyProp = new OptionalProp(fn() => 'A lazy value');
 
         $response = new InertiaResponse(
             $request,
@@ -394,7 +394,7 @@ final class ResponseTest extends TestCase
             Header::PARTIAL_ONLY => 'lazy',
         ]);
 
-        $lazyProp = new LazyProp(function (): string {
+        $lazyProp = new OptionalProp(function (): string {
             return 'A lazy value';
         });
 
@@ -425,7 +425,7 @@ final class ResponseTest extends TestCase
         ]);
 
         $props = [
-            'user' => new LazyProp(function (): array {
+            'user' => new OptionalProp(function (): array {
                 return [
                     'name' => 'Jonathan Reinink',
                     'email' => 'jonathan@example.com',

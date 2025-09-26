@@ -8,7 +8,7 @@ use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\Http\Middleware\EncryptHistory;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
-use NeoIsRecursive\Inertia\Props\LazyProp;
+use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Tests\Fixtures\Requests\CreatePerson;
 use Tempest\Http\Responses\Ok;
 use Tempest\Http\Responses\Redirect;
@@ -60,7 +60,9 @@ final readonly class TestController
         )->render(
             component: 'User/Edit',
             props: [
-                new AlwaysProp(fn() => 'baz'),
+                'always' => Inertia::always(fn() => 'always'),
+                'optional' => Inertia::optional(fn() => 'optional'),
+                'defer' => Inertia::defer(fn() => 'defer'),
             ],
         );
     }
@@ -115,7 +117,7 @@ final readonly class TestController
             component: 'test',
             props: [
                 'foo' => new AlwaysProp(fn() => 'bar')->merge(),
-                'baz' => new LazyProp(fn() => 'qux')->merge(),
+                'baz' => new OptionalProp(fn() => 'qux')->merge(),
             ],
         );
     }

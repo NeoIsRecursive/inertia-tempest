@@ -19,7 +19,7 @@ final class AlwaysProp implements CallableProp, MergeableProp
     use IsMergeableProp;
 
     public function __construct(
-        public readonly MethodReflector|FunctionReflector|string|Closure|array $value,
+        public readonly mixed $value,
         public private(set) bool $shouldMerge = false,
     ) {}
 

@@ -14,7 +14,7 @@ use Tempest\Reflection\MethodReflector;
 
 use function Tempest\invoke;
 
-final class LazyProp implements CallableProp, MergeableProp
+final class OptionalProp implements CallableProp, MergeableProp
 {
     use IsMergeableProp;
 

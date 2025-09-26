@@ -10,7 +10,7 @@ use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
-use NeoIsRecursive\Inertia\Props\LazyProp;
+use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\IsResponse;
@@ -105,7 +105,10 @@ final class InertiaResponse implements Response
         $headers = $request->headers;
 
         if (!static::isPartial($request, $component)) {
-            return array_filter($props, static fn($prop) => !($prop instanceof LazyProp || $prop instanceof DeferProp));
+            return array_filter(
+                $props,
+                static fn($prop) => !($prop instanceof OptionalProp || $prop instanceof DeferProp),
+            );
         }
 
         $only = array_filter(explode(
