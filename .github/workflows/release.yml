@@ -1,0 +1,37 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        id: generate_release_notes
+        with:
+          args: -v --latest --strip header --github-repo "neoisrecursive/inertia-tempest"
+          config: git-cliff-config.toml
+
+      - name: Clean up release notes
+        run: |
+          cat ${{ steps.generate_release_notes.outputs.changelog }}
+          cat ${{ steps.generate_release_notes.outputs.changelog }} | sed '1,2d' > release_notes.txt
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body_path: release_notes.txt
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
