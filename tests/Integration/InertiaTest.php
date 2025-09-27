@@ -193,11 +193,10 @@ final class InertiaTest extends TestCase
 
     public function test_can_flush_shared_data(): void
     {
-        get(Inertia::class)
-            ->share(
-                key: 'foo',
-                value: 'bar',
-            );
+        get(Inertia::class)->share(
+            key: 'foo',
+            value: 'bar',
+        );
 
         static::assertArrayHasKey(
             key: 'foo',
@@ -245,26 +244,35 @@ final class InertiaTest extends TestCase
         );
     }
 
-    // public function test_will_accept_arrayabe_props()
-    // {
-    //     Route::middleware([StartSession::class, ExampleMiddleware::class])->get('/', function () {
-    //         Inertia::share('foo', 'bar');
-    //         return Inertia::render('User/Edit', new class() implements Arrayable {
-    //             public function toArray()
-    //             {
-    //                 return [
-    //                     'foo' => 'bar',
-    //                 ];
-    //             }
-    //         });
-    //     });
-    //     $response = $this->http->get('/', ['X-Inertia' => 'true']);
-    //     $response->assertSuccessful();
-    //     $response->assertJson([
-    //         'component' => 'User/Edit',
-    //         'props' => [
-    //             'foo' => 'bar',
-    //         ],
-    //     ]);
-    // }
+    public function test_array_helper_props_can_be_resolved(): void
+    {
+        $version = get(Inertia::class)->version;
+
+        $response = $this->http->get(uri([TestController::class, 'testAllSortsOfProps']), headers: [
+            Header::INERTIA => 'true',
+            Header::VERSION => $version,
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_ONLY => 'optional,defer',
+        ]);
+
+        $response->assertOk();
+        static::assertSame(
+            expected: [
+                'component' => 'User/Edit',
+                'props' => [
+                    'user' => null,
+                    'errors' => [],
+                    'shared' => [1, 2, 3],
+                    'always' => ['always-1', 'always-2'],
+                    'optional' => ['optional-1', 'optional-2'],
+                    'defer' => ['defer-1', 'defer-2'],
+                ],
+                'url' => uri([TestController::class, 'testAllSortsOfProps']),
+                'version' => $version,
+                'clearHistory' => false,
+                'encryptHistory' => false,
+            ],
+            actual: $response->body->jsonSerialize(),
+        );
+    }
 }

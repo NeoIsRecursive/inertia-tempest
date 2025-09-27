@@ -19,6 +19,7 @@ use Tempest\Router\Put;
 
 use function NeoIsRecursive\Inertia\inertia;
 use function Tempest\Router\uri;
+use function Tempest\Support\arr;
 
 final readonly class TestController
 {
@@ -55,14 +56,14 @@ final readonly class TestController
     public function testAllSortsOfProps(Inertia $inertia): InertiaResponse
     {
         return $inertia->share(
-            key: 'foo',
-            value: 'bar',
+            key: 'shared',
+            value: Inertia::always(arr([1, 2, 3])),
         )->render(
             component: 'User/Edit',
             props: [
-                'always' => Inertia::always(fn() => 'always'),
-                'optional' => Inertia::optional(fn() => 'optional'),
-                'defer' => Inertia::defer(fn() => 'defer'),
+                'always' => Inertia::always(fn() => arr(['always-1', 'always-2'])),
+                'optional' => Inertia::optional(fn() => arr(['optional-1', 'optional-2'])),
+                'defer' => Inertia::defer(fn() => arr(['defer-1', 'defer-2'])),
             ],
         );
     }
