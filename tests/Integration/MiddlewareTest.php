@@ -23,9 +23,9 @@ final class MiddlewareTest extends TestCase
     #[TestWith(
         [
             'testPostWithRedirect',
-            'post',
+            'delete',
         ],
-        name: 'post',
+        name: 'delete',
     )]
     #[TestWith(
         [

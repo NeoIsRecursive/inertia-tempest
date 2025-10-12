@@ -12,6 +12,7 @@ use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Tests\Fixtures\Requests\CreatePerson;
 use Tempest\Http\Responses\Ok;
 use Tempest\Http\Responses\Redirect;
+use Tempest\Router\Delete;
 use Tempest\Router\Get;
 use Tempest\Router\Patch;
 use Tempest\Router\Post;
@@ -93,7 +94,7 @@ final readonly class TestController
         return new Redirect(to: uri([self::class, 'testCanSharePropsFromAnyWhere']));
     }
 
-    #[Post(uri: '/test-post-with-redirect')]
+    #[Delete(uri: '/test-post-with-redirect')]
     public function testPostWithRedirect(): Redirect
     {
         return new Redirect(to: uri([static::class, 'index']));
