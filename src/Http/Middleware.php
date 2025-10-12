@@ -49,7 +49,7 @@ final class Middleware implements HttpMiddleware
 
         if (
             $response->status === Status::FOUND
-            && in_array($request->method, [Method::POST, Method::PUT, Method::PATCH], strict: true)
+            && in_array($request->method, [Method::DELETE, Method::PUT, Method::PATCH], strict: true)
         ) {
             $response = $response->setStatus(Status::SEE_OTHER);
         }
