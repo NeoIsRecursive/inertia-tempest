@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Props;
 
-use Closure;
 use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
 use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use Override;
-use Tempest\Reflection\FunctionReflector;
-use Tempest\Reflection\MethodReflector;
 
 use function Tempest\invoke;
 

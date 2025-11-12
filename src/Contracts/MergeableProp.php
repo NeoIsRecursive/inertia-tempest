@@ -10,5 +10,5 @@ interface MergeableProp
         get;
     }
 
-    public function merge(): self;
+    public function merge(): static;
 }

@@ -81,14 +81,8 @@ final class Inertia
             props: array_merge($this->config->sharedProps, $props),
             rootView: $this->config->rootView,
             version: $this->version,
-            clearHistory: $this->session->get(
-                key: 'inertia.clear_history',
-                default: false,
-            ),
-            encryptHistory: $this->session->get(
-                key: 'inertia.encrypt_history',
-                default: false,
-            ),
+            clearHistory: $this->session->get(key: 'inertia.clear_history') === true,
+            encryptHistory: $this->session->get(key: 'inertia.encrypt_history') === true,
         );
     }
 
@@ -114,7 +108,6 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        /** @var bool */
         $isInertiaRequest = $this->container->get(Request::class)?->headers?->has(Header::INERTIA) ?? false;
 
         if ($isInertiaRequest) {

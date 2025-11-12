@@ -23,6 +23,7 @@ final readonly class ResolveErrorProps
         $failingRules = $this->session->get(Session::VALIDATION_ERRORS) ?? [];
 
         return arr($failingRules)->map(
+            // @mago-expect lint:prefer-static-closure
             fn(array $rules): array => arr($rules)->map(
                 // @mago-expect lint:prefer-first-class-callable
                 fn(Rule $rule): string => $this->validator->getErrorMessage($rule),

@@ -1,0 +1,54 @@
+# Welcome to Mago!
+# yaml-language-server: $schema=./mago.schema.json
+# For full documentation, see https://mago.carthage.software/tools/overview
+php-version: "8.4.0"
+
+source:
+  paths:
+    - "src/"
+    - "tests/"
+  includes:
+    - "vendor"
+  excludes:
+    - "./vendor/symfony/cache/Traits/ValueWrapper.php"
+    - "./vendor/composer"
+    - "./tests"
+
+formatter:
+  print-width: 120
+  tab-width: 4
+  use-tabs: false
+  null-type-hint: "Question"
+
+linter:
+  integrations:
+    - "phpunit"
+
+linter.rules:
+  yoda-conditions:
+    enabled: false
+  ambiguous-function-call:
+    enabled: false
+  literal-named-argument:
+    enabled: false
+  halstead:
+    effort-threshold: 7000
+  interface-name:
+    enabled: false
+  trait-name:
+    enabled: false
+  return-type:
+    ignore-arrow-function: true
+  parameter-type:
+    ignore-closure: true
+    ignore-arrow-function: true
+
+analyzer:
+  excludes:
+    - "./tests"
+  find-unused-definitions: true
+  find-unused-expressions: false
+  analyze-dead-code: false
+  check-throws: true
+  allow-possibly-undefined-array-keys: true
+  perform-heuristic-checks: false

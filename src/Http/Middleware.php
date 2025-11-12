@@ -27,7 +27,6 @@ final class Middleware implements HttpMiddleware
     #[Override]
     public function __invoke(Request $request, HttpMiddlewareCallable $next): Response
     {
-        /** @var Response $response */
         $response = $next($request);
 
         $response = $response->addHeader(

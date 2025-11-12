@@ -120,7 +120,6 @@ final class InertiaResponse implements Response
             string: $headers->get(Header::PARTIAL_EXCEPT) ?? '',
         ));
 
-        /** @var mixed[]  */
         $filtered = $only ? array_intersect_key($props, array_flip($only)) : $props;
 
         return array_filter($filtered, static fn($key) => !in_array($key, $except, strict: true), ARRAY_FILTER_USE_KEY);
@@ -152,8 +151,8 @@ final class InertiaResponse implements Response
         ));
 
         $propKeysToMerge = arr($props)
-            ->filter(fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
-            ->filter(fn($_, $key) => !$resetProps->contains($key))
+            ->filter(static fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
+            ->filter(static fn($_, $key) => !$resetProps->contains($key))
             ->keys();
 
         return $propKeysToMerge->isEmpty() ? null : $propKeysToMerge->toArray();

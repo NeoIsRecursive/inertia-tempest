@@ -9,7 +9,7 @@ namespace NeoIsRecursive\Inertia\Concerns;
  */
 trait IsMergeableProp
 {
-    public function merge(): self
+    public function merge(): static
     {
         $this->shouldMerge = true;
 

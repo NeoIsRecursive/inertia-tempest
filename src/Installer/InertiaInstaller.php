@@ -89,7 +89,7 @@ final class InertiaInstaller implements Installer
         $this->publish(
             source: __DIR__ . '/React/main.tsx',
             destination: (string) path($clientPath, 'main.entrypoint.tsx'),
-            callback: function (string $_, string $target) use ($pagesPath): void {
+            callback: static function (string $_, string $target) use ($pagesPath): void {
                 $content = read_file($target);
 
                 write_file($target, replace(
@@ -145,7 +145,7 @@ final class InertiaInstaller implements Installer
         $this->publish(
             source: __DIR__ . '/Vue/main.ts',
             destination: (string) path($clientPath, 'main.entrypoint.ts'),
-            callback: function (string $_, string $target) use ($pagesPath): void {
+            callback: static function (string $_, string $target) use ($pagesPath): void {
                 $content = read_file($target);
 
                 write_file($target, replace(
