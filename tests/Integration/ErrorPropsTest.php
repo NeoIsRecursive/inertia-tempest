@@ -7,7 +7,6 @@ namespace NeoIsRecursive\Inertia\Tests\Integration;
 use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Tests\Fixtures\TestController;
 use NeoIsRecursive\Inertia\Tests\TestCase;
-use Tempest\Http\Session\Session;
 
 use function Tempest\Router\uri;
 
