@@ -6,7 +6,6 @@ namespace NeoIsRecursive\Inertia;
 
 use Closure;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
-use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;

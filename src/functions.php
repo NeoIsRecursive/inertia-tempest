@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia {
     use NeoIsRecursive\Inertia\Http\InertiaResponse;
-    use NeoIsRecursive\Inertia\Inertia;
 
     use function Tempest\Container\get;
 
