@@ -18,7 +18,7 @@ use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Support\Arr\ArrayInterface;
 
-use function Tempest\invoke;
+use function Tempest\Container\invoke;
 use function Tempest\Support\arr;
 
 // @mago-expect lint:cyclomatic-complexity
@@ -38,7 +38,11 @@ final class InertiaResponse implements Response
     ) {
         $pageData = new PageData(
             component: $component,
-            props: self::composeProps(props: $props, request: $request, component: $component),
+            props: self::composeProps(
+                props: $props,
+                request: $request,
+                component: $component,
+            ),
             url: $request->uri,
             version: $version,
             clearHistory: $clearHistory,
@@ -48,11 +52,14 @@ final class InertiaResponse implements Response
                 request: $request,
                 component: $component,
             ),
-            propsKeysToMerge: self::resolvePropKeysThatShouldMerge(props: $props, request: $request),
+            propsKeysToMerge: self::resolvePropKeysThatShouldMerge(
+                props: $props,
+                request: $request,
+            ),
         );
 
         if ($request->headers->has(Header::INERTIA)) {
-            $this->addHeader(Header::INERTIA, value: 'true');
+            $this->addHeader(Header::INERTIA, value: "true");
             $this->body = $pageData;
             return;
         }
@@ -69,12 +76,18 @@ final class InertiaResponse implements Response
      * @pure
      * Composes the various prop transformations into one functional pipeline.
      */
-    private static function composeProps(array $props, Request $request, string $component): array
-    {
+    private static function composeProps(
+        array $props,
+        Request $request,
+        string $component,
+    ): array {
         $always = static::resolveAlwaysProps($props);
         $partial = static::resolvePartialProps($request, $component, $props);
 
-        return static::evaluateProps(array_merge($always, $partial), unpackDotProps: true);
+        return static::evaluateProps(
+            array_merge($always, $partial),
+            unpackDotProps: true,
+        );
     }
 
     /**
@@ -83,56 +96,99 @@ final class InertiaResponse implements Response
      */
     private static function resolveAlwaysProps(array $props): array
     {
-        return array_filter($props, static fn($prop) => $prop instanceof AlwaysProp);
+        return array_filter(
+            $props,
+            static fn($prop) => $prop instanceof AlwaysProp,
+        );
     }
 
     /**
      * @pure
      * function to extract Partial props based on request headers.
      */
-    private static function resolvePartialProps(Request $request, string $component, array $props): array
-    {
+    private static function resolvePartialProps(
+        Request $request,
+        string $component,
+        array $props,
+    ): array {
         $headers = $request->headers;
 
         if (!static::isPartial($request, $component)) {
             return array_filter(
                 $props,
-                static fn($prop) => !($prop instanceof OptionalProp || $prop instanceof DeferProp),
+                static fn($prop) => !(
+                    $prop instanceof OptionalProp || $prop instanceof DeferProp
+                ),
             );
         }
 
-        $only = array_filter(explode(separator: ',', string: $headers->get(Header::PARTIAL_ONLY) ?? ''));
-        $except = array_filter(explode(separator: ',', string: $headers->get(Header::PARTIAL_EXCEPT) ?? ''));
+        $only = array_filter(
+            explode(
+                separator: ",",
+                string: $headers->get(Header::PARTIAL_ONLY) ?? "",
+            ),
+        );
+        $except = array_filter(
+            explode(
+                separator: ",",
+                string: $headers->get(Header::PARTIAL_EXCEPT) ?? "",
+            ),
+        );
 
-        $filtered = $only ? array_intersect_key($props, array_flip($only)) : $props;
+        $filtered = $only
+            ? array_intersect_key($props, array_flip($only))
+            : $props;
 
-        return array_filter($filtered, static fn($key) => !in_array($key, $except, strict: true), ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            $filtered,
+            static fn($key) => !in_array($key, $except, strict: true),
+            ARRAY_FILTER_USE_KEY,
+        );
     }
 
-    private static function resolvePropKeysThatShouldDefer(array $props, Request $request, string $component): ?array
-    {
+    private static function resolvePropKeysThatShouldDefer(
+        array $props,
+        Request $request,
+        string $component,
+    ): ?array {
         if (static::isPartial($request, $component)) {
             return null;
         }
 
         $propKeysToMerge = arr($props)
             ->filter(static fn($prop) => $prop instanceof DeferProp)
-            ->map(static fn(DeferProp $prop, string|int $key) => [
-                'group' => $prop->group,
-                'key' => $key,
-            ])
-            ->groupBy(static fn($prop) => $prop['group'])
-            ->map(static fn($group) => arr($group)->pluck(value: 'key')->toArray());
+            ->map(
+                static fn(DeferProp $prop, string|int $key) => [
+                    "group" => $prop->group,
+                    "key" => $key,
+                ],
+            )
+            ->groupBy(static fn($prop) => $prop["group"])
+            ->map(
+                static fn($group) => arr($group)
+                    ->pluck(value: "key")
+                    ->toArray(),
+            );
 
         return $propKeysToMerge->isEmpty() ? null : $propKeysToMerge->toArray();
     }
 
-    private static function resolvePropKeysThatShouldMerge(array $props, Request $request): ?array
-    {
-        $resetProps = arr(explode(separator: ',', string: $request->headers->get(Header::RESET) ?? ''));
+    private static function resolvePropKeysThatShouldMerge(
+        array $props,
+        Request $request,
+    ): ?array {
+        $resetProps = arr(
+            explode(
+                separator: ",",
+                string: $request->headers->get(Header::RESET) ?? "",
+            ),
+        );
 
         $propKeysToMerge = arr($props)
-            ->filter(static fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
+            ->filter(
+                static fn($prop) => $prop instanceof MergeableProp &&
+                    $prop->shouldMerge,
+            )
             ->filter(static fn($_, $key) => !$resetProps->contains($key))
             ->keys();
 
@@ -146,26 +202,42 @@ final class InertiaResponse implements Response
      * @mago-expect lint:no-boolean-flag-parameter
      * @mago-expect analysis:mixed-assignment
      */
-    private static function evaluateProps(array $props, bool $unpackDotProps = true): array
-    {
-        return arr($props)->map(static function (mixed $value, string|int $key): array {
-            $evaluated = $value instanceof Closure ? invoke($value) : $value;
-            $evaluated = $evaluated instanceof CallableProp ? $evaluated() : $evaluated;
-            $evaluated = $evaluated instanceof ArrayInterface ? $evaluated->toArray() : $evaluated;
-            $evaluated = is_array($evaluated) ? static::evaluateProps($evaluated, unpackDotProps: false) : $evaluated;
+    private static function evaluateProps(
+        array $props,
+        bool $unpackDotProps = true,
+    ): array {
+        return arr($props)
+            ->map(static function (mixed $value, string|int $key): array {
+                $evaluated =
+                    $value instanceof Closure ? invoke($value) : $value;
+                $evaluated =
+                    $evaluated instanceof CallableProp
+                        ? $evaluated()
+                        : $evaluated;
+                $evaluated =
+                    $evaluated instanceof ArrayInterface
+                        ? $evaluated->toArray()
+                        : $evaluated;
+                $evaluated = is_array($evaluated)
+                    ? static::evaluateProps($evaluated, unpackDotProps: false)
+                    : $evaluated;
 
-            return [$key, $evaluated];
-        })->reduce(
-            static function (array $acc, array $item) use ($unpackDotProps): array {
+                return [$key, $evaluated];
+            })
+            ->reduce(static function (array $acc, array $item) use (
+                $unpackDotProps,
+            ): array {
                 /** @var string|int $key */
                 [$key, $value] = $item;
-                if ($unpackDotProps && is_string($key) && str_contains($key, '.')) {
+                if (
+                    $unpackDotProps &&
+                    is_string($key) &&
+                    str_contains($key, ".")
+                ) {
                     return arr($acc)->set($key, $value)->toArray();
                 }
                 $acc[$key] = $value;
                 return $acc;
-            },
-            [],
-        );
+            }, []);
     }
 }
