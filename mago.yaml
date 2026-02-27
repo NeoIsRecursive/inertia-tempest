@@ -27,8 +27,6 @@ linter:
 linter.rules:
   yoda-conditions:
     enabled: false
-  ambiguous-function-call:
-    enabled: false
   literal-named-argument:
     enabled: false
   halstead:
@@ -37,11 +35,6 @@ linter.rules:
     enabled: false
   trait-name:
     enabled: false
-  return-type:
-    ignore-arrow-function: true
-  parameter-type:
-    ignore-closure: true
-    ignore-arrow-function: true
 
 analyzer:
   excludes:

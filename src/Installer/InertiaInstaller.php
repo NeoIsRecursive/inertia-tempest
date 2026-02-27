@@ -44,21 +44,18 @@ final class InertiaInstaller implements Installer
         );
 
         /** @var string */
-        $clientPath = $this->ask(
-            question: 'Where is your client-side code located?',
-            default: to_relative_path(root_path(), src_path('Client')),
-        );
+        $clientPath = $this->ask(question: 'Where is your client-side code located?', default: to_relative_path(
+            root_path(),
+            src_path('Client'),
+        ));
 
         /** @var string */
-        $pagesPath = $this->ask(
-            question: 'Where do you want to keep your Inertia pages?',
-            default: to_relative_path(to_absolute_path($clientPath), to_absolute_path($clientPath, 'pages')),
-        );
+        $pagesPath = $this->ask(question: 'Where do you want to keep your Inertia pages?', default: to_relative_path(
+            to_absolute_path($clientPath),
+            to_absolute_path($clientPath, 'pages'),
+        ));
 
-        $this->publish(
-            source: __DIR__ . '/app.view.stub',
-            destination: (string) path(src_path(), 'app.view.php'),
-        );
+        $this->publish(source: __DIR__ . '/app.view.stub', destination: (string) path(src_path(), 'app.view.php'));
 
         match ($framework) {
             'react' => $this->installReact($clientPath, $pagesPath),
@@ -68,14 +65,11 @@ final class InertiaInstaller implements Installer
 
     private function installReact(string $clientPath, string $pagesPath): void
     {
-        $this->javascript->installDependencies(
-            cwd: root_path(),
-            dependencies: [
-                '@inertiajs/react',
-                'react',
-                'react-dom',
-            ],
-        );
+        $this->javascript->installDependencies(cwd: root_path(), dependencies: [
+            '@inertiajs/react',
+            'react',
+            'react-dom',
+        ]);
         $this->javascript->installDependencies(
             cwd: root_path(),
             dependencies: [
@@ -110,8 +104,7 @@ final class InertiaInstaller implements Installer
             'We have installed it for you, but you need to add it to your Vite config:',
         ]);
 
-        $this->console->writeWithLanguage(
-            contents: <<<'JS'
+        $this->console->writeWithLanguage(contents: <<<'JS'
                 import react from '@vitejs/plugin-react';
                 // ...
                 export default defineConfig({
@@ -120,20 +113,15 @@ final class InertiaInstaller implements Installer
                         react(),
                     ],
                 });
-            JS,
-            language: new JavaScriptLanguage(),
-        );
+            JS, language: new JavaScriptLanguage());
     }
 
     private function installVue(string $clientPath, string $pagesPath): void
     {
-        $this->javascript->installDependencies(
-            cwd: root_path(),
-            dependencies: [
-                '@inertiajs/vue3',
-                'vue',
-            ],
-        );
+        $this->javascript->installDependencies(cwd: root_path(), dependencies: [
+            '@inertiajs/vue3',
+            'vue',
+        ]);
         $this->javascript->installDependencies(
             cwd: root_path(),
             dependencies: [
@@ -166,8 +154,7 @@ final class InertiaInstaller implements Installer
             'we have installed it for you, but you need to add it to your vite config:',
         ]);
 
-        $this->console->writeWithLanguage(
-            contents: <<<'js'
+        $this->console->writeWithLanguage(contents: <<<'js'
                 import vue from '@vitejs/plugin-vue';
                 // ...
                 export default defineConfig({
@@ -176,8 +163,6 @@ final class InertiaInstaller implements Installer
                         vue(),
                     ],
                 });
-            js,
-            language: new JavaScriptLanguage(),
-        );
+            js, language: new JavaScriptLanguage());
     }
 }

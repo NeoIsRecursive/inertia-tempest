@@ -6,7 +6,7 @@ namespace NeoIsRecursive\Inertia {
     use NeoIsRecursive\Inertia\Http\InertiaResponse;
     use NeoIsRecursive\Inertia\Inertia;
 
-    use function Tempest\get;
+    use function Tempest\Container\get;
 
     /**
      * @param string|null $component

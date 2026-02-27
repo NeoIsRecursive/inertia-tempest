@@ -25,10 +25,7 @@ final readonly class ManifestVersionResolver implements InertiaVersionResolver
             return '';
         }
 
-        $hash = hash_file(
-            algo: 'xxh128',
-            filename: $manifestPath,
-        );
+        $hash = hash_file(algo: 'xxh128', filename: $manifestPath);
 
         if (!$hash) {
             return '';
