@@ -49,7 +49,25 @@ final class ResponseTest extends TestCase
         static::assertSame(expected: "/user/123", actual: $page->url);
         static::assertSame(expected: "123", actual: $page->version);
         static::assertSnippetsMatch(
-            expected: '<main><div id="app" data-page="{&quot;component&quot;:&quot;User/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;/user/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div></main>',
+            expected: <<<HTML
+                <main>
+                    <script data-page="app" type="application/json">
+                    {
+                        "component": "User/Edit",
+                        "props": {
+                            "user":{
+                                "name": "Jonathan"
+                            }
+                        },
+                        "url": "/user/123",
+                        "version": "123",
+                        "clearHistory": false,
+                        "encryptHistory": false
+                    }
+                    </script>
+                    <div id="app"></div>
+                </main>
+            HTML,
             actual: get(ViewRenderer::class)->render($view),
         );
     }

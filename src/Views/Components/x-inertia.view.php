@@ -8,6 +8,10 @@ declare(strict_types=1);
  * @var string|null $id
  */
 
+$id ??= 'app';
 ?>
 
-<div id="<?= $id ?? 'app'; ?>" data-page="<?= htmlentities(\Tempest\Support\Json\encode($page ?? $this->page)) ?>"></div>
+<script data-page="<?= $id ?>" type="application/json">
+<?= \Tempest\Support\Json\encode($page ?? $this->page) ?>
+</script>
+<div id="<?= $id ?>"></div>
