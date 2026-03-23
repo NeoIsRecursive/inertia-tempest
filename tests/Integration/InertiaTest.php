@@ -179,9 +179,7 @@ final class InertiaTest extends TestCase
                     TestController::class,
                     "testCanSharePropsFromAnyWhere",
                 ]),
-                "version" => $version,
-                "clearHistory" => false,
-                "encryptHistory" => false,
+                "version" => $version
             ],
             actual: $response->body->jsonSerialize(),
         );
@@ -229,8 +227,6 @@ final class InertiaTest extends TestCase
                 ],
                 "url" => uri([TestController::class, "testCanMergeProps"]),
                 "version" => $version,
-                "clearHistory" => false,
-                "encryptHistory" => false,
                 "mergeProps" => ["foo", "baz"],
             ],
             actual: $response->body->jsonSerialize(),
@@ -264,9 +260,7 @@ final class InertiaTest extends TestCase
                     "defer" => ["defer-1", "defer-2"],
                 ],
                 "url" => uri([TestController::class, "testAllSortsOfProps"]),
-                "version" => $version,
-                "clearHistory" => false,
-                "encryptHistory" => false,
+                "version" => $version
             ],
             actual: $response->body->jsonSerialize(),
         );

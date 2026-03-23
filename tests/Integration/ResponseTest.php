@@ -60,9 +60,7 @@ final class ResponseTest extends TestCase
                             }
                         },
                         "url": "/user/123",
-                        "version": "123",
-                        "clearHistory": false,
-                        "encryptHistory": false
+                        "version": "123"
                     }
                     </script>
                     <div id="app"></div>

@@ -28,9 +28,14 @@ final readonly class PageData implements JsonSerializable
             'props' => $this->props,
             'url' => $this->url,
             'version' => $this->version,
-            'clearHistory' => $this->clearHistory,
-            'encryptHistory' => $this->encryptHistory,
         ];
+
+        if ($this->clearHistory) {
+            $data['clearHistory'] = $this->clearHistory;
+        }
+        if ($this->encryptHistory) {
+            $data['encryptHistory'] = $this->encryptHistory;
+        }
 
         if ($this->propKeysToDefer !== null) {
             $data['deferredProps'] = $this->propKeysToDefer;

@@ -24,9 +24,7 @@ final class ViewTest extends TestCase
                     "key": "value"
                 },
                 "url": "/test-url",
-                "version": "1.0.0",
-                "clearHistory": false,
-                "encryptHistory": false
+                "version": "1.0.0"
             }
             </script>
             <div id="app"></div>
@@ -47,7 +45,7 @@ final class ViewTest extends TestCase
                     props: ['key' => 'value'],
                     url: '/test-url',
                     version: '1.0.0',
-                    clearHistory: false,
+                    clearHistory: true,
                     encryptHistory: false,
                 ),
             ),
@@ -63,8 +61,7 @@ final class ViewTest extends TestCase
                   },
                   "url": "/test-url",
                   "version": "1.0.0",
-                  "clearHistory": false,
-                  "encryptHistory": false
+                  "clearHistory": true
                 }
                 </script>
                 <div id="app"></div>
@@ -88,9 +85,7 @@ final class ViewTest extends TestCase
                             "key":"value"
                         },
                         "url":"/test-url",
-                        "version":"1.0.0",
-                        "clearHistory":false,
-                        "encryptHistory":false
+                        "version":"1.0.0"
                     }
                 </script>
                 <div id="custom-id"></div>
