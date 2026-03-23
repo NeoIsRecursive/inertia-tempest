@@ -6,7 +6,6 @@ namespace NeoIsRecursive\Inertia;
 
 use Closure;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
-use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;
@@ -88,20 +87,14 @@ final class Inertia
 
     public function encryptHistory(): self
     {
-        $this->session->flash(
-            key: 'inertia.encrypt_history',
-            value: true,
-        );
+        $this->session->flash(key: 'inertia.encrypt_history', value: true);
 
         return $this;
     }
 
     public function clearHistory(): self
     {
-        $this->session->flash(
-            key: 'inertia.clear_history',
-            value: true,
-        );
+        $this->session->flash(key: 'inertia.clear_history', value: true);
 
         return $this;
     }
@@ -116,13 +109,9 @@ final class Inertia
                 $url = $url->getHeader(name: 'Location')->values[0] ?? '/';
             }
 
-            return new GenericResponse(
-                status: Status::CONFLICT,
-                body: '',
-                headers: [
-                    Header::LOCATION => $url,
-                ],
-            );
+            return new GenericResponse(status: Status::CONFLICT, body: '', headers: [
+                Header::LOCATION => $url,
+            ]);
         }
 
         return $url instanceof Redirect ? $url : new Redirect($url);

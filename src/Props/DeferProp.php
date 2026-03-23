@@ -12,7 +12,7 @@ use Override;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
-use function Tempest\invoke;
+use function Tempest\Container\invoke;
 
 final class DeferProp implements CallableProp, MergeableProp
 {

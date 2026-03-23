@@ -9,7 +9,7 @@ use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use Override;
 
-use function Tempest\invoke;
+use function Tempest\Container\invoke;
 
 final class AlwaysProp implements CallableProp, MergeableProp
 {

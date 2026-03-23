@@ -18,7 +18,7 @@ use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\Support\Arr\ArrayInterface;
 
-use function Tempest\invoke;
+use function Tempest\Container\invoke;
 use function Tempest\Support\arr;
 
 // @mago-expect lint:cyclomatic-complexity
@@ -38,11 +38,7 @@ final class InertiaResponse implements Response
     ) {
         $pageData = new PageData(
             component: $component,
-            props: self::composeProps(
-                props: $props,
-                request: $request,
-                component: $component,
-            ),
+            props: self::composeProps(props: $props, request: $request, component: $component),
             url: $request->uri,
             version: $version,
             clearHistory: $clearHistory,
@@ -52,10 +48,7 @@ final class InertiaResponse implements Response
                 request: $request,
                 component: $component,
             ),
-            propsKeysToMerge: self::resolvePropKeysThatShouldMerge(
-                props: $props,
-                request: $request,
-            ),
+            propsKeysToMerge: self::resolvePropKeysThatShouldMerge(props: $props, request: $request),
         );
 
         if ($request->headers->has(Header::INERTIA)) {
@@ -64,10 +57,7 @@ final class InertiaResponse implements Response
             return;
         }
 
-        $this->body = new InertiaBaseView(
-            path: $rootView,
-            page: $pageData,
-        );
+        $this->body = new InertiaBaseView(path: $rootView, page: $pageData);
     }
 
     public static function isPartial(Request $request, string $component): bool
@@ -111,14 +101,8 @@ final class InertiaResponse implements Response
             );
         }
 
-        $only = array_filter(explode(
-            separator: ',',
-            string: $headers->get(Header::PARTIAL_ONLY) ?? '',
-        ));
-        $except = array_filter(explode(
-            separator: ',',
-            string: $headers->get(Header::PARTIAL_EXCEPT) ?? '',
-        ));
+        $only = array_filter(explode(separator: ',', string: $headers->get(Header::PARTIAL_ONLY) ?? ''));
+        $except = array_filter(explode(separator: ',', string: $headers->get(Header::PARTIAL_EXCEPT) ?? ''));
 
         $filtered = $only ? array_intersect_key($props, array_flip($only)) : $props;
 
@@ -145,10 +129,7 @@ final class InertiaResponse implements Response
 
     private static function resolvePropKeysThatShouldMerge(array $props, Request $request): ?array
     {
-        $resetProps = arr(explode(
-            separator: ',',
-            string: $request->headers->get(Header::RESET) ?? '',
-        ));
+        $resetProps = arr(explode(separator: ',', string: $request->headers->get(Header::RESET) ?? ''));
 
         $propKeysToMerge = arr($props)
             ->filter(static fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)

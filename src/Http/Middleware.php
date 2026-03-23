@@ -29,10 +29,7 @@ final class Middleware implements HttpMiddleware
     {
         $response = $next($request);
 
-        $response = $response->addHeader(
-            key: 'Vary',
-            value: Header::INERTIA,
-        );
+        $response = $response->addHeader(key: 'Vary', value: Header::INERTIA);
 
         if (!$request->headers->has(Header::INERTIA)) {
             return $response;
