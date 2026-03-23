@@ -96,24 +96,6 @@ final class ResponseTest extends TestCase
         static::assertSame(expected: "123", actual: $page["version"]);
     }
 
-    // public function test_resource_response(): void
-    // {
-    //     $request = Request::create('/user/123', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
-
-    //     $resource = new FakeResource(['name' => 'Jonathan']);
-
-    //     $response = new Response('User/Edit', ['user' => $resource], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
-
-    //     $this->assertInstanceOf(JsonResponse::class, $response);
-    //     $this->assertSame('User/Edit', $page->component);
-    //     $this->assertSame('Jonathan', $page->props->user->name);
-    //     $this->assertSame('/user/123', $page->url);
-    //     $this->assertSame('123', $page->version);
-    // }
-
     public function test_lazy_resource_response(): void
     {
         $request = $this->createInertiaRequest(

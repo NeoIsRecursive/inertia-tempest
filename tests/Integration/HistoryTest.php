@@ -36,6 +36,11 @@ class HistoryTest extends TestCase
         static::assertSame(expected: "User/Edit", actual: $body->component);
         static::assertFalse($body->encryptHistory);
         static::assertFalse($body->clearHistory);
+
+        static::assertNotContains($body->toArray(), [
+            'encryptHistory',
+            'clearHistory',
+        ]);
     }
 
     public function test_the_history_can_be_encrypted(): void
@@ -57,6 +62,11 @@ class HistoryTest extends TestCase
 
         static::assertSame(expected: "User/Edit", actual: $body->component);
         static::assertTrue($body->encryptHistory);
+
+        static::assertArraySubsetValues(
+            ['encryptHistory' => true],
+            $body->toArray()
+        );
     }
 
     public function test_the_history_can_be_encrypted_via_middleware(): void
