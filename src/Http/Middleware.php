@@ -31,6 +31,12 @@ final class Middleware implements HttpMiddleware
 
         $response = $response->addHeader(key: 'Vary', value: Header::INERTIA);
 
+        $isRedirect = $response->status->isRedirect();
+
+        if ($isRedirect) {
+            $this->session->reflash();
+        }
+
         if (!$request->headers->has(Header::INERTIA)) {
             return $response;
         }
@@ -47,9 +53,31 @@ final class Middleware implements HttpMiddleware
             $response->status === Status::FOUND
             && in_array($request->method, [Method::DELETE, Method::PUT, Method::PATCH], strict: true)
         ) {
-            $response = $response->setStatus(Status::SEE_OTHER);
+            return $response->setStatus(Status::SEE_OTHER);
+        }
+
+        if ($isRedirect && $this->redirectHasFragment($response) && !$this->prefetch($request)) {
+            // TODO(neo): ensure this works the same as the laravel adapter
+            return $this->inertia->location(response);
         }
 
         return $response;
+    }
+
+    /**
+     * Determine if the redirect response contains a URL fragment.
+     */
+    private function redirectHasFragment(Response $response): bool
+    {
+        return str_contains($response->getHeader('location')->first() ?? '', '#');
+    }
+
+    private function prefetch(Request $request)
+    {
+        return (
+            strcasecmp($request->headers->get('HTTP_X_MOZ', ''), 'prefetch') === 0
+            || strcasecmp($request->headers->get('Purpose', ''), 'prefetch') === 0
+            || strcasecmp($request->headers->get('Sec-Purpose', ''), 'prefetch') === 0
+        );
     }
 }
