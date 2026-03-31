@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Props;
 
 use Closure;
+use NeoIsRecursive\Inertia\Concerns\IsCallableProp;
 use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
 use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
@@ -12,11 +13,9 @@ use Override;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
-use function Tempest\Container\invoke;
-
 final class OptionalProp implements CallableProp, MergeableProp
 {
-    use IsMergeableProp;
+    use IsMergeableProp, IsCallableProp;
 
     public function __construct(
         public MethodReflector|FunctionReflector|Closure $callback,
@@ -26,6 +25,6 @@ final class OptionalProp implements CallableProp, MergeableProp
     #[Override]
     public function __invoke(): mixed
     {
-        return invoke($this->callback);
+        return $this->resolveCallablePropValue($this->callback);
     }
 }
