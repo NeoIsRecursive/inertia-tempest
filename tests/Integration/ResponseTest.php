@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
+use DateTimeImmutable;
+use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
 use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
@@ -415,6 +417,339 @@ final class ResponseTest extends TestCase
             actual: $page["props"]["data"]["name"],
         );
         static::assertFalse(isset($page["props"]["user"]));
+    }
+
+    public function test_once_props_are_resolved_on_initial_page_load(): void
+    {
+        $request = new GenericRequest(Method::GET, uri: "/user/123");
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: ["foo" => Inertia::once(fn(): string => "bar")],
+            rootView: __DIR__ . "/../Fixtures/root.view.php",
+            version: "123",
+        );
+
+        /** @var InertiaBaseView $view */
+        $view = $response->body;
+        $page = $view->page->toArray();
+
+        static::assertSame(expected: "bar", actual: $page["props"]["foo"]);
+        static::assertSame(
+            expected: [
+                "foo" => [
+                    "prop" => "foo",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_once_props_are_not_resolved_on_subsequent_requests_when_they_are_in_the_once_props_header(): void
+    {
+        $request = $this->createInertiaRequest(
+            Method::GET,
+            uri: "/user/123",
+            headers: [
+                Header::EXCEPT_ONCE_PROPS => "foo",
+            ],
+        );
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: ["foo" => Inertia::once(fn(): string => "bar")],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertFalse(array_key_exists("foo", $page["props"]));
+        static::assertSame(
+            expected: [
+                "foo" => [
+                    "prop" => "foo",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_once_props_are_resolved_on_subsequent_requests_when_the_once_props_header_is_missing(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, uri: "/user/123");
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: ["foo" => Inertia::once(fn(): string => "bar")],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertSame(expected: "bar", actual: $page["props"]["foo"]);
+        static::assertSame(
+            expected: [
+                "foo" => [
+                    "prop" => "foo",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_once_props_are_resolved_on_subsequent_requests_when_they_are_not_in_the_once_props_header(): void
+    {
+        $request = $this->createInertiaRequest(
+            Method::GET,
+            uri: "/user/123",
+            headers: [
+                Header::EXCEPT_ONCE_PROPS => "baz",
+            ],
+        );
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: ["foo" => Inertia::once(fn(): string => "bar")],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertSame(expected: "bar", actual: $page["props"]["foo"]);
+        static::assertSame(
+            expected: [
+                "foo" => [
+                    "prop" => "foo",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_once_props_are_resolved_with_a_custom_key_and_ttl_value(): void
+    {
+        $request = $this->createInertiaRequest(Method::GET, uri: "/user/123");
+        $expiresAt = new DateTimeImmutable("2026-04-01T00:00:00+00:00");
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: [
+                "foo" => Inertia::once(fn(): string => "bar")
+                    ->as("baz")
+                    ->until($expiresAt),
+            ],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertSame(expected: "bar", actual: $page["props"]["foo"]);
+        static::assertSame(
+            expected: [
+                "baz" => [
+                    "prop" => "foo",
+                    "expiresAt" => (int) $expiresAt->format("Uv"),
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_fresh_props_are_not_excluded_while_once_props_are_excluded(): void
+    {
+        $request = $this->createInertiaRequest(
+            Method::GET,
+            uri: "/user/123",
+            headers: [
+                Header::EXCEPT_ONCE_PROPS => "foo,baz",
+            ],
+        );
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: [
+                "foo" => Inertia::once(fn(): string => "bar")->fresh(),
+                "baz" => Inertia::once(fn(): string => "qux"),
+            ],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertSame(expected: "bar", actual: $page["props"]["foo"]);
+        static::assertFalse(array_key_exists("baz", $page["props"]));
+        static::assertSame(
+            expected: [
+                "foo" => [
+                    "prop" => "foo",
+                    "expiresAt" => null,
+                ],
+                "baz" => [
+                    "prop" => "baz",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_once_props_are_resolved_on_partial_requests_when_included_in_only_headers(): void
+    {
+        $request = $this->createInertiaRequest(
+            Method::GET,
+            uri: "/user/123",
+            headers: [
+                Header::PARTIAL_COMPONENT => "User/Edit",
+                Header::PARTIAL_ONLY => "foo",
+                Header::EXCEPT_ONCE_PROPS => "foo",
+            ],
+        );
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: ["foo" => Inertia::once(fn(): string => "bar")],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertSame(expected: "bar", actual: $page["props"]["foo"]);
+        static::assertSame(
+            expected: [
+                "foo" => [
+                    "prop" => "foo",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_once_props_are_not_resolved_on_partial_requests_when_excluded_in_except_headers(): void
+    {
+        $request = $this->createInertiaRequest(
+            Method::GET,
+            uri: "/user/123",
+            headers: [
+                Header::PARTIAL_COMPONENT => "User/Edit",
+                Header::PARTIAL_EXCEPT => "foo",
+                Header::EXCEPT_ONCE_PROPS => "foo",
+            ],
+        );
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: [
+                "foo" => Inertia::once(fn(): string => "bar"),
+                "baz" => Inertia::once(fn(): string => "qux"),
+            ],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertFalse(array_key_exists("foo", $page["props"]));
+        static::assertSame(expected: "qux", actual: $page["props"]["baz"]);
+        static::assertSame(
+            expected: [
+                "baz" => [
+                    "prop" => "baz",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_defer_props_that_are_once_and_already_loaded_are_excluded(): void
+    {
+        $request = $this->createInertiaRequest(
+            Method::GET,
+            uri: "/user/123",
+            headers: [
+                Header::EXCEPT_ONCE_PROPS => "defer",
+            ],
+        );
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: [
+                "defer" => Inertia::defer(fn(): string => "value")->once(),
+            ],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertFalse(array_key_exists("defer", $page["props"]));
+        static::assertFalse(array_key_exists("deferredProps", $page));
+        static::assertSame(
+            expected: [
+                "defer" => [
+                    "prop" => "defer",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
+    }
+
+    public function test_defer_props_that_are_once_and_already_loaded_not_excluded_when_explicitly_requested(): void
+    {
+        $request = $this->createInertiaRequest(
+            Method::GET,
+            uri: "/user/123",
+            headers: [
+                Header::PARTIAL_COMPONENT => "User/Edit",
+                Header::PARTIAL_ONLY => "defer",
+                Header::EXCEPT_ONCE_PROPS => "defer",
+            ],
+        );
+
+        $response = new InertiaResponse(
+            $request,
+            component: "User/Edit",
+            props: [
+                "defer" => Inertia::defer(fn(): string => "value")->once(),
+            ],
+            rootView: "app",
+            version: "123",
+        );
+
+        $page = $response->body->jsonSerialize();
+
+        static::assertSame(expected: "value", actual: $page["props"]["defer"]);
+        static::assertFalse(array_key_exists("deferredProps", $page));
+        static::assertSame(
+            expected: [
+                "defer" => [
+                    "prop" => "defer",
+                    "expiresAt" => null,
+                ],
+            ],
+            actual: $page["onceProps"],
+        );
     }
 
     public function test_top_level_dot_props_get_unpacked(): void

@@ -21,6 +21,7 @@
     "mago:lint": "vendor/bin/mago lint",
     "mago:fix": "vendor/bin/mago lint --fix",
     "mago:fmt": "vendor/bin/mago fmt",
+    "mago:analyze": "vendor/bin/mago analyze",
     "qa": [
       "@mago:fmt",
       "@mago:lint",

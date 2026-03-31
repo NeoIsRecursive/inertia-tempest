@@ -14,4 +14,5 @@ final readonly class Header
     public const string PARTIAL_ONLY = 'x-inertia-partial-data';
     public const string PARTIAL_EXCEPT = 'x-inertia-partial-except';
     public const string RESET = 'X-Inertia-Reset';
+    public const string EXCEPT_ONCE_PROPS = 'x-inertia-except-once-props';
 }
