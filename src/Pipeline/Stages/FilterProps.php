@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Pipeline\Stages;
 
+use NeoIsRecursive\Inertia\Contracts\Onceable;
 use NeoIsRecursive\Inertia\Pipeline\PropPipelineContext;
 use NeoIsRecursive\Inertia\Pipeline\PropStage;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Support\Header;
+use Tempest\Http\Request;
 
 final readonly class FilterProps implements PropStage
 {
@@ -18,7 +20,60 @@ final readonly class FilterProps implements PropStage
         $always = array_filter($context->originalProps, static fn($prop) => $prop instanceof AlwaysProp);
         $partial = $this->resolvePartialProps($context);
 
-        return $context->with(['renderableProps' => array_merge($always, $partial)]);
+        $loadedOnce = self::parseHeader(Header::EXCEPT_ONCE_PROPS, $context->request);
+        $only = self::parseHeader(Header::PARTIAL_ONLY, $context->request);
+
+        $renderable = array_filter(
+            array_merge($always, $partial),
+            fn($prop, string|int $key) => !$this->shouldSkipLoadedOnceProp(
+                prop: $prop,
+                key: $key,
+                context: $context,
+                loadedOnce: $loadedOnce,
+                only: $only,
+            ),
+            ARRAY_FILTER_USE_BOTH,
+        );
+
+        return $context->with(['renderableProps' => $renderable]);
+    }
+
+    private static function parseHeader(string $header, Request $request): array
+    {
+        return array_filter(explode(separator: ',', string: $request->headers->get($header) ?? ''));
+    }
+
+    private function shouldSkipLoadedOnceProp(
+        mixed $prop,
+        string|int $key,
+        PropPipelineContext $context,
+        array $loadedOnce,
+        array $only,
+    ): bool {
+        if (!$prop instanceof Onceable || !$context->request->headers->has(Header::INERTIA)) {
+            return false;
+        }
+
+        if (!$prop->shouldResolveOnce() || $prop->shouldBeRefreshed()) {
+            return false;
+        }
+
+        $onceKey = $prop->getKey() ?? (string) $key;
+
+        if (!in_array($onceKey, $loadedOnce, true)) {
+            return false;
+        }
+
+        return !$this->isExplicitlyRequestedOnPartialReload($key, $context, $only);
+    }
+
+    private function isExplicitlyRequestedOnPartialReload(string|int $key, PropPipelineContext $context, array $only): bool
+    {
+        if (!$context->isPartial() || !is_string($key) || $only === []) {
+            return false;
+        }
+
+        return in_array($key, $only, true);
     }
 
     /**
@@ -35,8 +90,8 @@ final readonly class FilterProps implements PropStage
             );
         }
 
-        $only = array_filter(explode(separator: ',', string: $headers->get(Header::PARTIAL_ONLY) ?? ''));
-        $except = array_filter(explode(separator: ',', string: $headers->get(Header::PARTIAL_EXCEPT) ?? ''));
+        $only = self::parseHeader(Header::PARTIAL_ONLY, $context->request);
+        $except = self::parseHeader(Header::PARTIAL_EXCEPT, $context->request);
 
         $filtered = $only ? array_intersect_key($context->originalProps, array_flip($only)) : $context->originalProps;
 

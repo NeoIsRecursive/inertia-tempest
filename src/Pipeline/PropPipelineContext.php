@@ -24,6 +24,7 @@ final readonly class PropPipelineContext
         public ?array $deferredProps = null,
         public ?array $mergeProps = null,
         public ?array $scrollProps = null,
+        public ?array $onceProps = null,
     ) {}
 
     public function isPartial(): bool
@@ -40,7 +41,8 @@ final readonly class PropPipelineContext
      *     evaluatedProps?: array<string, mixed>,
      *     deferredProps?: ?array,
      *     mergeProps?: ?array,
-     *     scrollProps?: ?array
+     *     scrollProps?: ?array,
+     *     onceProps?: ?array
      * } $properties
      */
     public function with(array $properties): self

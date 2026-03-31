@@ -21,6 +21,7 @@ use Tempest\Http\Status;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
+// @mago-expect lint:too-many-methods
 #[Singleton]
 final class Inertia
 {
@@ -53,6 +54,11 @@ final class Inertia
     public static function always(mixed $value): AlwaysProp
     {
         return new AlwaysProp($value);
+    }
+
+    public static function once(mixed $value): AlwaysProp
+    {
+        return new AlwaysProp($value)->once();
     }
 
     public function flushShared(): self

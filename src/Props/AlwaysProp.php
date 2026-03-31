@@ -6,14 +6,17 @@ namespace NeoIsRecursive\Inertia\Props;
 
 use NeoIsRecursive\Inertia\Concerns\IsCallableProp;
 use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
+use NeoIsRecursive\Inertia\Concerns\IsOnceProp;
 use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
+use NeoIsRecursive\Inertia\Contracts\Onceable;
 use Override;
 
-final class AlwaysProp implements CallableProp, MergeableProp
+final class AlwaysProp implements CallableProp, MergeableProp, Onceable
 {
     use IsMergeableProp;
     use IsCallableProp;
+    use IsOnceProp;
 
     public function __construct(
         public readonly mixed $value,

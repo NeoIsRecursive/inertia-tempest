@@ -7,16 +7,19 @@ namespace NeoIsRecursive\Inertia\Props;
 use Closure;
 use NeoIsRecursive\Inertia\Concerns\IsCallableProp;
 use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
+use NeoIsRecursive\Inertia\Concerns\IsOnceProp;
 use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
+use NeoIsRecursive\Inertia\Contracts\Onceable;
 use Override;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
-final class DeferProp implements CallableProp, MergeableProp
+final class DeferProp implements CallableProp, MergeableProp, Onceable
 {
     use IsMergeableProp;
     use IsCallableProp;
+    use IsOnceProp;
 
     public function __construct(
         public MethodReflector|FunctionReflector|Closure $callback,

@@ -11,8 +11,6 @@ trait IsMergeableProp
 {
     public function merge(): static
     {
-        $this->shouldMerge = true;
-
-        return $this;
+        return clone($this, ['shouldMerge' => true]);
     }
 }

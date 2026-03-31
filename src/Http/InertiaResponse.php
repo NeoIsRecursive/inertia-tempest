@@ -38,6 +38,7 @@ final class InertiaResponse implements Response
             propKeysToDefer: $processedProps->deferredProps,
             propsKeysToMerge: $processedProps->mergeProps,
             scrollProps: $processedProps->scrollProps,
+            onceProps: $processedProps->onceProps,
         );
 
         if ($request->headers->has(Header::INERTIA)) {

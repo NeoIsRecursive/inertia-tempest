@@ -14,5 +14,6 @@ final readonly class ProcessedProps
         public ?array $deferredProps = null,
         public ?array $mergeProps = null,
         public ?array $scrollProps = null,
+        public ?array $onceProps = null,
     ) {}
 }
