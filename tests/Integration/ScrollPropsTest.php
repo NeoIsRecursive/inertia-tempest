@@ -64,7 +64,6 @@ final class ScrollPropsTest extends TestCase
                     {
                         "component": "Posts/Index",
                         "props": {
-                            "errors": {},
                             "posts": {
                                 "data": [
                                     {
@@ -80,8 +79,6 @@ final class ScrollPropsTest extends TestCase
                         },
                         "url": "/posts?page=1",
                         "version": "123",
-                        "clearHistory": false,
-                        "encryptHistory": false,
                         "mergeProps": [
                             "posts.data"
                         ],

@@ -11,6 +11,7 @@ use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;
+use NeoIsRecursive\Inertia\Props\ScrollProp;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\IsResponse;
@@ -49,6 +50,7 @@ final class InertiaResponse implements Response
                 component: $component,
             ),
             propsKeysToMerge: self::resolvePropKeysThatShouldMerge(props: $props, request: $request),
+            scrollProps: self::resolveScrollProps(props: $props, request: $request, component: $component),
         );
 
         if ($request->headers->has(Header::INERTIA)) {
@@ -71,10 +73,21 @@ final class InertiaResponse implements Response
      */
     private static function composeProps(array $props, Request $request, string $component): array
     {
+        return static::evaluateProps(
+            static::resolveRenderableProps($props, $request, $component),
+            unpackDotProps: true,
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function resolveRenderableProps(array $props, Request $request, string $component): array
+    {
         $always = static::resolveAlwaysProps($props);
         $partial = static::resolvePartialProps($request, $component, $props);
 
-        return static::evaluateProps(array_merge($always, $partial), unpackDotProps: true);
+        return array_merge($always, $partial);
     }
 
     /**
@@ -134,9 +147,21 @@ final class InertiaResponse implements Response
         $propKeysToMerge = arr($props)
             ->filter(static fn($prop) => $prop instanceof MergeableProp && $prop->shouldMerge)
             ->filter(static fn($_, $key) => !$resetProps->contains($key))
-            ->keys();
+            ->map(static fn(MergeableProp $prop, string|int $key) => $prop instanceof ScrollProp
+                ? $prop->mergeKey($key)
+                : $key)
+            ->values();
 
         return $propKeysToMerge->isEmpty() ? null : $propKeysToMerge->toArray();
+    }
+
+    private static function resolveScrollProps(array $props, Request $request, string $component): ?array
+    {
+        $scrollProps = arr(static::resolveRenderableProps($props, $request, $component))
+            ->filter(static fn($prop) => $prop instanceof ScrollProp)
+            ->map(static fn(ScrollProp $prop) => $prop->metadata());
+
+        return $scrollProps->isEmpty() ? null : $scrollProps->toArray();
     }
 
     /**
