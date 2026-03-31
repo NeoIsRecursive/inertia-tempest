@@ -67,8 +67,11 @@ final readonly class FilterProps implements PropStage
         return !$this->isExplicitlyRequestedOnPartialReload($key, $context, $only);
     }
 
-    private function isExplicitlyRequestedOnPartialReload(string|int $key, PropPipelineContext $context, array $only): bool
-    {
+    private function isExplicitlyRequestedOnPartialReload(
+        string|int $key,
+        PropPipelineContext $context,
+        array $only,
+    ): bool {
         if (!$context->isPartial() || !is_string($key) || $only === []) {
             return false;
         }
