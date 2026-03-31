@@ -9,7 +9,7 @@ use NeoIsRecursive\Inertia\Contracts\InertiaVersionResolver;
 final class InertiaConfig
 {
     /**
-     * @param list<mixed> $sharedProps
+     * @param array<string, mixed> $sharedProps
      */
     public function __construct(
         public readonly string $rootView,

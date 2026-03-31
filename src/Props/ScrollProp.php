@@ -25,8 +25,8 @@ final class ScrollProp implements CallableProp, MergeableProp
         public readonly mixed $value,
         public string $pageName,
         public string $wrapper = 'data',
-        /** @var null|ProvidesScrollMetadata|Closure<mixed,ProvidesScrollMetadata> */
-        public null|ProvidesScrollMetadata|Closure $metadata = null,
+        /** @var ProvidesScrollMetadata|Closure(mixed):ProvidesScrollMetadata|null */
+        public ProvidesScrollMetadata|Closure|null $metadata = null,
     ) {}
 
     public function mergeKey(string|int $key): string|int
@@ -51,6 +51,8 @@ final class ScrollProp implements CallableProp, MergeableProp
 
     /**
      * Resolve the scroll metadata provider.
+     *
+     * @throws \LogicException
      */
     protected function resolveMetadataProvider(): ProvidesScrollMetadata
     {
@@ -93,7 +95,14 @@ final class ScrollProp implements CallableProp, MergeableProp
             }
         }
 
-        return call_user_func($this->metadata, $value);
+        $metadata = $this->metadata;
+
+        if (! $metadata instanceof Closure) {
+            throw new \LogicException('Scroll metadata resolver must be a closure or metadata provider.');
+        }
+
+        /** @var Closure(mixed):ProvidesScrollMetadata $metadata */
+        return $metadata($value);
     }
 
     /**

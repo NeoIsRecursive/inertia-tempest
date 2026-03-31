@@ -17,7 +17,7 @@ final readonly class FilterProps implements PropStage
 {
     public function __invoke(PropPipelineContext $context): PropPipelineContext
     {
-        $always = array_filter($context->originalProps, static fn($prop) => $prop instanceof AlwaysProp);
+        $always = array_filter($context->originalProps, static fn(mixed $prop) => $prop instanceof AlwaysProp);
         $partial = $this->resolvePartialProps($context);
 
         $loadedOnce = self::parseHeader(Header::EXCEPT_ONCE_PROPS, $context->request);
@@ -25,7 +25,7 @@ final readonly class FilterProps implements PropStage
 
         $renderable = array_filter(
             array_merge($always, $partial),
-            fn($prop, string|int $key) => !$this->shouldSkipLoadedOnceProp(
+            fn(mixed $prop, string|int $key) => !$this->shouldSkipLoadedOnceProp(
                 prop: $prop,
                 key: $key,
                 context: $context,
@@ -38,9 +38,14 @@ final readonly class FilterProps implements PropStage
         return $context->with(['renderableProps' => $renderable]);
     }
 
+    /**
+     * @return list<string>
+     */
     private static function parseHeader(string $header, Request $request): array
     {
-        return array_filter(explode(separator: ',', string: $request->headers->get($header) ?? ''));
+        $values = array_filter(explode(separator: ',', string: $request->headers->get($header) ?? ''));
+
+        return array_values($values);
     }
 
     private function shouldSkipLoadedOnceProp(
@@ -89,7 +94,7 @@ final readonly class FilterProps implements PropStage
         if (!$context->isPartial()) {
             return array_filter(
                 $context->originalProps,
-                static fn($prop) => !($prop instanceof OptionalProp || $prop instanceof DeferProp),
+                static fn(mixed $prop) => !($prop instanceof OptionalProp || $prop instanceof DeferProp),
             );
         }
 
@@ -98,6 +103,6 @@ final readonly class FilterProps implements PropStage
 
         $filtered = $only ? array_intersect_key($context->originalProps, array_flip($only)) : $context->originalProps;
 
-        return array_filter($filtered, static fn($key) => !in_array($key, $except, true), ARRAY_FILTER_USE_KEY);
+        return array_filter($filtered, static fn(string|int $key) => !in_array($key, $except, true), ARRAY_FILTER_USE_KEY);
     }
 }
