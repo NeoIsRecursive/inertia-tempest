@@ -103,6 +103,10 @@ final readonly class FilterProps implements PropStage
 
         $filtered = $only ? array_intersect_key($context->originalProps, array_flip($only)) : $context->originalProps;
 
-        return array_filter($filtered, static fn(string|int $key) => !in_array($key, $except, true), ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            $filtered,
+            static fn(string|int $key) => !in_array($key, $except, true),
+            ARRAY_FILTER_USE_KEY,
+        );
     }
 }

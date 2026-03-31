@@ -97,7 +97,7 @@ final class ScrollProp implements CallableProp, MergeableProp
 
         $metadata = $this->metadata;
 
-        if (! $metadata instanceof Closure) {
+        if (!$metadata instanceof Closure) {
             throw new \LogicException('Scroll metadata resolver must be a closure or metadata provider.');
         }
 

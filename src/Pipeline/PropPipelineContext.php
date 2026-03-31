@@ -11,7 +11,7 @@ final readonly class PropPipelineContext
 {
     /**
      * @mago-expect lint:excessive-parameter-list
-     * 
+     *
      * @param array<string,mixed> $originalProps
      * @param array<string,mixed> $renderableProps
      * @param array<string,mixed> $evaluatedProps

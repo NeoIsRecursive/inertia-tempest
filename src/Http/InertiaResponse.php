@@ -16,10 +16,9 @@ final class InertiaResponse implements Response
 {
     use IsResponse;
 
-    
     /**
      * @mago-expect lint:excessive-parameter-list
-     * 
+     *
      * @param array<string,mixed> $props
      */
     public function __construct(
