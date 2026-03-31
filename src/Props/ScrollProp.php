@@ -25,6 +25,7 @@ final class ScrollProp implements CallableProp, MergeableProp
         public readonly mixed $value,
         public string $pageName,
         public string $wrapper = 'data',
+        /** @var null|ProvidesScrollMetadata|Closure<mixed,ProvidesScrollMetadata> */
         public null|ProvidesScrollMetadata|Closure $metadata = null,
     ) {}
 
@@ -59,7 +60,7 @@ final class ScrollProp implements CallableProp, MergeableProp
 
         $value = $this->resolveValue();
 
-        if (is_null($this->metadata)) {
+        if ($this->metadata === null) {
             $pageName = $this->pageName;
 
             if ($value instanceof PaginatedData) {

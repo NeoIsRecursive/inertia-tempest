@@ -15,7 +15,7 @@ use Tempest\Http\Request;
 final readonly class PropPipeline
 {
     /**
-     * @param array<string, mixed> $props
+     * @param array<string,mixed> $props
      */
     public function process(array $props, Request $request, string $component): ProcessedProps
     {

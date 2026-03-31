@@ -8,6 +8,7 @@ use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Support\Header;
 use Override;
 use Tempest\Core\Priority;
+use Tempest\Http\GenericResponse;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
@@ -58,7 +59,9 @@ final class Middleware implements HttpMiddleware
 
         if ($isRedirect && $this->redirectHasFragment($response) && !$this->prefetch($request)) {
             // TODO(neo): ensure this works the same as the laravel adapter
-            return $this->inertia->location(response);
+            return new GenericResponse(status: Status::CONFLICT, body: '', headers: [
+                Header::LOCATION => $response->getHeader('location')?->first() ?? '',
+            ]);
         }
 
         return $response;
@@ -69,15 +72,17 @@ final class Middleware implements HttpMiddleware
      */
     private function redirectHasFragment(Response $response): bool
     {
-        return str_contains($response->getHeader('location')->first() ?? '', '#');
+        /** @var string */
+        $location = $response->getHeader('location')?->first() ?? '';
+        return str_contains($location, '#');
     }
 
     private function prefetch(Request $request)
     {
         return (
-            strcasecmp($request->headers->get('HTTP_X_MOZ', ''), 'prefetch') === 0
-            || strcasecmp($request->headers->get('Purpose', ''), 'prefetch') === 0
-            || strcasecmp($request->headers->get('Sec-Purpose', ''), 'prefetch') === 0
+            strcasecmp($request->headers->get('HTTP_X_MOZ') ?? '', 'prefetch') === 0
+            || strcasecmp($request->headers->get('Purpose') ?? '', 'prefetch') === 0
+            || strcasecmp($request->headers->get('Sec-Purpose') ?? '', 'prefetch') === 0
         );
     }
 }

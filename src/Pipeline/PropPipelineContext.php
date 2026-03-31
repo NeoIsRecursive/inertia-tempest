@@ -10,10 +10,11 @@ use Tempest\Http\Request;
 final readonly class PropPipelineContext
 {
     /**
-     * @param array<string, mixed> $originalProps
-     * @param array<string, mixed> $renderableProps
-     * @param array<string, mixed> $evaluatedProps
      * @mago-expect lint:excessive-parameter-list
+     * 
+     * @param array<string,mixed> $originalProps
+     * @param array<string,mixed> $renderableProps
+     * @param array<string,mixed> $evaluatedProps
      */
     public function __construct(
         public Request $request,

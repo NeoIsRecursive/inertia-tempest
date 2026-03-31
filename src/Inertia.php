@@ -10,8 +10,6 @@ use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Support\Header;
-use Tempest\Container\Container;
-use Tempest\Container\Singleton;
 use Tempest\Http\GenericResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
@@ -21,13 +19,14 @@ use Tempest\Http\Status;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
+use function Tempest\Container\invoke;
+
 // @mago-expect lint:too-many-methods
-#[Singleton]
 final class Inertia
 {
     public function __construct(
         private Session $session,
-        private Container $container,
+        private Request $request,
         private InertiaConfig $config,
     ) {}
 
@@ -69,19 +68,16 @@ final class Inertia
     }
 
     public string $version {
-        get => $this->container->invoke($this->config->versionResolver->resolve(...));
+        get => invoke($this->config->versionResolver->resolve(...));
     }
 
     /**
-     * @param array<string, mixed> $props
+     * @param array<string,mixed> $props
      */
     public function render(string $component, array $props = []): InertiaResponse
     {
-        /** @var Request */
-        $request = $this->container->get(Request::class);
-
         return new InertiaResponse(
-            request: $request,
+            request: $this->request,
             component: $component,
             props: array_merge($this->config->sharedProps, $props),
             rootView: $this->config->rootView,
@@ -107,12 +103,12 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        $isInertiaRequest = $this->container->get(Request::class)?->headers?->has(Header::INERTIA) ?? false;
+        $isInertiaRequest = $this->request->headers->has(Header::INERTIA);
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
                 /** @var string */
-                $url = $url->getHeader(name: 'Location')->first() ?? '/';
+                $url = $url->getHeader(name: 'Location')?->first() ?? '/';
             }
 
             return new GenericResponse(status: Status::CONFLICT, body: '', headers: [
