@@ -17,6 +17,7 @@ use Tempest\Http\Status;
 use Tempest\Router\HttpMiddleware;
 use Tempest\Router\HttpMiddlewareCallable;
 
+// @mago-expect lint:cyclomatic-complexity
 #[Priority(Priority::HIGH)]
 final class Middleware implements HttpMiddleware
 {
