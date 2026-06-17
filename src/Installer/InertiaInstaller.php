@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Installer;
 
-use Override;
 use Tempest\Core\Installer;
 use Tempest\Core\PublishesFiles;
 use Tempest\Highlight\Languages\JavaScript\JavaScriptLanguage;
@@ -20,17 +19,15 @@ use function Tempest\Support\Path\to_relative_path;
 use function Tempest\Support\Str\ensure_starts_with;
 use function Tempest\Support\Str\replace;
 
-final class InertiaInstaller implements Installer
+final class InertiaInstaller
 {
     use PublishesFiles;
-
-    private(set) string $name = 'inertia';
 
     public function __construct(
         private readonly DependencyInstaller $javascript,
     ) {}
 
-    #[Override]
+    #[Installer(name: 'inertia')]
     public function install(): void
     {
         /** @var 'react'|'vue' */
