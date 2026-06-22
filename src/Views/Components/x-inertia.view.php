@@ -11,7 +11,7 @@ declare(strict_types=1);
 $id ??= 'app';
 ?>
 
-<script data-page="<?= $id ?>" type="application/json">
+<script :id="null" data-page="<?= $id ?>" type="application/json">
 <?= \Tempest\Support\Json\encode($page ?? $this->page) ?>
 </script>
 <div id="<?= $id ?>"></div>
