@@ -23,18 +23,17 @@ formatter:
 linter:
   integrations:
     - "phpunit"
-
-linter.rules:
-  yoda-conditions:
-    enabled: false
-  literal-named-argument:
-    enabled: false
-  halstead:
-    effort-threshold: 7000
-  interface-name:
-    enabled: false
-  trait-name:
-    enabled: false
+  rules:
+    yoda-conditions:
+      enabled: false
+    literal-named-argument:
+      enabled: false
+    halstead:
+      effort-threshold: 7000
+    interface-name:
+      enabled: false
+    trait-name:
+      enabled: false
 
 analyzer:
   excludes:
