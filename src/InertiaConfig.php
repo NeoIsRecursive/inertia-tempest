@@ -6,6 +6,8 @@ namespace NeoIsRecursive\Inertia;
 
 use NeoIsRecursive\Inertia\Contracts\InertiaVersionResolver;
 
+use function Tempest\Container\invoke;
+
 final class InertiaConfig
 {
     /**
@@ -22,6 +24,11 @@ final class InertiaConfig
         $this->sharedProps = [];
 
         return $this;
+    }
+
+    public function resolveVersion(): string
+    {
+        return invoke($this->versionResolver->resolve(...));
     }
 
     /**

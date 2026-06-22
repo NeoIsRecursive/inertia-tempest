@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
-use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
@@ -14,6 +14,7 @@ use NeoIsRecursive\Inertia\Tests\TestCase;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
+use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
@@ -24,15 +25,13 @@ final class ResponseTest extends TestCase
 {
     public function test_server_response(): void
     {
-        $request = new GenericRequest(Method::GET, uri: "/user/123");
+        $this->container->singleton(Request::class, new GenericRequest(Method::GET, uri: '/user/123'));
 
-        $user = ["name" => "Jonathan"];
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Edit",
-            props: ["user" => $user],
-            rootView: __DIR__ . "/../Fixtures/root.view.php",
-            version: "123",
+        $user = ['name' => 'Jonathan'];
+        $response = new Component(
+            name: 'User/Edit',
+            props: ['user' => $user],
+            rootView: __DIR__ . '/../Fixtures/root.view.php',
         );
         /** @var InertiaBaseView */
         $view = $response->body;
@@ -41,107 +40,81 @@ final class ResponseTest extends TestCase
         static::assertInstanceOf(Response::class, $response);
         static::assertInstanceOf(View::class, $view);
 
-        static::assertSame(expected: "User/Edit", actual: $page->component);
-        static::assertSame(
-            expected: "Jonathan",
-            actual: $page->props["user"]["name"],
-        );
-        static::assertSame(expected: "/user/123", actual: $page->url);
-        static::assertSame(expected: "123", actual: $page->version);
-        static::assertSnippetsMatch(
-            expected: '<main><div id="app" data-page="{&quot;component&quot;:&quot;User/Edit&quot;,&quot;props&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Jonathan&quot;}},&quot;url&quot;:&quot;/user/123&quot;,&quot;version&quot;:&quot;123&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div></main>',
-            actual: get(ViewRenderer::class)->render($view),
-        );
+        static::assertSame(expected: 'User/Edit', actual: $page->component);
+        static::assertSame(expected: 'Jonathan', actual: $page->props['user']['name']);
+        static::assertSame(expected: '/user/123', actual: $page->url);
+        static::assertSame(expected: '123', actual: $page->version);
+        static::assertSnippetsMatch(expected: <<<HTML
+                <main>
+                    <script data-page="app" type="application/json">
+                    {
+                        "component": "User/Edit",
+                        "props": {
+                            "errors": [],
+                            "user":{
+                                "name": "Jonathan"
+                            }
+                        },
+                        "url": "/user/123",
+                        "version": "123"
+                    }
+                    </script>
+                    <div id="app"></div>
+                </main>
+            HTML, actual: get(ViewRenderer::class)->render($view));
     }
 
     public function test_xhr_response(): void
     {
-        $request = $this->createInertiaRequest(Method::GET, uri: "/user/123");
+        $request = $this->createInertiaRequest(Method::GET, uri: '/user/123');
 
-        $user = ["name" => "Jonathan"];
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Edit",
-            props: ["user" => $user],
-            rootView: "app",
-            version: "123",
-        );
+        $user = ['name' => 'Jonathan'];
+        $response = new Component(name: 'User/Edit', props: ['user' => $user], rootView: 'app');
 
         $page = $response->body->jsonSerialize();
 
         static::assertInstanceOf(Response::class, $response);
 
-        static::assertSame(expected: "User/Edit", actual: $page["component"]);
-        static::assertSame(
-            expected: "Jonathan",
-            actual: $page["props"]["user"]["name"],
-        );
-        static::assertSame(expected: "/user/123", actual: $page["url"]);
-        static::assertSame(expected: "123", actual: $page["version"]);
+        static::assertSame(expected: 'User/Edit', actual: $page['component']);
+        static::assertSame(expected: 'Jonathan', actual: $page['props']['user']['name']);
+        static::assertSame(expected: '/user/123', actual: $page['url']);
+        static::assertSame(expected: '123', actual: $page['version']);
     }
-
-    // public function test_resource_response(): void
-    // {
-    //     $request = Request::create('/user/123', 'GET');
-    //     $request->headers->add(['X-Inertia' => 'true']);
-
-    //     $resource = new FakeResource(['name' => 'Jonathan']);
-
-    //     $response = new Response('User/Edit', ['user' => $resource], 'app', '123');
-    //     $response = $response->toResponse($request);
-    //     $page = $response->getData();
-
-    //     $this->assertInstanceOf(JsonResponse::class, $response);
-    //     $this->assertSame('User/Edit', $page->component);
-    //     $this->assertSame('Jonathan', $page->props->user->name);
-    //     $this->assertSame('/user/123', $page->url);
-    //     $this->assertSame('123', $page->version);
-    // }
 
     public function test_lazy_resource_response(): void
     {
-        $request = $this->createInertiaRequest(
-            method: Method::GET,
-            uri: "/users?page=1",
-        );
+        $request = $this->createInertiaRequest(method: Method::GET, uri: '/users?page=1');
 
         $users = [
-            ["name" => "Jonathan"],
-            ["name" => "Taylor"],
-            ["name" => "Jeffrey"],
+            ['name' => 'Jonathan'],
+            ['name' => 'Taylor'],
+            ['name' => 'Jeffrey'],
         ];
 
         $callable = static function () use ($users): array {
             return [
-                "data" => array_slice($users, offset: 0, length: 2),
+                'data' => array_slice($users, offset: 0, length: 2),
             ];
         };
 
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Index",
-            props: ["users" => $callable],
-            rootView: "app",
-            version: "123",
-        );
+        $response = new Component(name: 'User/Index', props: ['users' => $callable], rootView: 'app');
 
         $page = $response->body->jsonSerialize();
 
         $expected = [
-            "users" => [
-                "data" => [["name" => "Jonathan"], ["name" => "Taylor"]],
+            'user' => null,
+            'errors' => [],
+            'users' => [
+                'data' => [['name' => 'Jonathan'], ['name' => 'Taylor']],
             ],
         ];
 
         static::assertInstanceOf(Response::class, $response);
-        static::assertSame(expected: "User/Index", actual: $page["component"]);
-        static::assertSame(expected: "/users?page=1", actual: $page["url"]);
-        static::assertSame(expected: "123", actual: $page["version"]);
+        static::assertSame(expected: 'User/Index', actual: $page['component']);
+        static::assertSame(expected: '/users?page=1', actual: $page['url']);
+        static::assertSame(expected: '123', actual: $page['version']);
 
-        static::assertSame(
-            expected: json_encode($expected),
-            actual: json_encode($page["props"]),
-        );
+        static::assertSame(expected: json_encode($expected), actual: json_encode($page['props']));
     }
 
     // public function test_nested_lazy_resource_response(): void
@@ -243,259 +216,491 @@ final class ResponseTest extends TestCase
 
     public function test_xhr_partial_response(): void
     {
-        $request = $this->createInertiaRequest(
-            Method::GET,
-            uri: "/user/123",
-            headers: [
-                Header::PARTIAL_COMPONENT => "User/Edit",
-                Header::PARTIAL_ONLY => "partial",
-            ],
-        );
+        $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_ONLY => 'partial',
+        ]);
 
-        $user = (object) ["name" => "Jonathan"];
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Edit",
-            props: ["user" => $user, "partial" => "partial-data"],
-            rootView: "app",
-            version: "123",
+        $user = (object) ['name' => 'Jonathan'];
+        $response = new Component(
+            name: 'User/Edit',
+            props: ['user' => $user, 'partial' => 'partial-data', 'errors' => []],
+            rootView: 'app',
         );
 
         $page = $response->body->jsonSerialize();
 
-        $props = $page["props"];
+        $props = $page['props'];
 
         static::assertInstanceOf(Response::class, $response);
-        static::assertSame(expected: "User/Edit", actual: $page["component"]);
-        static::assertFalse(isset($props["user"]));
+        static::assertSame(expected: 'User/Edit', actual: $page['component']);
+        static::assertFalse(isset($props['user']));
         static::assertCount(expectedCount: 1, haystack: $props);
-        static::assertSame(
-            expected: "partial-data",
-            actual: $page["props"]["partial"],
-        );
-        static::assertSame(expected: "/user/123", actual: $page["url"]);
-        static::assertSame(expected: "123", actual: $page["version"]);
+        static::assertSame(expected: 'partial-data', actual: $page['props']['partial']);
+        static::assertSame(expected: '/user/123', actual: $page['url']);
+        static::assertSame(expected: '123', actual: $page['version']);
     }
 
     public function test_exclude_props_from_partial_response(): void
     {
-        $request = $this->createInertiaRequest(
-            Method::GET,
-            uri: "/user/123",
-            headers: [
-                Header::PARTIAL_COMPONENT => "User/Edit",
-                Header::PARTIAL_EXCEPT => "user",
-            ],
-        );
+        $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_EXCEPT => 'user',
+        ]);
 
-        $user = (object) ["name" => "Jonathan"];
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Edit",
+        $user = (object) ['name' => 'Jonathan'];
+        $response = new Component(
+            name: 'User/Edit',
             props: [
-                "user" => $user,
-                "partial" => "partial-data",
+                'user' => $user,
+                'errors' => [],
+                'partial' => 'partial-data',
             ],
-            rootView: "app",
-            version: "123",
+            rootView: 'app',
         );
 
         $page = $response->body->jsonSerialize();
 
-        $props = $page["props"];
+        $props = $page['props'];
 
         static::assertInstanceOf(Response::class, $response);
-        static::assertSame(expected: "User/Edit", actual: $page["component"]);
-        static::assertFalse(isset($props["user"]));
-        static::assertCount(expectedCount: 1, haystack: $props);
-        static::assertSame(
-            expected: "partial-data",
-            actual: $page["props"]["partial"],
-        );
-        static::assertSame(expected: "/user/123", actual: $page["url"]);
-        static::assertSame(expected: "123", actual: $page["version"]);
+        static::assertSame(expected: 'User/Edit', actual: $page['component']);
+        static::assertFalse(isset($props['user']));
+        static::assertCount(expectedCount: 2, haystack: $props);
+        static::assertSame(expected: 'partial-data', actual: $page['props']['partial']);
+        static::assertSame(expected: '/user/123', actual: $page['url']);
+        static::assertSame(expected: '123', actual: $page['version']);
     }
 
     public function test_lazy_props_are_not_included_by_default(): void
     {
-        $request = $this->createInertiaRequest(Method::GET, uri: "/users");
+        $request = $this->createInertiaRequest(Method::GET, uri: '/users');
 
-        $lazyProp = new OptionalProp(fn() => "A lazy value");
+        $lazyProp = new OptionalProp(fn() => 'A lazy value');
 
-        $response = new InertiaResponse(
-            $request,
-            component: "Users",
-            props: ["users" => [], "lazy" => $lazyProp],
-            rootView: "app",
-            version: "123",
-        );
+        $response = new Component(name: 'Users', props: ['users' => [], 'lazy' => $lazyProp], rootView: 'app');
         $page = $response->body->jsonSerialize();
 
-        static::assertSame(expected: [], actual: $page["props"]["users"]);
-        static::assertFalse(
-            array_key_exists(key: "lazy", array: $page["props"]),
-        );
+        static::assertSame(expected: [], actual: $page['props']['users']);
+        static::assertFalse(array_key_exists(key: 'lazy', array: $page['props']));
     }
 
     public function test_lazy_props_are_included_in_partial_reload(): void
     {
-        $request = $this->createInertiaRequest(
-            Method::GET,
-            uri: "/users",
-            headers: [
-                Header::PARTIAL_COMPONENT => "Users",
-                Header::PARTIAL_ONLY => "lazy",
-            ],
-        );
+        $request = $this->createInertiaRequest(Method::GET, uri: '/users', headers: [
+            Header::PARTIAL_COMPONENT => 'Users',
+            Header::PARTIAL_ONLY => 'lazy',
+        ]);
 
         $lazyProp = new OptionalProp(function (): string {
-            return "A lazy value";
+            return 'A lazy value';
         });
 
-        $response = new InertiaResponse(
-            $request,
-            component: "Users",
-            props: ["users" => [], "lazy" => $lazyProp],
-            rootView: "app",
-            version: "123",
-        );
+        $response = new Component(name: 'Users', props: ['users' => [], 'lazy' => $lazyProp], rootView: 'app');
         $page = $response->body->jsonSerialize();
 
-        static::assertFalse(
-            array_key_exists(key: "users", array: $page["props"]),
-        );
-        static::assertSame(
-            expected: "A lazy value",
-            actual: $page["props"]["lazy"],
-        );
+        static::assertFalse(array_key_exists(key: 'users', array: $page['props']));
+        static::assertSame(expected: 'A lazy value', actual: $page['props']['lazy']);
     }
 
     public function test_always_props_are_included_on_partial_reload(): void
     {
-        $request = $this->createInertiaRequest(
-            Method::GET,
-            uri: "/user/123",
-            headers: [
-                Header::PARTIAL_COMPONENT => "User/Edit",
-                Header::PARTIAL_ONLY => "data",
-            ],
-        );
+        $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_ONLY => 'data',
+        ]);
 
         $props = [
-            "user" => new OptionalProp(function (): array {
+            'user' => new OptionalProp(function (): array {
                 return [
-                    "name" => "Jonathan Reinink",
-                    "email" => "jonathan@example.com",
+                    'name' => 'Jonathan Reinink',
+                    'email' => 'jonathan@example.com',
                 ];
             }),
-            "data" => [
-                "name" => "Taylor Otwell",
+            'data' => [
+                'name' => 'Taylor Otwell',
             ],
-            "errors" => new AlwaysProp(function (): array {
+            'errors' => new AlwaysProp(function (): array {
                 return [
-                    "name" => "The email field is required.",
+                    'name' => 'The email field is required.',
                 ];
             }),
         ];
 
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Edit",
-            props: $props,
-            rootView: "app",
-            version: "123",
-        );
+        $response = new Component(name: 'User/Edit', props: $props, rootView: 'app');
 
         $page = $response->body->jsonSerialize();
 
-        static::assertSame(
-            expected: "The email field is required.",
-            actual: $page["props"]["errors"]["name"],
-        );
-        static::assertSame(
-            expected: "Taylor Otwell",
-            actual: $page["props"]["data"]["name"],
-        );
-        static::assertFalse(isset($page["props"]["user"]));
+        static::assertSame(expected: 'The email field is required.', actual: $page['props']['errors']['name']);
+        static::assertSame(expected: 'Taylor Otwell', actual: $page['props']['data']['name']);
+        static::assertFalse(isset($page['props']['user']));
     }
+
+    // public function test_once_props_are_resolved_on_initial_page_load(): void
+    // {
+    //     $request = new GenericRequest(Method::GET, uri: '/user/123');
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: ['foo' => Inertia::once(fn(): string => 'bar')],
+    //         rootView: __DIR__ . '/../Fixtures/root.view.php',
+    //         version: '123',
+    //     );
+
+    //     /** @var InertiaBaseView $view */
+    //     $view = $response->body;
+    //     $page = $view->page->toArray();
+
+    //     static::assertSame(expected: 'bar', actual: $page['props']['foo']);
+    //     static::assertSame(
+    //         expected: [
+    //             'foo' => [
+    //                 'prop' => 'foo',
+    //                 'expiresAt' => null,
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
+
+    // public function test_once_props_are_not_resolved_on_subsequent_requests_when_they_are_in_the_once_props_header(): void
+    // {
+    //     $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+    //         Header::EXCEPT_ONCE_PROPS => 'foo',
+    //     ]);
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: ['foo' => Inertia::once(fn(): string => 'bar')],
+    //         rootView: 'app',
+    //         version: '123',
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertFalse(array_key_exists('foo', $page['props']));
+    //     static::assertSame(
+    //         expected: [
+    //             'foo' => [
+    //                 'prop' => 'foo',
+    //                 'expiresAt' => null,
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
+
+    // public function test_once_props_are_resolved_on_subsequent_requests_when_the_once_props_header_is_missing(): void
+    // {
+    //     $request = $this->createInertiaRequest(Method::GET, uri: '/user/123');
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: ['foo' => Inertia::once(fn(): string => 'bar')],
+    //         rootView: 'app',
+    //         version: '123',
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertSame(expected: 'bar', actual: $page['props']['foo']);
+    //     static::assertSame(
+    //         expected: [
+    //             'foo' => [
+    //                 'prop' => 'foo',
+    //                 'expiresAt' => null,
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
+
+    // public function test_once_props_are_resolved_on_subsequent_requests_when_they_are_not_in_the_once_props_header(): void
+    // {
+    //     $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+    //         Header::EXCEPT_ONCE_PROPS => 'baz',
+    //     ]);
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: ['foo' => Inertia::once(fn(): string => 'bar')],
+    //         rootView: 'app',
+    //         version: '123',
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertSame(expected: 'bar', actual: $page['props']['foo']);
+    //     static::assertSame(
+    //         expected: [
+    //             'foo' => [
+    //                 'prop' => 'foo',
+    //                 'expiresAt' => null,
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
+
+    // public function test_once_props_are_resolved_with_a_custom_key_and_ttl_value(): void
+    // {
+    //     $request = $this->createInertiaRequest(Method::GET, uri: '/user/123');
+    //     $expiresAt = new DateTimeImmutable('2026-04-01T00:00:00+00:00');
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: [
+    //             'foo' => Inertia::once(fn(): string => 'bar')->as('baz')->until($expiresAt),
+    //         ],
+    //         rootView: 'app',
+    //         version: '123',
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertSame(expected: 'bar', actual: $page['props']['foo']);
+    //     static::assertSame(
+    //         expected: [
+    //             'baz' => [
+    //                 'prop' => 'foo',
+    //                 'expiresAt' => (int) $expiresAt->format('Uv'),
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
+
+    // public function test_fresh_props_are_not_excluded_while_once_props_are_excluded(): void
+    // {
+    //     $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+    //         Header::EXCEPT_ONCE_PROPS => 'foo,baz',
+    //     ]);
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: [
+    //             'foo' => Inertia::once(fn(): string => 'bar')->fresh(),
+    //             'baz' => Inertia::once(fn(): string => 'qux'),
+    //         ],
+    //         rootView: 'app',
+    //         version: '123',
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertSame(expected: 'bar', actual: $page['props']['foo']);
+    //     static::assertFalse(array_key_exists('baz', $page['props']));
+    //     static::assertSame(
+    //         expected: [
+    //             'foo' => [
+    //                 'prop' => 'foo',
+    //                 'expiresAt' => null,
+    //             ],
+    //             'baz' => [
+    //                 'prop' => 'baz',
+    //                 'expiresAt' => null,
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
+
+    // public function test_once_props_are_resolved_on_partial_requests_when_included_in_only_headers(): void
+    // {
+    //     $request = $this->createInertiaRequest(
+    //         Method::GET,
+    //         uri: "/user/123",
+    //         headers: [
+    //             Header::PARTIAL_COMPONENT => "User/Edit",
+    //             Header::PARTIAL_ONLY => "foo",
+    //             Header::EXCEPT_ONCE_PROPS => "foo",
+    //         ],
+    //     );
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: "User/Edit",
+    //         props: ["foo" => Inertia::once(fn(): string => "bar")],
+    //         rootView: "app",
+    //         version: "123",
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertSame(expected: "bar", actual: $page["props"]["foo"]);
+    //     static::assertSame(
+    //         expected: [
+    //             "foo" => [
+    //                 "prop" => "foo",
+    //                 "expiresAt" => null,
+    //             ],
+    //         ],
+    //         actual: $page["onceProps"],
+    //     );
+    // }
+
+    // public function test_once_props_are_not_resolved_on_partial_requests_when_excluded_in_except_headers(): void
+    // {
+    //     $request = $this->createInertiaRequest(
+    //         Method::GET,
+    //         uri: "/user/123",
+    //         headers: [
+    //             Header::PARTIAL_COMPONENT => "User/Edit",
+    //             Header::PARTIAL_EXCEPT => "foo",
+    //             Header::EXCEPT_ONCE_PROPS => "foo",
+    //         ],
+    //     );
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: "User/Edit",
+    //         props: [
+    //             "foo" => Inertia::once(fn(): string => "bar"),
+    //             "baz" => Inertia::once(fn(): string => "qux"),
+    //         ],
+    //         rootView: "app",
+    //         version: "123",
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertFalse(array_key_exists("foo", $page["props"]));
+    //     static::assertSame(expected: "qux", actual: $page["props"]["baz"]);
+    //     static::assertSame(
+    //         expected: [
+    //             "baz" => [
+    //                 "prop" => "baz",
+    //                 "expiresAt" => null,
+    //             ],
+    //         ],
+    //         actual: $page["onceProps"],
+    //     );
+    // }
+
+    // public function test_defer_props_that_are_once_and_already_loaded_are_excluded(): void
+    // {
+    //     $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+    //         Header::EXCEPT_ONCE_PROPS => 'defer',
+    //     ]);
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: [
+    //             'defer' => Inertia::defer(fn(): string => 'value')->once(),
+    //         ],
+    //         rootView: 'app',
+    //         version: '123',
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertFalse(array_key_exists('defer', $page['props']));
+    //     static::assertFalse(array_key_exists('deferredProps', $page));
+    //     static::assertSame(
+    //         expected: [
+    //             'defer' => [
+    //                 'prop' => 'defer',
+    //                 'expiresAt' => null,
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
+
+    // public function test_defer_props_that_are_once_and_already_loaded_not_excluded_when_explicitly_requested(): void
+    // {
+    //     $request = $this->createInertiaRequest(Method::GET, uri: '/user/123', headers: [
+    //         Header::PARTIAL_COMPONENT => 'User/Edit',
+    //         Header::PARTIAL_ONLY => 'defer',
+    //         Header::EXCEPT_ONCE_PROPS => 'defer',
+    //     ]);
+
+    //     $response = new InertiaResponse(
+    //         $request,
+    //         component: 'User/Edit',
+    //         props: [
+    //             'defer' => Inertia::defer(fn(): string => 'value')->once(),
+    //         ],
+    //         rootView: 'app',
+    //         version: '123',
+    //     );
+
+    //     $page = $response->body->jsonSerialize();
+
+    //     static::assertSame(expected: 'value', actual: $page['props']['defer']);
+    //     static::assertFalse(array_key_exists('deferredProps', $page));
+    //     static::assertSame(
+    //         expected: [
+    //             'defer' => [
+    //                 'prop' => 'defer',
+    //                 'expiresAt' => null,
+    //             ],
+    //         ],
+    //         actual: $page['onceProps'],
+    //     );
+    // }
 
     public function test_top_level_dot_props_get_unpacked(): void
     {
         $props = [
-            "auth" => [
-                "user" => [
-                    "name" => "Jonathan Reinink",
+            'auth' => [
+                'user' => [
+                    'name' => 'Jonathan Reinink',
                 ],
             ],
-            "auth.user.can" => [
-                "do.stuff" => true,
+            'auth.user.can' => [
+                'do.stuff' => true,
             ],
-            "product" => ["name" => "My example product"],
+            'product' => ['name' => 'My example product'],
         ];
 
-        $request = $this->createInertiaRequest(
-            method: Method::GET,
-            uri: "/products/123",
-        );
+        $request = $this->createInertiaRequest(method: Method::GET, uri: '/products/123');
 
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Edit",
-            props: $props,
-            rootView: "app",
-            version: "123",
-        );
+        $response = new Component(name: 'User/Edit', props: $props, rootView: 'app');
 
         /** @var PageData */
         $page = $response->body;
         $page = $page->toArray();
 
-        $user = $page["props"]["auth"]["user"];
-        static::assertSame(expected: "Jonathan Reinink", actual: $user["name"]);
-        static::assertTrue($user["can"]["do.stuff"]);
-        static::assertFalse(
-            array_key_exists(key: "auth.user.can", array: $page["props"]),
-        );
+        $user = $page['props']['auth']['user'];
+        static::assertSame(expected: 'Jonathan Reinink', actual: $user['name']);
+        static::assertTrue($user['can']['do.stuff']);
+        static::assertFalse(array_key_exists(key: 'auth.user.can', array: $page['props']));
     }
 
     public function test_nested_dot_props_do_not_get_unpacked(): void
     {
         $props = [
-            "auth" => [
-                "user.can" => [
-                    "do.stuff" => true,
+            'auth' => [
+                'user.can' => [
+                    'do.stuff' => true,
                 ],
-                "user" => [
-                    "name" => "Jonathan Reinink",
+                'user' => [
+                    'name' => 'Jonathan Reinink',
                 ],
             ],
-            "product" => ["name" => "My example product"],
+            'product' => ['name' => 'My example product'],
         ];
 
-        $request = $this->createInertiaRequest(
-            method: Method::GET,
-            uri: "/products/123",
-        );
+        $this->createInertiaRequest(method: Method::GET, uri: '/products/123');
 
-        $response = new InertiaResponse(
-            $request,
-            component: "User/Edit",
-            props: $props,
-            rootView: "app",
-            version: "123",
-        );
+        $response = new Component(name: 'User/Edit', props: $props, rootView: 'app');
 
         /** @var PageData */
         $page = $response->body;
         $page = $page->toArray();
 
-        $auth = $page["props"]["auth"];
-        static::assertSame(
-            expected: "Jonathan Reinink",
-            actual: $auth["user"]["name"],
-        );
-        static::assertTrue($auth["user.can"]["do.stuff"]);
-        static::assertFalse(array_key_exists(key: "can", array: $auth));
+        $auth = $page['props']['auth'];
+        static::assertSame(expected: 'Jonathan Reinink', actual: $auth['user']['name']);
+        static::assertTrue($auth['user.can']['do.stuff']);
+        static::assertFalse(array_key_exists(key: 'can', array: $auth));
     }
 
     // public function test_responsable_with_invalid_key(): void
@@ -556,39 +761,28 @@ final class ResponseTest extends TestCase
 
     public function test_prop_as_basic_array(): void
     {
-        $request = new GenericRequest(Method::GET, uri: "/years");
+        $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: "Years",
-            props: ["years" => [2022, 2023, 2024]],
-            rootView: "app",
-            version: "123",
-        );
+        $response = new Component(name: 'Years', props: ['years' => [2022, 2023, 2024]], rootView: 'app');
 
         /** @var InertiaBaseView */
         $view = $response->body;
         $page = $view->page;
 
-        static::assertSame(
-            expected: [2022, 2023, 2024],
-            actual: $page->props["years"],
-        );
+        static::assertSame(expected: [2022, 2023, 2024], actual: $page->props['years']);
     }
 
     public function test_dot_notation_props_are_merged_with_shared_props(): void
     {
-        $request = new GenericRequest(Method::GET, uri: "/years");
+        $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: "Test",
+        $response = new Component(
+            name: 'Test',
             props: [
-                "auth" => ["user" => ["name" => "Jonathan"]], // shared prop
-                "auth.user.is_super" => true,
+                'auth' => ['user' => ['name' => 'Jonathan']], // shared prop
+                'auth.user.is_super' => true,
             ],
-            rootView: "app",
-            version: "123",
+            rootView: 'app',
         );
 
         /** @var InertiaBaseView */
@@ -597,10 +791,12 @@ final class ResponseTest extends TestCase
 
         static::assertSame(
             expected: [
-                "auth" => [
-                    "user" => [
-                        "name" => "Jonathan",
-                        "is_super" => true,
+                'user' => null,
+                'errors' => [],
+                'auth' => [
+                    'user' => [
+                        'name' => 'Jonathan',
+                        'is_super' => true,
                     ],
                 ],
             ],
@@ -610,19 +806,17 @@ final class ResponseTest extends TestCase
 
     public function test_dot_notation_props_are_merged_with_lazy_shared_props(): void
     {
-        $request = new GenericRequest(Method::GET, uri: "/years");
+        $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: "Test",
+        $response = new Component(
+            name: 'Test',
             props: [
-                "auth" => function (): array {
-                    return ["user" => ["name" => "Jonathan"]];
+                'auth' => function (): array {
+                    return ['user' => ['name' => 'Jonathan']];
                 },
-                "auth.user.is_super" => true,
+                'auth.user.is_super' => true,
             ],
-            rootView: "app",
-            version: "123",
+            rootView: 'app',
         );
 
         /** @var InertiaBaseView */
@@ -631,10 +825,12 @@ final class ResponseTest extends TestCase
 
         static::assertSame(
             expected: [
-                "auth" => [
-                    "user" => [
-                        "name" => "Jonathan",
-                        "is_super" => true,
+                'user' => null,
+                'errors' => [],
+                'auth' => [
+                    'user' => [
+                        'name' => 'Jonathan',
+                        'is_super' => true,
                     ],
                 ],
             ],
@@ -644,17 +840,15 @@ final class ResponseTest extends TestCase
 
     public function test_dot_notation_props_are_merged_with_other_dot_notation_props(): void
     {
-        $request = new GenericRequest(Method::GET, uri: "/years");
+        $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: "Test",
+        $response = new Component(
+            name: 'Test',
             props: [
-                "auth.user" => ["name" => "Jonathan"],
-                "auth.user.is_super" => true,
+                'auth.user' => ['name' => 'Jonathan'],
+                'auth.user.is_super' => true,
             ],
-            rootView: "app",
-            version: "123",
+            rootView: 'app',
         );
 
         /** @var InertiaBaseView */
@@ -663,10 +857,12 @@ final class ResponseTest extends TestCase
 
         static::assertSame(
             expected: [
-                "auth" => [
-                    "user" => [
-                        "name" => "Jonathan",
-                        "is_super" => true,
+                'user' => null,
+                'errors' => [],
+                'auth' => [
+                    'user' => [
+                        'name' => 'Jonathan',
+                        'is_super' => true,
                     ],
                 ],
             ],
@@ -676,20 +872,18 @@ final class ResponseTest extends TestCase
 
     public function test_server_response_with_deferred_prop(): void
     {
-        $request = $this->createInertiaRequest(Method::GET, uri: "/user/123");
+        $request = $this->createInertiaRequest(Method::GET, uri: '/user/123');
 
-        $user = ["name" => "Jonathan"];
-        $response = new InertiaResponse(
-            request: $request,
-            component: "User/Edit",
+        $user = ['name' => 'Jonathan'];
+        $response = new Component(
+            name: 'User/Edit',
             props: [
-                "user" => $user,
-                "foo" => new DeferProp(function (): string {
-                    return "bar";
-                }, group: "default"),
+                'user' => $user,
+                'foo' => new DeferProp(function (): string {
+                    return 'bar';
+                }, group: 'default'),
             ],
-            rootView: "app",
-            version: "123",
+            rootView: 'app',
         );
 
         /** @var PageData */
@@ -697,16 +891,13 @@ final class ResponseTest extends TestCase
 
         static::assertInstanceOf(expected: PageData::class, actual: $pageData);
 
-        static::assertSame(expected: "User/Edit", actual: $pageData->component);
-        static::assertSame(
-            expected: "Jonathan",
-            actual: $pageData->props["user"]["name"],
-        );
-        static::assertSame(expected: "/user/123", actual: $pageData->url);
-        static::assertSame(expected: "123", actual: $pageData->version);
+        static::assertSame(expected: 'User/Edit', actual: $pageData->component);
+        static::assertSame(expected: 'Jonathan', actual: $pageData->props['user']['name']);
+        static::assertSame(expected: '/user/123', actual: $pageData->url);
+        static::assertSame(expected: '123', actual: $pageData->version);
         static::assertSame(
             expected: [
-                "default" => ["foo"],
+                'default' => ['foo'],
             ],
             actual: $pageData->propKeysToDefer,
         );
@@ -717,26 +908,24 @@ final class ResponseTest extends TestCase
 
     public function test_server_response_with_deferred_prop_and_multiple_groups(): void
     {
-        $request = $this->createInertiaRequest(Method::GET, uri: "/user/123");
+        $this->createInertiaRequest(Method::GET, uri: '/user/123');
 
-        $user = ["name" => "Jonathan"];
-        $response = new InertiaResponse(
-            request: $request,
-            component: "User/Edit",
+        $user = ['name' => 'Jonathan'];
+        $response = new Component(
+            name: 'User/Edit',
             props: [
-                "user" => $user,
-                "foo" => new DeferProp(function (): string {
-                    return "foo value";
-                }, group: "default"),
-                "bar" => new DeferProp(function (): string {
-                    return "bar value";
-                }, group: "default"),
-                "baz" => new DeferProp(function (): string {
-                    return "baz value";
-                }, group: "custom"),
+                'user' => $user,
+                'foo' => new DeferProp(function (): string {
+                    return 'foo value';
+                }, group: 'default'),
+                'bar' => new DeferProp(function (): string {
+                    return 'bar value';
+                }, group: 'default'),
+                'baz' => new DeferProp(function (): string {
+                    return 'baz value';
+                }, group: 'custom'),
             ],
-            rootView: "app",
-            version: "123",
+            rootView: 'app',
         );
 
         /** @var PageData */
@@ -746,17 +935,18 @@ final class ResponseTest extends TestCase
 
         static::assertSame(
             new PageData(
-                component: "User/Edit",
+                component: 'User/Edit',
                 props: [
-                    "user" => $user,
+                    'errors' => [],
+                    'user' => $user,
                 ],
-                url: "/user/123",
-                version: "123",
+                url: '/user/123',
+                version: '123',
                 clearHistory: false,
                 encryptHistory: false,
                 propKeysToDefer: [
-                    "default" => ["foo", "bar"],
-                    "custom" => ["baz"],
+                    'default' => ['foo', 'bar'],
+                    'custom' => ['baz'],
                 ],
             )->toArray(),
             $page->toArray(),

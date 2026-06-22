@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia;
 
 use Closure;
-use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;
 use NeoIsRecursive\Inertia\Support\Header;
-use Tempest\Container\Container;
-use Tempest\Container\Singleton;
 use Tempest\Http\GenericResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
@@ -21,12 +19,11 @@ use Tempest\Http\Status;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
 
-#[Singleton]
 final class Inertia
 {
     public function __construct(
         private Session $session,
-        private Container $container,
+        private Request $request,
         private InertiaConfig $config,
     ) {}
 
@@ -62,24 +59,14 @@ final class Inertia
         return $this;
     }
 
-    public string $version {
-        get => $this->container->invoke($this->config->versionResolver->resolve(...));
-    }
-
     /**
-     * @param array<string, mixed> $props
+     * @param array<string,mixed> $props
      */
-    public function render(string $component, array $props = []): InertiaResponse
+    public function render(string $component, array $props = []): Component
     {
-        /** @var Request */
-        $request = $this->container->get(Request::class);
-
-        return new InertiaResponse(
-            request: $request,
-            component: $component,
-            props: array_merge($this->config->sharedProps, $props),
-            rootView: $this->config->rootView,
-            version: $this->version,
+        return new Component(
+            name: $component,
+            props: $props,
             clearHistory: $this->session->get(key: 'inertia.clear_history') === true,
             encryptHistory: $this->session->get(key: 'inertia.encrypt_history') === true,
         );
@@ -101,12 +88,12 @@ final class Inertia
 
     public function location(string|Redirect $url): Response
     {
-        $isInertiaRequest = $this->container->get(Request::class)?->headers?->has(Header::INERTIA) ?? false;
+        $isInertiaRequest = $this->request->headers->has(Header::INERTIA);
 
         if ($isInertiaRequest) {
             if ($url instanceof Redirect) {
                 /** @var string */
-                $url = $url->getHeader(name: 'Location')->values[0] ?? '/';
+                $url = $url->getHeader(name: 'Location')?->first() ?? '/';
             }
 
             return new GenericResponse(status: Status::CONFLICT, body: '', headers: [

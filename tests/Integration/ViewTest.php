@@ -16,7 +16,19 @@ final class ViewTest extends TestCase
         HTML);
 
         static::assertSnippetsMatch(
-            expected: '<div id="app" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
+            expected: <<<HTML
+            <script data-page="app" type="application/json">
+            {
+                "component": "TestComponent",
+                "props":{
+                    "key": "value"
+                },
+                "url": "/test-url",
+                "version": "1.0.0"
+            }
+            </script>
+            <div id="app"></div>
+            HTML,
             actual: $output,
         );
     }
@@ -33,14 +45,27 @@ final class ViewTest extends TestCase
                     props: ['key' => 'value'],
                     url: '/test-url',
                     version: '1.0.0',
-                    clearHistory: false,
+                    clearHistory: true,
                     encryptHistory: false,
                 ),
             ),
         );
 
         static::assertSnippetsMatch(
-            expected: '<div id="app" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
+            expected: <<<HTML
+                <script data-page="app" type="application/json">
+                {
+                  "component": "TestComponent",
+                  "props": {
+                    "key": "value"
+                  },
+                  "url": "/test-url",
+                  "version": "1.0.0",
+                  "clearHistory": true
+                }
+                </script>
+                <div id="app"></div>
+            HTML,
             actual: $output,
         );
     }
@@ -52,7 +77,19 @@ final class ViewTest extends TestCase
         HTML);
 
         static::assertSnippetsMatch(
-            expected: '<div id="custom-id" data-page="{&quot;component&quot;:&quot;TestComponent&quot;,&quot;props&quot;:{&quot;key&quot;:&quot;value&quot;},&quot;url&quot;:&quot;/test-url&quot;,&quot;version&quot;:&quot;1.0.0&quot;,&quot;clearHistory&quot;:false,&quot;encryptHistory&quot;:false}"></div>',
+            expected: <<<'html'
+                <script data-page="custom-id" type="application/json">
+                    {
+                        "component":"TestComponent",
+                        "props": {
+                            "key":"value"
+                        },
+                        "url":"/test-url",
+                        "version":"1.0.0"
+                    }
+                </script>
+                <div id="custom-id"></div>
+            html,
             actual: $output,
         );
     }

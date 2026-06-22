@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Tests\Fixtures;
 
-use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\Http\Middleware\EncryptHistory;
 use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
@@ -25,7 +25,7 @@ use function Tempest\Support\arr;
 final readonly class TestController
 {
     #[Get(uri: '/')]
-    public function index(): InertiaResponse
+    public function index(): Component
     {
         return inertia(component: 'Index');
     }
@@ -39,13 +39,10 @@ final readonly class TestController
     }
 
     #[Get(uri: '/can-share-props-from-any-where')]
-    public function testCanSharePropsFromAnyWhere(Inertia $inertia): InertiaResponse
+    public function testCanSharePropsFromAnyWhere(Inertia $inertia): Component
     {
         $inertia
-            ->share(
-                key: 'foo',
-                value: 'bar',
-            )
+            ->share(key: 'foo', value: 'bar')
             ->share([
                 'baz' => 'qux',
             ]);
@@ -54,35 +51,32 @@ final readonly class TestController
     }
 
     #[Get(uri: '/all-sorts-of-props')]
-    public function testAllSortsOfProps(Inertia $inertia): InertiaResponse
+    public function testAllSortsOfProps(Inertia $inertia): Component
     {
         return $inertia->share(
             key: 'shared',
             value: Inertia::always(arr([1, 2, 3])),
-        )->render(
-            component: 'User/Edit',
-            props: [
-                'always' => Inertia::always(fn() => arr(['always-1', 'always-2'])),
-                'optional' => Inertia::optional(fn() => arr(['optional-1', 'optional-2'])),
-                'defer' => Inertia::defer(fn() => arr(['defer-1', 'defer-2'])),
-            ],
-        );
+        )->render(component: 'User/Edit', props: [
+            'always' => Inertia::always(fn() => arr(['always-1', 'always-2'])),
+            'optional' => Inertia::optional(fn() => arr(['optional-1', 'optional-2'])),
+            'defer' => Inertia::defer(fn() => arr(['defer-1', 'defer-2'])),
+        ]);
     }
 
     #[Get(uri: '/encrypted-history')]
-    public function testEncryptedHistory(Inertia $inertia): InertiaResponse
+    public function testEncryptedHistory(Inertia $inertia): Component
     {
         return $inertia->encryptHistory()->render(component: 'User/Edit');
     }
 
     #[Get(uri: '/encrypted-history-middleware', middleware: [EncryptHistory::class])]
-    public function testEncryptedHistoryWithMiddleware(Inertia $inertia): InertiaResponse
+    public function testEncryptedHistoryWithMiddleware(Inertia $inertia): Component
     {
         return $inertia->render(component: 'User/Edit');
     }
 
     #[Get(uri: '/cleared-history')]
-    public function testClearedHistory(Inertia $inertia): InertiaResponse
+    public function testClearedHistory(Inertia $inertia): Component
     {
         return $inertia->clearHistory()->render(component: 'User/Edit');
     }
@@ -113,15 +107,12 @@ final readonly class TestController
     }
 
     #[Get(uri: '/test-can-merge-props')]
-    public function testCanMergeProps(Inertia $inertia): InertiaResponse
+    public function testCanMergeProps(Inertia $inertia): Component
     {
-        return $inertia->render(
-            component: 'test',
-            props: [
-                'foo' => new AlwaysProp(fn() => 'bar')->merge(),
-                'baz' => new OptionalProp(fn() => 'qux')->merge(),
-            ],
-        );
+        return new Component(name: 'test', props: [
+            'foo' => new AlwaysProp(fn() => 'bar')->merge(),
+            'baz' => new OptionalProp(fn() => 'qux')->merge(),
+        ]);
     }
 
     #[Post(uri: '/test-validation-errors')]
