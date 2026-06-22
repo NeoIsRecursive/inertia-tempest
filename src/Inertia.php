@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia;
 
 use Closure;
-use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;
@@ -18,8 +18,6 @@ use Tempest\Http\Session\Session;
 use Tempest\Http\Status;
 use Tempest\Reflection\FunctionReflector;
 use Tempest\Reflection\MethodReflector;
-
-use function Tempest\Container\invoke;
 
 final class Inertia
 {
@@ -61,21 +59,14 @@ final class Inertia
         return $this;
     }
 
-    public string $version {
-        get => (string) invoke($this->config->versionResolver->resolve(...));
-    }
-
     /**
      * @param array<string,mixed> $props
      */
-    public function render(string $component, array $props = []): InertiaResponse
+    public function render(string $component, array $props = []): Component
     {
-        return new InertiaResponse(
-            request: $this->request,
-            component: $component,
-            props: array_merge($this->config->sharedProps, $props),
-            rootView: $this->config->rootView,
-            version: $this->version,
+        return new Component(
+            name: $component,
+            props: $props,
             clearHistory: $this->session->get(key: 'inertia.clear_history') === true,
             encryptHistory: $this->session->get(key: 'inertia.encrypt_history') === true,
         );

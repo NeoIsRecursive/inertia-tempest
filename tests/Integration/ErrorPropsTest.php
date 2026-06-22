@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
 use NeoIsRecursive\Inertia\PageData;
+use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Tests\Fixtures\TestController;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 
@@ -15,33 +16,30 @@ final class ErrorPropsTest extends TestCase
     public function test_error_props(): void
     {
         $this->http->post(
-            uri([TestController::class, "testValidationErrors"]),
+            uri([TestController::class, 'testValidationErrors']),
             body: [
-                "firstName" => "",
-                "lastName" => "",
-                "email" => "not-an-email",
-                "age" => -2,
+                'firstName' => '',
+                'lastName' => '',
+                'email' => 'not-an-email',
+                'age' => -2,
             ],
             headers: [
-                "X-Inertia" => "true",
-                "X-Version" => "1.0",
+                Header::INERTIA => 'true',
+                Header::VERSION => '123',
             ],
         );
 
-        $response = $this->http->get(
-            uri([TestController::class, "index"]),
-            headers: [
-                "X-Inertia" => "true",
-                "X-Version" => "1.0",
-            ],
-        );
+        $response = $this->http->get(uri([TestController::class, 'index']), headers: [
+            Header::INERTIA => 'true',
+            Header::VERSION => '123',
+        ]);
 
         /** @var PageData */
         $body = $response->body;
 
-        $this->assertArrayHasKey("errors", $body->props);
-        $this->assertArrayHasKey("firstName", $body->props["errors"]);
-        $this->assertCount(1, $body->props["errors"]["firstName"]);
-        $this->assertCount(2, $body->props["errors"]["age"]);
+        $this->assertArrayHasKey('errors', $body->props);
+        $this->assertArrayHasKey('firstName', $body->props['errors']);
+        $this->assertCount(1, $body->props['errors']['firstName']);
+        $this->assertCount(2, $body->props['errors']['age']);
     }
 }

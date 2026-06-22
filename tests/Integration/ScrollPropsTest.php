@@ -4,56 +4,54 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
+use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\Http\InertiaResponse;
+use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\Props\ScrollProp;
+use NeoIsRecursive\Inertia\Tests\Fixtures\TestVersionResolver;
 use NeoIsRecursive\Inertia\Tests\TestCase;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
+use Tempest\Http\Request;
 use Tempest\Support\Paginator\Paginator;
 use Tempest\View\ViewRenderer;
 
-use function Tempest\Support\arr;
 use function Tempest\Container\get;
+use function Tempest\Support\arr;
 
 final class ScrollPropsTest extends TestCase
 {
     public function test_scroll_props_renders_correctly()
     {
-        $request = new GenericRequest(Method::GET, uri: '/posts?page=1');
+        $this->container->singleton(Request::class, new GenericRequest(Method::GET, uri: '/posts?page=1'));
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'Posts/Index',
-            props: [
-                'posts' => new ScrollProp(function () {
-                    $paginator = new Paginator(totalItems: 4, itemsPerPage: 2, currentPage: 1, maxLinks: 2);
+        $response = new Component(name: 'Posts/Index', props: [
+            'posts' => new ScrollProp(function () {
+                $paginator = new Paginator(totalItems: 4, itemsPerPage: 2, currentPage: 1, maxLinks: 2);
 
-                    return $paginator->paginateWith(
-                        callback: fn(int $limit, int $offset) => arr([
-                            [
-                                'id' => 1,
-                                'title' => 'First Post',
-                            ],
-                            [
-                                'id' => 2,
-                                'title' => 'Second Post',
-                            ],
-                            [
-                                'id' => 3,
-                                'title' => 'Third Post',
-                            ],
-                            [
-                                'id' => 4,
-                                'title' => 'Fourth Post',
-                            ],
-                        ])->slice($offset, $limit)->toArray(),
-                    );
-                }, 'page'),
-            ],
-            rootView: __DIR__ . '/../Fixtures/root.view.php',
-            version: '123',
-        );
+                return $paginator->paginateWith(
+                    callback: fn(int $limit, int $offset) => arr([
+                        [
+                            'id' => 1,
+                            'title' => 'First Post',
+                        ],
+                        [
+                            'id' => 2,
+                            'title' => 'Second Post',
+                        ],
+                        [
+                            'id' => 3,
+                            'title' => 'Third Post',
+                        ],
+                        [
+                            'id' => 4,
+                            'title' => 'Fourth Post',
+                        ],
+                    ])->slice($offset, $limit)->toArray(),
+                );
+            }, 'page'),
+        ]);
 
         /** @var InertiaBaseView */
         $view = $response->body;
@@ -64,6 +62,8 @@ final class ScrollPropsTest extends TestCase
                     {
                         "component": "Posts/Index",
                         "props": {
+                            "user": null,
+                            "errors": [],
                             "posts": {
                                 "data": [
                                     {

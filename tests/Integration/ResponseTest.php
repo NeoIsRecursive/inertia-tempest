@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Tests\Integration;
 
-use DateTimeImmutable;
-use NeoIsRecursive\Inertia\Http\InertiaResponse;
-use NeoIsRecursive\Inertia\Inertia;
+use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
@@ -16,6 +14,7 @@ use NeoIsRecursive\Inertia\Tests\TestCase;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
+use Tempest\Http\Request;
 use Tempest\Http\Response;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
@@ -26,15 +25,13 @@ final class ResponseTest extends TestCase
 {
     public function test_server_response(): void
     {
-        $request = new GenericRequest(Method::GET, uri: '/user/123');
+        $this->container->singleton(Request::class, new GenericRequest(Method::GET, uri: '/user/123'));
 
         $user = ['name' => 'Jonathan'];
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Edit',
+        $response = new Component(
+            name: 'User/Edit',
             props: ['user' => $user],
             rootView: __DIR__ . '/../Fixtures/root.view.php',
-            version: '123',
         );
         /** @var InertiaBaseView */
         $view = $response->body;
@@ -53,6 +50,7 @@ final class ResponseTest extends TestCase
                     {
                         "component": "User/Edit",
                         "props": {
+                            "errors": [],
                             "user":{
                                 "name": "Jonathan"
                             }
@@ -71,13 +69,7 @@ final class ResponseTest extends TestCase
         $request = $this->createInertiaRequest(Method::GET, uri: '/user/123');
 
         $user = ['name' => 'Jonathan'];
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Edit',
-            props: ['user' => $user],
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'User/Edit', props: ['user' => $user], rootView: 'app');
 
         $page = $response->body->jsonSerialize();
 
@@ -105,17 +97,13 @@ final class ResponseTest extends TestCase
             ];
         };
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Index',
-            props: ['users' => $callable],
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'User/Index', props: ['users' => $callable], rootView: 'app');
 
         $page = $response->body->jsonSerialize();
 
         $expected = [
+            'user' => null,
+            'errors' => [],
             'users' => [
                 'data' => [['name' => 'Jonathan'], ['name' => 'Taylor']],
             ],
@@ -234,12 +222,10 @@ final class ResponseTest extends TestCase
         ]);
 
         $user = (object) ['name' => 'Jonathan'];
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Edit',
-            props: ['user' => $user, 'partial' => 'partial-data'],
+        $response = new Component(
+            name: 'User/Edit',
+            props: ['user' => $user, 'partial' => 'partial-data', 'errors' => []],
             rootView: 'app',
-            version: '123',
         );
 
         $page = $response->body->jsonSerialize();
@@ -263,15 +249,14 @@ final class ResponseTest extends TestCase
         ]);
 
         $user = (object) ['name' => 'Jonathan'];
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Edit',
+        $response = new Component(
+            name: 'User/Edit',
             props: [
                 'user' => $user,
+                'errors' => [],
                 'partial' => 'partial-data',
             ],
             rootView: 'app',
-            version: '123',
         );
 
         $page = $response->body->jsonSerialize();
@@ -281,7 +266,7 @@ final class ResponseTest extends TestCase
         static::assertInstanceOf(Response::class, $response);
         static::assertSame(expected: 'User/Edit', actual: $page['component']);
         static::assertFalse(isset($props['user']));
-        static::assertCount(expectedCount: 1, haystack: $props);
+        static::assertCount(expectedCount: 2, haystack: $props);
         static::assertSame(expected: 'partial-data', actual: $page['props']['partial']);
         static::assertSame(expected: '/user/123', actual: $page['url']);
         static::assertSame(expected: '123', actual: $page['version']);
@@ -293,13 +278,7 @@ final class ResponseTest extends TestCase
 
         $lazyProp = new OptionalProp(fn() => 'A lazy value');
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'Users',
-            props: ['users' => [], 'lazy' => $lazyProp],
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'Users', props: ['users' => [], 'lazy' => $lazyProp], rootView: 'app');
         $page = $response->body->jsonSerialize();
 
         static::assertSame(expected: [], actual: $page['props']['users']);
@@ -317,13 +296,7 @@ final class ResponseTest extends TestCase
             return 'A lazy value';
         });
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'Users',
-            props: ['users' => [], 'lazy' => $lazyProp],
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'Users', props: ['users' => [], 'lazy' => $lazyProp], rootView: 'app');
         $page = $response->body->jsonSerialize();
 
         static::assertFalse(array_key_exists(key: 'users', array: $page['props']));
@@ -354,13 +327,7 @@ final class ResponseTest extends TestCase
             }),
         ];
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Edit',
-            props: $props,
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'User/Edit', props: $props, rootView: 'app');
 
         $page = $response->body->jsonSerialize();
 
@@ -696,13 +663,7 @@ final class ResponseTest extends TestCase
 
         $request = $this->createInertiaRequest(method: Method::GET, uri: '/products/123');
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Edit',
-            props: $props,
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'User/Edit', props: $props, rootView: 'app');
 
         /** @var PageData */
         $page = $response->body;
@@ -728,15 +689,9 @@ final class ResponseTest extends TestCase
             'product' => ['name' => 'My example product'],
         ];
 
-        $request = $this->createInertiaRequest(method: Method::GET, uri: '/products/123');
+        $this->createInertiaRequest(method: Method::GET, uri: '/products/123');
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'User/Edit',
-            props: $props,
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'User/Edit', props: $props, rootView: 'app');
 
         /** @var PageData */
         $page = $response->body;
@@ -808,13 +763,7 @@ final class ResponseTest extends TestCase
     {
         $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'Years',
-            props: ['years' => [2022, 2023, 2024]],
-            rootView: 'app',
-            version: '123',
-        );
+        $response = new Component(name: 'Years', props: ['years' => [2022, 2023, 2024]], rootView: 'app');
 
         /** @var InertiaBaseView */
         $view = $response->body;
@@ -827,15 +776,13 @@ final class ResponseTest extends TestCase
     {
         $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'Test',
+        $response = new Component(
+            name: 'Test',
             props: [
                 'auth' => ['user' => ['name' => 'Jonathan']], // shared prop
                 'auth.user.is_super' => true,
             ],
             rootView: 'app',
-            version: '123',
         );
 
         /** @var InertiaBaseView */
@@ -844,6 +791,8 @@ final class ResponseTest extends TestCase
 
         static::assertSame(
             expected: [
+                'user' => null,
+                'errors' => [],
                 'auth' => [
                     'user' => [
                         'name' => 'Jonathan',
@@ -859,9 +808,8 @@ final class ResponseTest extends TestCase
     {
         $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'Test',
+        $response = new Component(
+            name: 'Test',
             props: [
                 'auth' => function (): array {
                     return ['user' => ['name' => 'Jonathan']];
@@ -869,7 +817,6 @@ final class ResponseTest extends TestCase
                 'auth.user.is_super' => true,
             ],
             rootView: 'app',
-            version: '123',
         );
 
         /** @var InertiaBaseView */
@@ -878,6 +825,8 @@ final class ResponseTest extends TestCase
 
         static::assertSame(
             expected: [
+                'user' => null,
+                'errors' => [],
                 'auth' => [
                     'user' => [
                         'name' => 'Jonathan',
@@ -893,15 +842,13 @@ final class ResponseTest extends TestCase
     {
         $request = new GenericRequest(Method::GET, uri: '/years');
 
-        $response = new InertiaResponse(
-            $request,
-            component: 'Test',
+        $response = new Component(
+            name: 'Test',
             props: [
                 'auth.user' => ['name' => 'Jonathan'],
                 'auth.user.is_super' => true,
             ],
             rootView: 'app',
-            version: '123',
         );
 
         /** @var InertiaBaseView */
@@ -910,6 +857,8 @@ final class ResponseTest extends TestCase
 
         static::assertSame(
             expected: [
+                'user' => null,
+                'errors' => [],
                 'auth' => [
                     'user' => [
                         'name' => 'Jonathan',
@@ -926,9 +875,8 @@ final class ResponseTest extends TestCase
         $request = $this->createInertiaRequest(Method::GET, uri: '/user/123');
 
         $user = ['name' => 'Jonathan'];
-        $response = new InertiaResponse(
-            request: $request,
-            component: 'User/Edit',
+        $response = new Component(
+            name: 'User/Edit',
             props: [
                 'user' => $user,
                 'foo' => new DeferProp(function (): string {
@@ -936,7 +884,6 @@ final class ResponseTest extends TestCase
                 }, group: 'default'),
             ],
             rootView: 'app',
-            version: '123',
         );
 
         /** @var PageData */
@@ -961,12 +908,11 @@ final class ResponseTest extends TestCase
 
     public function test_server_response_with_deferred_prop_and_multiple_groups(): void
     {
-        $request = $this->createInertiaRequest(Method::GET, uri: '/user/123');
+        $this->createInertiaRequest(Method::GET, uri: '/user/123');
 
         $user = ['name' => 'Jonathan'];
-        $response = new InertiaResponse(
-            request: $request,
-            component: 'User/Edit',
+        $response = new Component(
+            name: 'User/Edit',
             props: [
                 'user' => $user,
                 'foo' => new DeferProp(function (): string {
@@ -980,7 +926,6 @@ final class ResponseTest extends TestCase
                 }, group: 'custom'),
             ],
             rootView: 'app',
-            version: '123',
         );
 
         /** @var PageData */
@@ -992,6 +937,7 @@ final class ResponseTest extends TestCase
             new PageData(
                 component: 'User/Edit',
                 props: [
+                    'errors' => [],
                     'user' => $user,
                 ],
                 url: '/user/123',
