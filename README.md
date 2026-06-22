@@ -58,16 +58,25 @@ It is pretty similar to the laravel adapter, except that the `inertia` function 
 
 ```php
 use Tempest\Http\Get;
-use NeoIsRecursive\Inertia\InertiaResponse;
+use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\Inertia;
 
 use function NeoIsRecursive\Inertia\inertia;
 
 final class ReviewController
 {
+    // Using the response class
+    #[Get(uri: '/reviews/{review}')]
+    public function show(Review $review): Component
+    {
+        return new Component('reviews/show', [
+            'review' => $review,
+        ]);
+    }
+
     // Using the inertia helper function
     #[Get(uri: '/reviews/{review}')]
-    public function show(Review $review): InertiaResponse
+    public function show(Review $review): Component
     {
         return inertia('reviews/show', [
             'review' => $review,
@@ -76,7 +85,7 @@ final class ReviewController
 
     // Using dependency injection
     #[Get(uri: '/reviews')]
-    public function show(Inertia $inertia): InertiaResponse
+    public function show(Inertia $inertia): Component
     {
         return $inertia->render('reviews/index', [
             'reviews' => Review::all(),
