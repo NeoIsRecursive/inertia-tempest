@@ -43,7 +43,6 @@ final readonly class PropPipelineContext
      *     deferredProps?: ?array,
      *     mergeProps?: ?array,
      *     scrollProps?: ?array,
-     *     onceProps?: ?array
      * } $properties
      */
     public function with(array $properties): self

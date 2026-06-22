@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Pipeline\Stages;
 
-use NeoIsRecursive\Inertia\Contracts\Onceable;
 use NeoIsRecursive\Inertia\Pipeline\PropPipelineContext;
 use NeoIsRecursive\Inertia\Pipeline\PropStage;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
@@ -23,17 +22,7 @@ final readonly class FilterProps implements PropStage
         $loadedOnce = self::parseHeader(Header::EXCEPT_ONCE_PROPS, $context->request);
         $only = self::parseHeader(Header::PARTIAL_ONLY, $context->request);
 
-        $renderable = array_filter(
-            array_merge($always, $partial),
-            fn(mixed $prop, string|int $key) => !$this->shouldSkipLoadedOnceProp(
-                prop: $prop,
-                key: $key,
-                context: $context,
-                loadedOnce: $loadedOnce,
-                only: $only,
-            ),
-            ARRAY_FILTER_USE_BOTH,
-        );
+        $renderable = array_merge($always, $partial);
 
         return $context->with(['renderableProps' => $renderable]);
     }
@@ -46,42 +35,6 @@ final readonly class FilterProps implements PropStage
         $values = array_filter(explode(separator: ',', string: $request->headers->get($header) ?? ''));
 
         return array_values($values);
-    }
-
-    private function shouldSkipLoadedOnceProp(
-        mixed $prop,
-        string|int $key,
-        PropPipelineContext $context,
-        array $loadedOnce,
-        array $only,
-    ): bool {
-        if (!$prop instanceof Onceable || !$context->request->headers->has(Header::INERTIA)) {
-            return false;
-        }
-
-        if (!$prop->shouldResolveOnce() || $prop->shouldBeRefreshed()) {
-            return false;
-        }
-
-        $onceKey = $prop->getKey() ?? (string) $key;
-
-        if (!in_array($onceKey, $loadedOnce, true)) {
-            return false;
-        }
-
-        return !$this->isExplicitlyRequestedOnPartialReload($key, $context, $only);
-    }
-
-    private function isExplicitlyRequestedOnPartialReload(
-        string|int $key,
-        PropPipelineContext $context,
-        array $only,
-    ): bool {
-        if (!$context->isPartial() || !is_string($key) || $only === []) {
-            return false;
-        }
-
-        return in_array($key, $only, true);
     }
 
     /**

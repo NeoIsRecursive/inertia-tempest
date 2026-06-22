@@ -21,7 +21,6 @@ use Tempest\Reflection\MethodReflector;
 
 use function Tempest\Container\invoke;
 
-// @mago-expect lint:too-many-methods
 final class Inertia
 {
     public function __construct(
@@ -53,11 +52,6 @@ final class Inertia
     public static function always(mixed $value): AlwaysProp
     {
         return new AlwaysProp($value);
-    }
-
-    public static function once(mixed $value): AlwaysProp
-    {
-        return new AlwaysProp($value)->once();
     }
 
     public function flushShared(): self

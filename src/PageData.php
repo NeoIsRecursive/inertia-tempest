@@ -20,9 +20,6 @@ final readonly class PageData implements JsonSerializable
         public ?array $propKeysToDefer = null,
         public ?array $propsKeysToMerge = null,
         public ?array $scrollProps = null,
-        public ?array $onceProps = null,
-        // public ?array $propKeysToPrepend = null,
-        // public ?array $matchPropsOn = null,
     ) {}
 
     public function toArray(): array
@@ -51,10 +48,6 @@ final readonly class PageData implements JsonSerializable
 
         if ($this->scrollProps !== null) {
             $data['scrollProps'] = $this->scrollProps;
-        }
-
-        if ($this->onceProps !== null) {
-            $data['onceProps'] = $this->onceProps;
         }
 
         // if ($this->matchPropsOn !== null) {
