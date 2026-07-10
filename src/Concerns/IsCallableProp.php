@@ -13,14 +13,6 @@ trait IsCallableProp
      */
     public function resolveCallablePropValue(mixed $value): mixed
     {
-        return $this->useAsCallable($value) ? invoke($value) : $value;
-    }
-
-    /**
-     * Determine if the given value is callable, but not a string.
-     */
-    protected function useAsCallable(mixed $value): bool
-    {
-        return !is_string($value) && is_callable($value);
+        return !is_string($value) && is_callable($value) ? invoke($value) : $value;
     }
 }

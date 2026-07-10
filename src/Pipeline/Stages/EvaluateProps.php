@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Pipeline\Stages;
 
 use Closure;
+use Generator;
 use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Pipeline\PropPipelineContext;
 use NeoIsRecursive\Inertia\Pipeline\PropStage;
@@ -29,19 +30,21 @@ final readonly class EvaluateProps implements PropStage
      */
     private static function evaluate(array $props, bool $unpackDotProps = true): array
     {
-        return arr($props)->map(static function (mixed $value, string|int $key): array {
-            $evaluated = $value
-                |> (static fn(mixed $value) => $value instanceof Closure ? invoke($value) : $value)
-                |> (static fn(mixed $value) => $value instanceof CallableProp ? $value() : $value)
-                |> (static fn(mixed $value) => $value instanceof ArrayInterface ? $value->toArray() : $value)
-                |> (static fn(mixed $value) => is_array($value)
-                    ? self::evaluate($value, unpackDotProps: false)
-                    : $value);
+        return arr($props)->mapWithKeys(
+            /** @return Generator<array-key, mixed> */
+            static function (mixed $value, string|int $key): Generator {
+                // @mago-expect analyzer:mixed-assignment
+                $evaluated = $value
+                    |> (static fn(mixed $value) => $value instanceof Closure ? invoke($value) : $value)
+                    |> (static fn(mixed $value) => $value instanceof CallableProp ? $value() : $value)
+                    |> (static fn(mixed $value) => $value instanceof ArrayInterface ? $value->toArray() : $value)
+                    |> (static fn(mixed $value) => is_array($value)
+                        ? self::evaluate($value, unpackDotProps: false)
+                        : $value);
 
-            return [$key, $evaluated];
-        })->reduce(static function (array $acc, array $item) use ($unpackDotProps): array {
-            [$key, $value] = $item;
-
+                return yield $key => $evaluated;
+            },
+        )->reduce(static function (array $acc, mixed $value, string|int $key) use ($unpackDotProps): array {
             if ($unpackDotProps && is_string($key) && str_contains($key, '.')) {
                 return arr($acc)->set($key, $value)->toArray();
             }

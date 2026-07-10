@@ -16,7 +16,6 @@ use Tempest\Http\Response;
 use Tempest\View\View;
 
 use function Tempest\Container\get;
-use function Tempest\Container\invoke;
 
 final class Component implements Response
 {
@@ -26,6 +25,7 @@ final class Component implements Response
 
     public function __construct(
         public string $name,
+        /** @var array<string, mixed> */
         public array $props = [],
         readonly ?string $rootView = null,
         private ?bool $clearHistory = null,
@@ -33,8 +33,8 @@ final class Component implements Response
     ) {
         $this->request = get(Request::class);
 
-        $this->clearHistory ??= $this->session->get(Inertia::CLEAR_HISTORY_KEY, false);
-        $this->encryptHistory ??= $this->session->get(Inertia::ENCRYPT_HISTORY_KEY, false);
+        $this->clearHistory ??= boolval($this->session->get(Inertia::CLEAR_HISTORY_KEY));
+        $this->encryptHistory ??= boolval($this->session->get(Inertia::ENCRYPT_HISTORY_KEY));
 
         if ($this->request->headers->has(Header::INERTIA)) {
             $this->addHeader(Header::INERTIA, value: 'true');
@@ -48,7 +48,8 @@ final class Component implements Response
         $config = get(InertiaConfig::class);
         $component = $this->name;
         $rootView = $this->rootView ?? $config->rootView;
-        $version = invoke($config->versionResolver->resolve(...));
+
+        $version = $config->resolveVersion();
 
         $processedProps = new PropPipeline()->process(
             props: array_merge($config->sharedProps, $this->props),
@@ -61,8 +62,8 @@ final class Component implements Response
             props: $processedProps->props,
             url: $this->request->uri,
             version: $version,
-            clearHistory: $this->clearHistory,
-            encryptHistory: $this->encryptHistory,
+            clearHistory: $this->clearHistory ?? false,
+            encryptHistory: $this->encryptHistory ?? false,
             propKeysToDefer: $processedProps->deferredProps,
             propsKeysToMerge: $processedProps->mergeProps,
             scrollProps: $processedProps->scrollProps,

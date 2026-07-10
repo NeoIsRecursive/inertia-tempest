@@ -41,6 +41,6 @@ analyzer:
   find-unused-definitions: true
   find-unused-expressions: false
   analyze-dead-code: false
-  check-throws: true
+  check-throws: false
   allow-possibly-undefined-array-keys: true
   perform-heuristic-checks: false

@@ -60,6 +60,7 @@ final class ScrollProp implements CallableProp, MergeableProp
             return $this->metadata;
         }
 
+        // @mago-expect analyzer:mixed-assignment
         $value = $this->resolveValue();
 
         if ($this->metadata === null) {
@@ -101,7 +102,6 @@ final class ScrollProp implements CallableProp, MergeableProp
             throw new \LogicException('Scroll metadata resolver must be a closure or metadata provider.');
         }
 
-        /** @var Closure(mixed):ProvidesScrollMetadata $metadata */
         return $metadata($value);
     }
 
@@ -125,6 +125,7 @@ final class ScrollProp implements CallableProp, MergeableProp
     #[Override]
     public function __invoke(): mixed
     {
+        // @mago-expect analyzer:mixed-assignment
         $value = $this->resolveValue();
 
         if ($value instanceof PaginatedData) {

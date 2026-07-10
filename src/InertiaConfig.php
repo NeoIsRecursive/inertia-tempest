@@ -28,6 +28,7 @@ final class InertiaConfig
 
     public function resolveVersion(): string
     {
+        /** @var string */
         return invoke($this->versionResolver->resolve(...));
     }
 
