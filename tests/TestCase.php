@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Tests;
 
 use NeoIsRecursive\Inertia\Support\Header;
-use Override;
-use Tempest\Core\Application;
 use Tempest\Discovery\DiscoveryLocation;
 use Tempest\Framework\Testing\IntegrationTest;
 use Tempest\Http\GenericRequest;
 use Tempest\Http\Method;
 use Tempest\Http\Request;
-use Tempest\Router\HttpApplication;
 use Tempest\View\GenericView;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
@@ -21,38 +18,19 @@ abstract class TestCase extends IntegrationTest
 {
     protected string $root = __DIR__ . '/../';
 
-    #[Override]
-    public function setUp(): void
+    protected function discoverTestLocations(): array
     {
-        $this->discoveryLocations[] = new DiscoveryLocation(
-            namespace: 'NeoIsRecursive\\Inertia\\Tests\\Fixtures\\',
-            path: __DIR__ . '/Fixtures',
-        );
-
-        parent::setUp();
-
-        $this->actAsHttpApplication();
-    }
-
-    protected function actAsHttpApplication(): HttpApplication
-    {
-        $application = new HttpApplication($this->container);
-
-        $this->container->singleton(Application::class, fn() => $application);
-
-        return $application;
+        return [
+            new DiscoveryLocation(namespace: 'NeoIsRecursive\\Inertia\\Tests\\Fixtures\\', path: __DIR__ . '/Fixtures'),
+        ];
     }
 
     public function createInertiaRequest(Method $method, string $uri, array $headers = []): Request
     {
-        $request = new GenericRequest(
-            method: $method,
-            uri: $uri,
-            headers: [
-                Header::INERTIA => 'true',
-                ...$headers,
-            ],
-        );
+        $request = new GenericRequest(method: $method, uri: $uri, headers: [
+            Header::INERTIA => 'true',
+            ...$headers,
+        ]);
         $this->container->singleton(Request::class, fn() => $request);
         return $request;
     }

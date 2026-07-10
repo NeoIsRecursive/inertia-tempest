@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia;
 
 use Closure;
-use NeoIsRecursive\Inertia\Http\Component;
 use NeoIsRecursive\Inertia\Props\AlwaysProp;
 use NeoIsRecursive\Inertia\Props\DeferProp;
 use NeoIsRecursive\Inertia\Props\OptionalProp;
@@ -21,6 +20,9 @@ use Tempest\Reflection\MethodReflector;
 
 final class Inertia
 {
+    public const string CLEAR_HISTORY_KEY = '#inertia.clear_history';
+    public const string ENCRYPT_HISTORY_KEY = '#inertia.encrypt_history';
+
     public function __construct(
         private Session $session,
         private Request $request,
@@ -59,29 +61,16 @@ final class Inertia
         return $this;
     }
 
-    /**
-     * @param array<string,mixed> $props
-     */
-    public function render(string $component, array $props = []): Component
-    {
-        return new Component(
-            name: $component,
-            props: $props,
-            clearHistory: $this->session->get(key: 'inertia.clear_history') === true,
-            encryptHistory: $this->session->get(key: 'inertia.encrypt_history') === true,
-        );
-    }
-
     public function encryptHistory(): self
     {
-        $this->session->flash(key: 'inertia.encrypt_history', value: true);
+        $this->session->flash(key: self::ENCRYPT_HISTORY_KEY, value: true);
 
         return $this;
     }
 
     public function clearHistory(): self
     {
-        $this->session->flash(key: 'inertia.clear_history', value: true);
+        $this->session->flash(key: self::CLEAR_HISTORY_KEY, value: true);
 
         return $this;
     }

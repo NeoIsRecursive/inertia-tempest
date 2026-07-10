@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Http;
 
+use NeoIsRecursive\Inertia\Inertia;
 use NeoIsRecursive\Inertia\InertiaConfig;
 use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Pipeline\PropPipeline;
@@ -27,10 +28,13 @@ final class Component implements Response
         public string $name,
         public array $props = [],
         readonly ?string $rootView = null,
-        readonly bool $clearHistory = false,
-        readonly bool $encryptHistory = false,
+        private ?bool $clearHistory = null,
+        private ?bool $encryptHistory = null,
     ) {
         $this->request = get(Request::class);
+
+        $this->clearHistory ??= $this->session->get(Inertia::CLEAR_HISTORY_KEY, false);
+        $this->encryptHistory ??= $this->session->get(Inertia::ENCRYPT_HISTORY_KEY, false);
 
         if ($this->request->headers->has(Header::INERTIA)) {
             $this->addHeader(Header::INERTIA, value: 'true');

@@ -54,7 +54,7 @@ When that is done, you can go on to install your prefered inertia client by foll
 
 ### Usage
 
-It is pretty similar to the laravel adapter, except that the `inertia` function is a namespaced function.
+It is pretty similar to the Laravel adapter, except that to return an Inertia respone, you return a `Component` instance - like in your other Tempest routes.
 
 ```php
 use Tempest\Http\Get;
@@ -65,30 +65,11 @@ use function NeoIsRecursive\Inertia\inertia;
 
 final class ReviewController
 {
-    // Using the response class
     #[Get(uri: '/reviews/{review}')]
     public function show(Review $review): Component
     {
         return new Component('reviews/show', [
             'review' => $review,
-        ]);
-    }
-
-    // Using the inertia helper function
-    #[Get(uri: '/reviews/{review}')]
-    public function show(Review $review): Component
-    {
-        return inertia('reviews/show', [
-            'review' => $review,
-        ]);
-    }
-
-    // Using dependency injection
-    #[Get(uri: '/reviews')]
-    public function show(Inertia $inertia): Component
-    {
-        return $inertia->render('reviews/index', [
-            'reviews' => Review::all(),
         ]);
     }
 }

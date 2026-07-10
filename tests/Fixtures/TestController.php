@@ -18,7 +18,6 @@ use Tempest\Router\Patch;
 use Tempest\Router\Post;
 use Tempest\Router\Put;
 
-use function NeoIsRecursive\Inertia\inertia;
 use function Tempest\Router\uri;
 use function Tempest\Support\arr;
 
@@ -27,7 +26,7 @@ final readonly class TestController
     #[Get(uri: '/')]
     public function index(): Component
     {
-        return inertia(component: 'Index');
+        return new Component(name: 'Index');
     }
 
     #[Get(uri: '/non-inertia-page')]
@@ -47,16 +46,18 @@ final readonly class TestController
                 'baz' => 'qux',
             ]);
 
-        return inertia(component: 'User/Edit');
+        return new Component(name: 'User/Edit');
     }
 
     #[Get(uri: '/all-sorts-of-props')]
     public function testAllSortsOfProps(Inertia $inertia): Component
     {
-        return $inertia->share(
+        $inertia->share(
             key: 'shared',
             value: Inertia::always(arr([1, 2, 3])),
-        )->render(component: 'User/Edit', props: [
+        );
+
+        return new Component(name: 'User/Edit', props: [
             'always' => Inertia::always(fn() => arr(['always-1', 'always-2'])),
             'optional' => Inertia::optional(fn() => arr(['optional-1', 'optional-2'])),
             'defer' => Inertia::defer(fn() => arr(['defer-1', 'defer-2'])),
@@ -66,19 +67,23 @@ final readonly class TestController
     #[Get(uri: '/encrypted-history')]
     public function testEncryptedHistory(Inertia $inertia): Component
     {
-        return $inertia->encryptHistory()->render(component: 'User/Edit');
+        $inertia->encryptHistory();
+
+        return new Component('User/Edit');
     }
 
     #[Get(uri: '/encrypted-history-middleware', middleware: [EncryptHistory::class])]
     public function testEncryptedHistoryWithMiddleware(Inertia $inertia): Component
     {
-        return $inertia->render(component: 'User/Edit');
+        return new Component('User/Edit');
     }
 
     #[Get(uri: '/cleared-history')]
     public function testClearedHistory(Inertia $inertia): Component
     {
-        return $inertia->clearHistory()->render(component: 'User/Edit');
+        $inertia->clearHistory();
+
+        return new Component('User/Edit');
     }
 
     #[Get(uri: '/redirect-with-clear-history')]
@@ -107,7 +112,7 @@ final readonly class TestController
     }
 
     #[Get(uri: '/test-can-merge-props')]
-    public function testCanMergeProps(Inertia $inertia): Component
+    public function testCanMergeProps(): Component
     {
         return new Component(name: 'test', props: [
             'foo' => new AlwaysProp(fn() => 'bar')->merge(),
@@ -116,7 +121,7 @@ final readonly class TestController
     }
 
     #[Post(uri: '/test-validation-errors')]
-    public function testValidationErrors(CreatePerson $request, Inertia $inertia): Redirect
+    public function testValidationErrors(CreatePerson $request): Redirect
     {
         // If we reach here, the request is valid.
         return new Redirect(to: uri([static::class, 'index']));

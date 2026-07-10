@@ -137,10 +137,13 @@ final class InertiaTest extends TestCase
     {
         $version = get(InertiaConfig::class)->resolveVersion();
 
-        $response = $this->http->get(uri([TestController::class, 'testCanSharePropsFromAnyWhere']), headers: [
-            Header::INERTIA => 'true',
-            Header::VERSION => $version,
-        ]);
+        $response = $this->http->throwExceptions()->get(
+            uri([TestController::class, 'testCanSharePropsFromAnyWhere']),
+            headers: [
+                Header::INERTIA => 'true',
+                Header::VERSION => $version,
+            ],
+        );
 
         $response->assertOk();
         static::assertSame(
