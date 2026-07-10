@@ -59,9 +59,6 @@ It is pretty similar to the Laravel adapter, except that to return an Inertia re
 ```php
 use Tempest\Http\Get;
 use NeoIsRecursive\Inertia\Http\Component;
-use NeoIsRecursive\Inertia\Inertia;
-
-use function NeoIsRecursive\Inertia\inertia;
 
 final class ReviewController
 {
