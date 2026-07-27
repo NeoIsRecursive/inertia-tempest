@@ -41,3 +41,4 @@ jobs:
         run: |
           vendor/bin/mago fmt --dry-run
           vendor/bin/mago lint --reporting-format=github
+          vendor/bin/mago analyze --reporting-format=github
