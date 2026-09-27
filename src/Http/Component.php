@@ -13,9 +13,12 @@ use NeoIsRecursive\Inertia\Views\InertiaBaseView;
 use Tempest\Http\IsResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
+use Tempest\Support\Uri\Uri;
 use Tempest\View\View;
 
 use function Tempest\Container\get;
+use function Tempest\Support\Str\after_first;
+use function Tempest\Support\Str\ensure_starts_with;
 
 final class Component implements Response
 {
@@ -57,10 +60,15 @@ final class Component implements Response
             component: $component,
         );
 
+        $uri = Uri::from($this->request->uri);
+        $host = implode('://', [$uri->scheme, $uri->host]);
+
+        $url = ensure_starts_with(after_first($this->request->uri, $host), '/');
+
         $pageData = new PageData(
             component: $component,
             props: $processedProps->props,
-            url: $this->request->uri,
+            url: $url,
             version: $version,
             clearHistory: $this->clearHistory ?? false,
             encryptHistory: $this->encryptHistory ?? false,

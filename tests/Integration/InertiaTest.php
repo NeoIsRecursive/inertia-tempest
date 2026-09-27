@@ -232,4 +232,30 @@ final class InertiaTest extends TestCase
             actual: $response->body->jsonSerialize(),
         );
     }
+
+    public function test_url_is_relative_with_params_preserved(): void
+    {
+        $version = get(InertiaConfig::class)->resolveVersion();
+
+        $response = $this->http->get('https://app.test' . uri([TestController::class, 'index'], page: 1, query: 'foo'), headers: [
+            Header::INERTIA => 'true',
+            Header::VERSION => $version,
+            Header::PARTIAL_COMPONENT => 'User/Edit',
+            Header::PARTIAL_ONLY => 'optional,defer',
+        ]);
+
+        $response->assertOk();
+        static::assertSame(
+            expected: [
+                'component' => 'Index',
+                'props' => [
+                    'user' => null,
+                    'errors' => [],
+                ],
+                'url' => uri([TestController::class, 'index'], page: 1, query: 'foo'),
+                'version' => $version,
+            ],
+            actual: $response->body->jsonSerialize(),
+        );
+    }
 }
