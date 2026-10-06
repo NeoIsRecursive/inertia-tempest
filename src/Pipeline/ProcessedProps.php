@@ -11,8 +11,6 @@ final readonly class ProcessedProps
      */
     public function __construct(
         public array $props,
-        public ?array $deferredProps = null,
-        public ?array $mergeProps = null,
-        public ?array $scrollProps = null,
+        public array $meta,
     ) {}
 }

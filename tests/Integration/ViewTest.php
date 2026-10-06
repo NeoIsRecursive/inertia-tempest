@@ -12,7 +12,7 @@ final class ViewTest extends TestCase
     public function test_inertia_component_renders_correctly(): void
     {
         $output = $this->render(<<<HTML
-            <x-inertia :page="new \NeoIsRecursive\Inertia\PageData('TestComponent', ['key' => 'value'], '/test-url', '1.0.0', false, false)" id="app" />
+            <x-inertia :page="new \NeoIsRecursive\Inertia\PageData('TestComponent', ['key' => 'value'], '/test-url', '1.0.0', false, false, [])" id="app" />
         HTML);
 
         static::assertSnippetsMatch(
@@ -47,6 +47,7 @@ final class ViewTest extends TestCase
                     version: '1.0.0',
                     clearHistory: true,
                     encryptHistory: false,
+                    meta: [],
                 ),
             ),
         );
@@ -73,7 +74,7 @@ final class ViewTest extends TestCase
     public function test_renders_id_attribute_correctly(): void
     {
         $output = $this->render(<<<HTML
-            <x-inertia id="custom-id" :page="new \NeoIsRecursive\Inertia\PageData('TestComponent', ['key' => 'value'], '/test-url', '1.0.0', false, false)" />
+            <x-inertia id="custom-id" :page="new \NeoIsRecursive\Inertia\PageData('TestComponent', ['key' => 'value'], '/test-url', '1.0.0', false, false, [])" />
         HTML);
 
         static::assertSnippetsMatch(

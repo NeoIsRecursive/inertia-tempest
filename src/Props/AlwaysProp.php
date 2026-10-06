@@ -4,25 +4,45 @@ declare(strict_types=1);
 
 namespace NeoIsRecursive\Inertia\Props;
 
-use NeoIsRecursive\Inertia\Concerns\IsCallableProp;
-use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
-use NeoIsRecursive\Inertia\Contracts\CallableProp;
 use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use Override;
+use Tempest\Support\Arr\ArrayInterface;
 
-final class AlwaysProp implements CallableProp, MergeableProp
+final class AlwaysProp implements Prop, MergeableProp
 {
-    use IsMergeableProp;
-    use IsCallableProp;
+    use IsMergeable;
 
     public function __construct(
         public readonly mixed $value,
-        public private(set) bool $shouldMerge = false,
     ) {}
 
-    #[Override]
-    public function __invoke(): mixed
+    #[\Override]
+    public function getMeta(PropContext $context, mixed $resolvedValue): array
     {
-        return $this->resolveCallablePropValue($this->value);
+        return $this->resolveMergeMetadata($context);
+    }
+
+    #[\Override]
+    public function shouldBeEvaluated(PropContext $context): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function resolveValue(PropContext $context): mixed
+    {
+        return !is_string($this->value) && is_callable($this->value)
+            ? $context->container->invoke($this->value)
+            : $this->value;
+    }
+
+    #[\Override]
+    public function serialize(mixed $resolvedValue): mixed
+    {
+        if ($resolvedValue instanceof ArrayInterface) {
+            return $resolvedValue->toArray();
+        }
+
+        return $resolvedValue;
     }
 }

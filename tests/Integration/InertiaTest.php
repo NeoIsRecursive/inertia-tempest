@@ -186,7 +186,7 @@ final class InertiaTest extends TestCase
         ]);
 
         $response->assertOk();
-        static::assertSame(
+        static::assertArraysAreIdenticalIgnoringOrder(
             expected: [
                 'component' => 'test',
                 'props' => [
@@ -245,6 +245,7 @@ final class InertiaTest extends TestCase
         ]);
 
         $response->assertOk();
+
         static::assertSame(
             expected: [
                 'component' => 'Index',
