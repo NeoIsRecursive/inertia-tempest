@@ -115,8 +115,8 @@ final readonly class TestController
     public function testCanMergeProps(): Component
     {
         return new Component(name: 'test', props: [
-            'foo' => new AlwaysProp(fn() => 'bar')->merge(),
-            'baz' => new OptionalProp(fn() => 'qux')->merge(),
+            'foo' => new AlwaysProp(fn() => 'bar'),
+            'baz' => new OptionalProp(fn() => 'qux'),
         ]);
     }
 

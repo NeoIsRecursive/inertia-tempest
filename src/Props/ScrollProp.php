@@ -5,22 +5,13 @@ declare(strict_types=1);
 namespace NeoIsRecursive\Inertia\Props;
 
 use Closure;
-use NeoIsRecursive\Inertia\Concerns\IsCallableProp;
-use NeoIsRecursive\Inertia\Concerns\IsMergeableProp;
-use NeoIsRecursive\Inertia\Contracts\CallableProp;
-use NeoIsRecursive\Inertia\Contracts\MergeableProp;
 use NeoIsRecursive\Inertia\Contracts\ProvidesScrollMetadata;
 use Override;
+use Tempest\Support\Arr\ArrayInterface;
 use Tempest\Support\Paginator\PaginatedData;
 
-final class ScrollProp implements CallableProp, MergeableProp
+final class ScrollProp implements Prop
 {
-    use IsMergeableProp;
-    use IsCallableProp;
-
-    public mixed $resolved = null;
-    public bool $shouldMerge = true;
-
     public function __construct(
         public readonly mixed $value,
         public string $pageName,
@@ -29,111 +20,95 @@ final class ScrollProp implements CallableProp, MergeableProp
         public ProvidesScrollMetadata|Closure|null $metadata = null,
     ) {}
 
-    public function mergeKey(string|int $key): string|int
+    #[\Override]
+    public function shouldBeEvaluated(PropContext $context): bool
     {
-        if (!is_string($key) || $this->wrapper === '') {
-            return $key;
-        }
-
-        return sprintf('%s.%s', $key, $this->wrapper);
+        return !$context->isPartial;
     }
 
-    protected function resolveValue(): mixed
+    #[\Override]
+    public function resolveValue(PropContext $context): mixed
     {
-        if ($this->resolved !== null) {
-            return $this->resolved;
-        }
-
-        $this->resolved = $this->resolveCallablePropValue($this->value);
-
-        return $this->resolved;
+        return is_callable($this->value) ? $context->container->invoke($this->value) : $this->value;
     }
 
-    /**
-     * Resolve the scroll metadata provider.
-     *
-     * @throws \LogicException
-     */
-    protected function resolveMetadataProvider(): ProvidesScrollMetadata
+    #[\Override]
+    public function serialize(mixed $resolvedValue): mixed
     {
-        if ($this->metadata instanceof ProvidesScrollMetadata) {
-            return $this->metadata;
+        if ($resolvedValue instanceof PaginatedData) {
+            return [$this->wrapper => $resolvedValue->data];
         }
 
-        // @mago-expect analyzer:mixed-assignment
-        $value = $this->resolveValue();
-
-        if ($this->metadata === null) {
-            $pageName = $this->pageName;
-
-            if ($value instanceof PaginatedData) {
-                return new class($pageName, $value) implements ProvidesScrollMetadata {
-                    public function __construct(
-                        private string $pageName,
-                        private PaginatedData $value,
-                    ) {}
-
-                    public function getPageName(): string
-                    {
-                        return $this->pageName;
-                    }
-
-                    public function getPreviousPage(): int|string|null
-                    {
-                        return $this->value->previousPage;
-                    }
-
-                    public function getNextPage(): int|string|null
-                    {
-                        return $this->value->nextPage;
-                    }
-
-                    public function getCurrentPage(): int|string|null
-                    {
-                        return $this->value->currentPage;
-                    }
-                };
-            }
+        if ($resolvedValue instanceof ArrayInterface) {
+            return $resolvedValue->toArray();
         }
 
-        $metadata = $this->metadata;
-
-        if (!$metadata instanceof Closure) {
-            throw new \LogicException('Scroll metadata resolver must be a closure or metadata provider.');
-        }
-
-        return $metadata($value);
+        return $resolvedValue;
     }
 
-    /**
-     * Get the pagination meta information.
-     *
-     * @return array{pageName: string, previousPage: int|string|null, nextPage: int|string|null, currentPage: int|string|null}
-     */
-    public function metadata(): array
+    #[\Override]
+    public function getMeta(PropContext $context, mixed $resolvedValue): array
     {
-        $metadataProvider = $this->resolveMetadataProvider();
+        if ($resolvedValue instanceof NotResolvedValue) {
+            return [];
+        }
+
+        $metaDataProvider = $this->resolveMetaDataProvider($context, $resolvedValue);
 
         return [
-            'pageName' => $metadataProvider->getPageName(),
-            'previousPage' => $metadataProvider->getPreviousPage(),
-            'nextPage' => $metadataProvider->getNextPage(),
-            'currentPage' => $metadataProvider->getCurrentPage(),
+            'mergeProps' => ["{$context->key}.{$this->wrapper}"],
+            'scrollProps' => [
+                $context->key => [
+                    'pageName' => $metaDataProvider->getPageName(),
+                    'previousPage' => $metaDataProvider->getPreviousPage(),
+                    'nextPage' => $metaDataProvider->getNextPage(),
+                    'currentPage' => $metaDataProvider->getCurrentPage(),
+                ],
+            ],
         ];
     }
 
-    #[Override]
-    public function __invoke(): mixed
+    public function resolveMetaDataProvider(PropContext $context, mixed $resolvedValue): ProvidesScrollMetadata
     {
-        // @mago-expect analyzer:mixed-assignment
-        $value = $this->resolveValue();
+        $metadata = $this->metadata;
 
-        if ($value instanceof PaginatedData) {
-            return [
-                $this->wrapper => $value->data,
-            ];
+        if ($metadata instanceof ProvidesScrollMetadata) {
+            return $metadata;
         }
 
-        return $value;
+        if ($metadata instanceof Closure) {
+            return $metadata($resolvedValue);
+        }
+
+        $pageName = $this->pageName;
+
+        if ($resolvedValue instanceof PaginatedData) {
+            return new class($pageName, $resolvedValue) implements ProvidesScrollMetadata {
+                public function __construct(
+                    private string $pageName,
+                    private PaginatedData $value,
+                ) {}
+
+                public function getPageName(): string
+                {
+                    return $this->pageName;
+                }
+
+                public function getPreviousPage(): int|string|null
+                {
+                    return $this->value->previousPage;
+                }
+
+                public function getNextPage(): int|string|null
+                {
+                    return $this->value->nextPage;
+                }
+
+                public function getCurrentPage(): int|string|null
+                {
+                    return $this->value->currentPage;
+                }
+            };
+        }
     }
 }

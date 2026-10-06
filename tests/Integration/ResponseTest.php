@@ -50,10 +50,10 @@ final class ResponseTest extends TestCase
                     {
                         "component": "User/Edit",
                         "props": {
-                            "errors": [],
                             "user":{
                                 "name": "Jonathan"
-                            }
+                            },
+                            "errors": []
                         },
                         "url": "/user/123",
                         "version": "123"
@@ -287,7 +287,7 @@ final class ResponseTest extends TestCase
 
     public function test_lazy_props_are_included_in_partial_reload(): void
     {
-        $request = $this->createInertiaRequest(Method::GET, uri: '/users', headers: [
+        $this->createInertiaRequest(Method::GET, uri: '/users', headers: [
             Header::PARTIAL_COMPONENT => 'Users',
             Header::PARTIAL_ONLY => 'lazy',
         ]);
@@ -855,7 +855,7 @@ final class ResponseTest extends TestCase
         $view = $response->body;
         $page = $view->page;
 
-        static::assertSame(
+        static::assertEqualsCanonicalizing(
             expected: [
                 'user' => null,
                 'errors' => [],
@@ -899,7 +899,7 @@ final class ResponseTest extends TestCase
             expected: [
                 'default' => ['foo'],
             ],
-            actual: $pageData->propKeysToDefer,
+            actual: $pageData->meta['propKeysToDefer'],
         );
 
         static::assertFalse($pageData->clearHistory);
@@ -933,7 +933,7 @@ final class ResponseTest extends TestCase
 
         static::assertInstanceOf(expected: PageData::class, actual: $page);
 
-        static::assertSame(
+        static::assertEqualsCanonicalizing(
             new PageData(
                 component: 'User/Edit',
                 props: [
@@ -944,9 +944,11 @@ final class ResponseTest extends TestCase
                 version: '123',
                 clearHistory: false,
                 encryptHistory: false,
-                propKeysToDefer: [
-                    'default' => ['foo', 'bar'],
-                    'custom' => ['baz'],
+                meta: [
+                    'propKeysToDefer' => [
+                        'default' => ['foo', 'bar'],
+                        'custom' => ['baz'],
+                    ]
                 ],
             )->toArray(),
             $page->toArray(),

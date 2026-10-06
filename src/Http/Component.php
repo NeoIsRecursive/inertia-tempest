@@ -10,6 +10,7 @@ use NeoIsRecursive\Inertia\PageData;
 use NeoIsRecursive\Inertia\Pipeline\PropPipeline;
 use NeoIsRecursive\Inertia\Support\Header;
 use NeoIsRecursive\Inertia\Views\InertiaBaseView;
+use Tempest\Container\Container;
 use Tempest\Http\IsResponse;
 use Tempest\Http\Request;
 use Tempest\Http\Response;
@@ -56,6 +57,7 @@ final class Component implements Response
 
         $processedProps = new PropPipeline()->process(
             props: array_merge($config->sharedProps, $this->props),
+            container: get(Container::class),
             request: $this->request,
             component: $component,
         );
@@ -72,9 +74,7 @@ final class Component implements Response
             version: $version,
             clearHistory: $this->clearHistory ?? false,
             encryptHistory: $this->encryptHistory ?? false,
-            propKeysToDefer: $processedProps->deferredProps,
-            propsKeysToMerge: $processedProps->mergeProps,
-            scrollProps: $processedProps->scrollProps,
+            meta: $processedProps->meta,
         );
 
         if ($this->request->headers->has(Header::INERTIA)) {
